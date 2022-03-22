@@ -199,7 +199,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         return commandList.toArray(new String[0]);
     }
 
-    @Symbol("EggplantRunner")
+    @Symbol("eggplantRunner")
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
 
