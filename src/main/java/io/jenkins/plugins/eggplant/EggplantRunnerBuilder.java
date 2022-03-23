@@ -14,10 +14,10 @@ import hudson.tasks.BuildStepDescriptor;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -132,10 +132,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         String[] command = this.getCommand(cliFile, buildId);
         logger.println("command: " + command);
 
-        // ProcessBuilder pb = new ProcessBuilder(command);
-        // pb.directory(new File(workspace.getRemote()));
-        // Process p = pb.start();
-        
         ProcStarter procStarter = launcher.launch();
         Proc process = procStarter.pwd(uniqueWorkspace).cmds(command).quiet(false).stderr(logger).stdout(logger).start();
         int exitCode = process.join();
@@ -144,11 +140,24 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
 
     private FilePath downloadCLIExecutable(FilePath workspace, OperatingSystem os) throws IOException, InterruptedException {
         String cliFilename = CLI_FILENAME.get(os);
+        // TODO: We need to update to public URL
         //String cliDownloadUrl = CLI_DOWNLOAD_URL.replace("${cliVersion}", CLI_VERSION).replace("${cliFilename}", cliFilename);
         String cliDownloadUrl = "http://4ce9421f9r.png.is.keysight.com:8088/eggplant-runner-Windows-6.1-ci.exe";
+        InputStream in;
 
-        InputStream in = new URL(cliDownloadUrl).openStream();
-        FilePath filePath = workspace.child("eggplant-runner-Windows-6.1-ci.exe");
+        // It will only use gitlab package registry if no gitlab Access token (for development)
+        if (System.getenv("gitlabAccessToken") == null) 
+            in = new URL(cliDownloadUrl).openStream();
+        else
+        {
+            URL url = new URL("https://gitlab.com/api/v4/projects/22402994/packages/generic/6.1-ci-cd/0.0.0/" + cliFilename);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.addRequestProperty ("PRIVATE-TOKEN", System.getenv("gitlabAccessToken"));
+            connection.setDoOutput(true);
+            in = connection.getInputStream();
+        }
+
+        FilePath filePath = workspace.child(cliFilename);
         filePath.copyFrom(in);
         filePath.chmod(0755);
         return filePath;
@@ -178,22 +187,23 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     private String[] getCommand(FilePath cliFile, String buildId) {
         List<String> commandList = new ArrayList<String>();
         
-        commandList.add("./" + cliFile.getName()); // cliPath
+        //commandList.add("./" + cliFile.getName()); // cliPath
+        commandList.add(cliFile.getRemote()); // cliPath
         commandList.add(this.serverURL); // serverURLArg
         commandList.add(this.testConfigId); // testConfigIdArgs
-        if (this.clientId != "") // clientIdArg
+        if (!this.clientId.equals("")) // clientIdArg
             commandList.add(String.format("--client-id=%s", this.clientId)); 
         commandList.add(String.format("--client-secret=%s", this.clientSecret)); // clientSecretArg
 
-        if (this.logLevel != "") // logLevelArg
+        if (!this.logLevel.equals("")) // logLevelArg
             commandList.add(String.format("--log-level=%s", this.logLevel)); 
-        if (this.caCertPath != "") // caCertPathArg
+        if (!this.caCertPath.equals("")) // caCertPathArg
             commandList.add(String.format("--ca-cert-path=%s", this.caCertPath)); 
-        if (this.pollInterval != "") // caCertPathArg
+        if (!this.pollInterval.equals("")) // caCertPathArg
             commandList.add(String.format("--poll-interval=%s", this.pollInterval)); 
-        if (this.requestTimeout != "") // requestTimeoutArg
+        if (!this.requestTimeout.equals("")) // requestTimeoutArg
             commandList.add(String.format("--request-timeout=%s", this.requestTimeout)); 
-        if (this.requestRetries != "") // requestTimeoutArg
+        if (!this.requestRetries.equals("")) // requestTimeoutArg
             commandList.add(String.format("--request-retries=%s", this.requestRetries)); 
 
         return commandList.toArray(new String[0]);
