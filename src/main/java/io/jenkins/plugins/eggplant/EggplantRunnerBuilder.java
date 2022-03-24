@@ -32,11 +32,11 @@ import org.kohsuke.stapler.DataBoundSetter;
 
 public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     private final static String CLI_VERSION = "6.1";
-    private final static String CLI_DOWNLOAD_URL = "https://github.com/foomunleong/test_1/blob/main/cli/${cliFilename}?raw=true";
+    private final static String CLI_DOWNLOAD_URL = "https://downloads.eggplantsoftware.com/downloads/EggplantRunner/${cliFilename}";
     private final static Map<OperatingSystem, String> CLI_FILENAME = Stream.of(
-        new AbstractMap.SimpleEntry<>(OperatingSystem.LINUX, "eggplant-runner-Linux-6.1-ci.exe"),
-        new AbstractMap.SimpleEntry<>(OperatingSystem.MACOS, "eggplant-runner-MacOS-6.1-ci.exe"), 
-        new AbstractMap.SimpleEntry<>(OperatingSystem.WINDOWS, "eggplant-runner-Windows-6.1-ci.exe")
+        new AbstractMap.SimpleEntry<>(OperatingSystem.LINUX, "eggplant-runner-Linux-${cliVersion}-ci"),
+        new AbstractMap.SimpleEntry<>(OperatingSystem.MACOS, "eggplant-runner-MacOS-${cliVersion}-ci"), 
+        new AbstractMap.SimpleEntry<>(OperatingSystem.WINDOWS, "eggplant-runner-Windows-${cliVersion}-ci.exe")
     ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     private String serverURL;
     private String testConfigId;
@@ -139,10 +139,8 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     }
 
     private FilePath downloadCLIExecutable(FilePath workspace, OperatingSystem os) throws IOException, InterruptedException {
-        String cliFilename = CLI_FILENAME.get(os);
-        // TODO: We need to update to public URL
-        //String cliDownloadUrl = CLI_DOWNLOAD_URL.replace("${cliVersion}", CLI_VERSION).replace("${cliFilename}", cliFilename);
-        String cliDownloadUrl = "http://4ce9421f9r.png.is.keysight.com:8088/eggplant-runner-Windows-6.1-ci.exe";
+        String cliFilename = CLI_FILENAME.get(os).replace("${cliVersion}", CLI_VERSION);
+        String cliDownloadUrl = CLI_DOWNLOAD_URL.replace("${cliFilename}", cliFilename);
         InputStream in;
 
         // It will only use gitlab package registry if no gitlab Access token (for development)

@@ -1,4 +1,6 @@
-# Eggplant Runner Hub Jenkins Plugin
+# Eggplant Runner Jenkins Plugin (ALPHA VERSION)
+
+# THIS IS STILL IN TEST, WAIT FOR OFFICIAL RELEASE
 
 ## Introduction
 
