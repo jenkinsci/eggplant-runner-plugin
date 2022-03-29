@@ -106,7 +106,6 @@
       </developer>
     </developers> -->
 
-
     <scm>
         <connection>scm:git:https://github.com/jenkinsci/${project.artifactId}-plugin</connection>
         <developerConnection>scm:git:https://github.com/jenkinsci/${project.artifactId}-plugin</developerConnection>
