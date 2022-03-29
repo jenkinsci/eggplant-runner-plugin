@@ -1,4 +1,6 @@
-# Eggplant Runner Hub Jenkins Plugin
+# Eggplant Runner Jenkins Plugin (ALPHA VERSION)
+
+# THIS IS STILL IN TEST, WAIT FOR OFFICIAL RELEASE
 
 ## Introduction
 
@@ -19,7 +21,7 @@ pipeline {
     stages {
         stage('Eggplant Runner') {
             steps {
-                eggplantRunner testConfigId: ''
+                serverURL: 'https://edge.dai.webperfdev.com/', testConfigId: '307fee3e-9d6b-43e6-b31e-f1d379f27cdf', eggplantRunner clientSecret: 'secret'
             }
         }
     }
