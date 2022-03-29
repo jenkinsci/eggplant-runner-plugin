@@ -4,7 +4,7 @@
 
 ## Introduction
 
-Eggplant Runner is a Jenkins plugin that runs DAI Test Config.
+Eggplant Runner is a Jenkins plugin that runs DAI Test Config .
 
 ## Getting started
 
