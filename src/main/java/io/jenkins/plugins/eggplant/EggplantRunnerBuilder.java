@@ -96,6 +96,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         this.clientId= clientId;
     }
 
+    
     @DataBoundSetter
     public void setClientSecret(Secret clientSecret) {
         this.clientSecret = clientSecret;
