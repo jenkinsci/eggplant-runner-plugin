@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -129,7 +130,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         FilePath uniqueWorkspace = workspace.child(buildId); 
         FilePath cliFile = this.downloadCLIExecutable(uniqueWorkspace, os);
         logger.println("cliFile: " + cliFile);
-        String[] command = this.getCommand(cliFile, buildId);
+        String[] command = this.getCommand(cliFile, buildId, os);
         logger.println("command: " + command);
 
         ProcStarter procStarter = launcher.launch();
@@ -172,7 +173,14 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         Proc process = procStarter.pwd(workspace).cmds("uname").quiet(true).stdout(outputStream).start();
         process.join();
         String output = outputStream.toString("UTF-8");
+        Locale locale = Locale.getDefault();
         
+        // set locale environment variable for linux
+        process = procStarter.pwd(workspace).cmds(String.format("export LC_ALL=%s.utf-8", locale.toString())).quiet(true).stdout(outputStream).start();
+        process.join();
+        process = procStarter.pwd(workspace).cmds(String.format("export LANG=%s.utf-8", locale.toString())).quiet(true).stdout(outputStream).start();
+        process.join();
+
         // MacOS
         if (output.startsWith("Darwin")) 
             return OperatingSystem.MACOS;
@@ -182,7 +190,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
       }
     
 
-    private String[] getCommand(FilePath cliFile, String buildId) {
+    private String[] getCommand(FilePath cliFile, String buildId, OperatingSystem os) {
         List<String> commandList = new ArrayList<String>();
         
         //commandList.add("./" + cliFile.getName()); // cliPath
