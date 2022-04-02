@@ -1,9 +1,9 @@
 package io.jenkins.plugins.eggplant;
 
-
 import hudson.Launcher;
 import hudson.Proc;
 import hudson.Launcher.ProcStarter;
+import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.util.Secret;
@@ -13,6 +13,10 @@ import hudson.model.TaskListener;
 import hudson.tasks.Builder;
 import hudson.tasks.BuildStepDescriptor;
 import org.kohsuke.stapler.DataBoundConstructor;
+
+import jenkins.tasks.SimpleBuildStep;
+import org.jenkinsci.Symbol;
+import org.kohsuke.stapler.DataBoundSetter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,9 +32,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import jenkins.tasks.SimpleBuildStep;
-import org.jenkinsci.Symbol;
-import org.kohsuke.stapler.DataBoundSetter;
 
 public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     private final static String CLI_VERSION = "6.1";
@@ -127,6 +128,8 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     public void perform(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
         PrintStream logger = listener.getLogger();
         String buildId = run.getId();
+        Locale locale = Locale.getDefault();
+        String localeString = String.format("%s.utf-8", locale.toString());
 
         OperatingSystem os = this.getOperatingSystem(workspace, launcher);
         FilePath uniqueWorkspace = workspace.child(buildId); 
@@ -134,9 +137,12 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         logger.println("cliFile: " + cliFile);
         String[] command = this.getCommand(cliFile, buildId, os);
         logger.println("command: " + command);
+        EnvVars envVars = new EnvVars();
+        envVars.put("LC_ALL", localeString);
+        envVars.put("LANG", localeString);
 
         ProcStarter procStarter = launcher.launch();
-        Proc process = procStarter.pwd(uniqueWorkspace).cmds(command).quiet(false).stderr(logger).stdout(logger).start();
+        Proc process = procStarter.pwd(uniqueWorkspace).cmds(command).envs(envVars).quiet(false).stderr(logger).stdout(logger).start();
         int exitCode = process.join();
         if (exitCode != 0) throw new EggplantRunnerExitException(exitCode);
     }
@@ -175,13 +181,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         Proc process = procStarter.pwd(workspace).cmds("uname").quiet(true).stdout(outputStream).start();
         process.join();
         String output = outputStream.toString("UTF-8");
-        Locale locale = Locale.getDefault();
-        
-        // set locale environment variable for linux
-        process = procStarter.pwd(workspace).cmds(String.format("export LC_ALL=%s.utf-8", locale.toString())).quiet(true).stdout(outputStream).start();
-        process.join();
-        process = procStarter.pwd(workspace).cmds(String.format("export LANG=%s.utf-8", locale.toString())).quiet(true).stdout(outputStream).start();
-        process.join();
 
         // MacOS
         if (output.startsWith("Darwin")) 

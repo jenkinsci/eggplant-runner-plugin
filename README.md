@@ -15,13 +15,13 @@ pipeline {
     agent any
 
     environment {
-        DAI_CLIENT_SECRET = client-secret
+        DAI_CLIENT_SECRET = credentials('eggplant-runner-client-secret')
     }
 
     stages {
         stage('Eggplant Runner') {
             steps {
-                serverURL: 'https://edge.dai.webperfdev.com/', testConfigId: '307fee3e-9d6b-43e6-b31e-f1d379f27cdf', eggplantRunner clientSecret: 'secret'
+                eggplantRunner serverURL: 'https://edge.dai.webperfdev.com/', testConfigId: '307fee3e-9d6b-43e6-b31e-f1d379f27cdf'
             }
         }
     }
