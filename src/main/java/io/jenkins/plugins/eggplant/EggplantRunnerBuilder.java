@@ -26,6 +26,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -136,7 +137,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         FilePath cliFile = this.downloadCLIExecutable(uniqueWorkspace, os);
         logger.println("cliFile: " + cliFile);
         String[] command = this.getCommand(cliFile, buildId, os, env);
-        logger.println("command: " + command.toString());
+        logger.println("command: " + Arrays.toString(command));
         EnvVars envVars = new EnvVars();
         envVars.put("LC_ALL", localeString);
         envVars.put("LANG", localeString);
