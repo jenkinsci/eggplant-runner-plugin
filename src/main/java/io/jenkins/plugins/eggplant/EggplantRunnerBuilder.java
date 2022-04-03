@@ -198,19 +198,20 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         commandList.add(cliFile.getRemote()); // cliPath
         commandList.add(this.serverURL); // serverURLArg
         commandList.add(this.testConfigId); // testConfigIdArgs
-        if (!this.clientId.equals("")) // clientIdArg
+        if (this.clientId != null && !this.clientId.equals("")) // clientIdArg
             commandList.add(String.format("--client-id=%s", this.clientId)); 
-        commandList.add(String.format("--client-secret=%s", this.clientSecret)); // clientSecretArg
+        if (this.clientSecret != null) // clientSecretArg
+            commandList.add(String.format("--client-secret=%s", this.clientSecret));
 
-        if (!this.logLevel.equals("")) // logLevelArg
+        if (this.logLevel != null && !this.logLevel.equals("")) // logLevelArg
             commandList.add(String.format("--log-level=%s", this.logLevel)); 
-        if (!this.caCertPath.equals("")) // caCertPathArg
+        if (this.caCertPath != null && !this.caCertPath.equals("")) // caCertPathArg
             commandList.add(String.format("--ca-cert-path=%s", this.caCertPath)); 
-        if (!this.pollInterval.equals("")) // caCertPathArg
+        if (this.pollInterval != null && !this.pollInterval.equals("")) // caCertPathArg
             commandList.add(String.format("--poll-interval=%s", this.pollInterval)); 
-        if (!this.requestTimeout.equals("")) // requestTimeoutArg
+        if (this.requestTimeout != null && !this.requestTimeout.equals("")) // requestTimeoutArg
             commandList.add(String.format("--request-timeout=%s", this.requestTimeout)); 
-        if (!this.requestRetries.equals("")) // requestTimeoutArg
+        if (this.requestRetries != null && !this.requestRetries.equals("")) // requestTimeoutArg
             commandList.add(String.format("--request-retries=%s", this.requestRetries)); 
 
         return commandList.toArray(new String[0]);
