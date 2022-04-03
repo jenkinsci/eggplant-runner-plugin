@@ -136,7 +136,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         FilePath cliFile = this.downloadCLIExecutable(uniqueWorkspace, os);
         logger.println("cliFile: " + cliFile);
         String[] command = this.getCommand(cliFile, buildId, os, env);
-        logger.println("command: " + command);
+        logger.println("command: " + command.toString());
         EnvVars envVars = new EnvVars();
         envVars.put("LC_ALL", localeString);
         envVars.put("LANG", localeString);
