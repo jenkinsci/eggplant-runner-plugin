@@ -125,7 +125,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         this.requestRetries = requestRetries;
     }
     @Override
-    public void perform(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
+    public void perform(Run<?, ?> run, FilePath workspace, EnvVars env, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
         PrintStream logger = listener.getLogger();
         String buildId = run.getId();
         Locale locale = Locale.getDefault();
@@ -135,7 +135,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         FilePath uniqueWorkspace = workspace.child(buildId); 
         FilePath cliFile = this.downloadCLIExecutable(uniqueWorkspace, os);
         logger.println("cliFile: " + cliFile);
-        String[] command = this.getCommand(cliFile, buildId, os);
+        String[] command = this.getCommand(cliFile, buildId, os, env);
         logger.println("command: " + command);
         EnvVars envVars = new EnvVars();
         envVars.put("LC_ALL", localeString);
@@ -191,7 +191,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
       }
     
 
-    private String[] getCommand(FilePath cliFile, String buildId, OperatingSystem os) {
+    private String[] getCommand(FilePath cliFile, String buildId, OperatingSystem os, EnvVars env) {
         List<String> commandList = new ArrayList<String>();
         
         //commandList.add("./" + cliFile.getName()); // cliPath
@@ -200,8 +200,12 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         commandList.add(this.testConfigId); // testConfigIdArgs
         if (this.clientId != null && !this.clientId.equals("")) // clientIdArg
             commandList.add(String.format("--client-id=%s", this.clientId)); 
-        if (this.clientSecret != null) // clientSecretArg
+        
+        // clientSecretArg
+        if (this.clientSecret != null && !this.clientSecret.getPlainText().isEmpty()) 
             commandList.add(String.format("--client-secret=%s", this.clientSecret));
+        else if (env.get("DAI_CLIENT_SECRET") != null && !env.get("DAI_CLIENT_SECRET").equals("")) 
+            commandList.add(String.format("--client-secret=%s", env.get("DAI_CLIENT_SECRET")));
 
         if (this.logLevel != null && !this.logLevel.equals("")) // logLevelArg
             commandList.add(String.format("--log-level=%s", this.logLevel)); 
