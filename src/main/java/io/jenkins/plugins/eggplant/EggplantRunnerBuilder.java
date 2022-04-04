@@ -51,6 +51,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     private String pollInterval;
     private String requestTimeout;
     private String requestRetries;
+    private Boolean dryRun;
 
     @DataBoundConstructor
     public EggplantRunnerBuilder() {
@@ -124,6 +125,10 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     @DataBoundSetter
     public void setRequestRetries(String requestRetries) {
         this.requestRetries = requestRetries;
+    }
+    @DataBoundSetter
+    public void setDryRun(boolean dryRun) {
+        this.dryRun = dryRun;
     }
     @Override
     public void perform(Run<?, ?> run, FilePath workspace, EnvVars env, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
@@ -218,6 +223,8 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             commandList.add(String.format("--request-timeout=%s", this.requestTimeout)); 
         if (this.requestRetries != null && !this.requestRetries.equals("")) // requestTimeoutArg
             commandList.add(String.format("--request-retries=%s", this.requestRetries)); 
+        if (this.dryRun) // dryRunArg
+            commandList.add("--dry-run"); 
 
         return commandList.toArray(new String[0]);
     }
