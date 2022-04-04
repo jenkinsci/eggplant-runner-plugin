@@ -135,7 +135,8 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         PrintStream logger = listener.getLogger();
         String buildId = run.getId();
         Locale locale = Locale.getDefault();
-        String localeString = String.format("%s.utf-8", locale.toString());
+        // String localeString = String.format("%s.utf-8", locale.toString());
+        String localeString = String.format("%s.utf-8", "en_US");
 
         OperatingSystem os = this.getOperatingSystem(workspace, launcher);
         FilePath uniqueWorkspace = workspace.child(buildId); 
