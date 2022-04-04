@@ -18,6 +18,7 @@ public class EggplantRunnerBuilderTest {
         EggplantRunnerBuilder builder = new EggplantRunnerBuilder();
         builder.setServerURL("http://localhost:8080");
         builder.setTestConfigId("test-Config-Id");
+        builder.setClientSecret(hudson.util.Secret.fromString("c38ce33d-5644-4198-b28f-9cf3d9ac05e4"));
         builder.setDryRun(true);
         project.getBuildersList().add(builder);
 
