@@ -137,6 +137,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         String buildId = run.getId();
         String localeString = "";
         Locale locale = Locale.getDefault();
+        logger.print(Arrays.toString(LocaleUtils.availableLocaleSet().toArray()));
         if (LocaleUtils.isAvailableLocale(locale))
             localeString = String.format("%s.utf-8", locale.toString());
         else
