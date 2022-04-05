@@ -231,7 +231,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             commandList.add(String.format("--request-timeout=%s", this.requestTimeout)); 
         if (this.requestRetries != null && !this.requestRetries.equals("")) // requestTimeoutArg
             commandList.add(String.format("--request-retries=%s", this.requestRetries)); 
-        if (this.dryRun) // dryRunArg
+        if (this.dryRun != null && this.dryRun) // dryRunArg
             commandList.add("--dry-run"); 
 
         return commandList.toArray(new String[0]);
