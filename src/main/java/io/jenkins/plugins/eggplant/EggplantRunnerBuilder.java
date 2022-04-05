@@ -7,6 +7,7 @@ import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.util.Secret;
+import io.jenkins.cli.shaded.org.apache.commons.lang.LocaleUtils;
 import hudson.model.AbstractProject;
 import hudson.model.Run;
 import hudson.model.TaskListener;
@@ -134,9 +135,12 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     public void perform(Run<?, ?> run, FilePath workspace, EnvVars env, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
         PrintStream logger = listener.getLogger();
         String buildId = run.getId();
+        String localeString = "";
         Locale locale = Locale.getDefault();
-        // String localeString = String.format("%s.utf-8", locale.toString());
-        String localeString = String.format("%s.utf-8", "en_US");
+        if (LocaleUtils.isAvailableLocale(locale))
+            localeString = String.format("%s.utf-8", locale.toString());
+        else
+            localeString = String.format("%s.utf-8", "en_US");
 
         OperatingSystem os = this.getOperatingSystem(workspace, launcher);
         FilePath uniqueWorkspace = workspace.child(buildId); 
