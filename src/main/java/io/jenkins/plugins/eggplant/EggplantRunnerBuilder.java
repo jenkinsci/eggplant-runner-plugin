@@ -7,6 +7,7 @@ import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.util.Secret;
+import io.jenkins.cli.shaded.org.apache.commons.lang.LocaleUtils;
 import hudson.model.AbstractProject;
 import hudson.model.Run;
 import hudson.model.TaskListener;
@@ -51,6 +52,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     private String pollInterval;
     private String requestTimeout;
     private String requestRetries;
+    private Boolean dryRun;
 
     @DataBoundConstructor
     public EggplantRunnerBuilder() {
@@ -125,12 +127,23 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     public void setRequestRetries(String requestRetries) {
         this.requestRetries = requestRetries;
     }
+    @DataBoundSetter
+    public void setDryRun(boolean dryRun) {
+        this.dryRun = dryRun;
+    }
     @Override
     public void perform(Run<?, ?> run, FilePath workspace, EnvVars env, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
         PrintStream logger = listener.getLogger();
         String buildId = run.getId();
+        String localeString = "";
         Locale locale = Locale.getDefault();
-        String localeString = String.format("%s.utf-8", locale.toString());
+
+        logger.println("locale: " + locale);
+        logger.println("locale.getCountry(): " + locale.getCountry());
+        if (!locale.getCountry().equals(""))
+            localeString = String.format("%s.utf-8", locale.toString());
+        else
+            localeString = String.format("%s.utf-8", "en_US");
 
         OperatingSystem os = this.getOperatingSystem(workspace, launcher);
         FilePath uniqueWorkspace = workspace.child(buildId); 
@@ -218,6 +231,8 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             commandList.add(String.format("--request-timeout=%s", this.requestTimeout)); 
         if (this.requestRetries != null && !this.requestRetries.equals("")) // requestTimeoutArg
             commandList.add(String.format("--request-retries=%s", this.requestRetries)); 
+        if (this.dryRun) // dryRunArg
+            commandList.add("--dry-run"); 
 
         return commandList.toArray(new String[0]);
     }
