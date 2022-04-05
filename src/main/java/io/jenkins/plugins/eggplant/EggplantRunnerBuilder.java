@@ -135,13 +135,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     public void perform(Run<?, ?> run, FilePath workspace, EnvVars env, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
         PrintStream logger = listener.getLogger();
         String buildId = run.getId();
-        String localeString = "";
-        Locale locale = Locale.getDefault();
-        logger.print(Arrays.toString(LocaleUtils.availableLocaleSet().toArray()));
-        if (LocaleUtils.isAvailableLocale(locale))
-            localeString = String.format("%s.UTF-8", locale.toString());
-        else
-            localeString = String.format("%s.UTF-8", "en_US");
+        String localeString = String.format("%s.utf-8", "en_US");
 
         OperatingSystem os = this.getOperatingSystem(workspace, launcher);
         FilePath uniqueWorkspace = workspace.child(buildId); 
