@@ -1,4 +1,4 @@
 <?jelly escape-by-default='true'?>
 <div>
-    Allow Jenkins  administrators to add customized build step that integrated with DAI Rest API services to perform test execution.
+    Allow Jenkins administrators to add customized build step that integrated with DAI Rest API services to perform test execution.
 </div>
