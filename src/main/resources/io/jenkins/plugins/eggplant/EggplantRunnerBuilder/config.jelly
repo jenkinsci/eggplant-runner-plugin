@@ -12,7 +12,7 @@
         <br><strong>E.g. URL</strong> : https://localhost:8000/controller/test-config/<strong><em>307fee3e-9d6b-43e6-b31e-f1d379f27fff</em></strong> </br>
     </f:entry>
     <f:entry title="Client Id *" field="clientId">
-        <f:textbox />
+        <f:textbox value="client:dai:agent:integration"/>
         The <strong>DAI Client Id</strong> that used to authenticate with the DAI server.
         <br>Client Id can be obtain from <strong>https://kc-localhost:8000/auth → client → search for integration</strong></br>        
         <br><em>[default: client:dai:agent:integration]</em></br>
