@@ -52,6 +52,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     private String requestTimeout;
     private String requestRetries;
     private Boolean dryRun;
+    private String backoffFactor;
 
     @DataBoundConstructor
     public EggplantRunnerBuilder() {
@@ -84,6 +85,9 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     public String getRequestRetries() {
         return requestRetries;
     }
+    public String getBackoffFactor() {
+        return backoffFactor;
+    }    
 
     @DataBoundSetter
     public void setServerURL(String serverURL) {
@@ -126,6 +130,10 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     public void setRequestRetries(String requestRetries) {
         this.requestRetries = requestRetries;
     }
+    @DataBoundSetter
+    public void setBackoffFactor(String backoffFactor) {
+        this.backoffFactor = backoffFactor;
+    }    
     @DataBoundSetter
     public void setDryRun(boolean dryRun) {
         this.dryRun = dryRun;
@@ -231,7 +239,9 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         if (this.requestRetries != null && !this.requestRetries.equals("")) // requestTimeoutArg
             commandList.add(String.format("--request-retries=%s", this.requestRetries)); 
         if (this.dryRun != null && this.dryRun) // dryRunArg
-            commandList.add("--dry-run"); 
+            commandList.add("--dry-run");
+        if (this.backoffFactor != null && !this.backoffFactor.equals("")) // backoffFactorArg
+            commandList.add(String.format("--backoff-factor=%s", this.backoffFactor));             
 
         return commandList.toArray(new String[0]);
     }
