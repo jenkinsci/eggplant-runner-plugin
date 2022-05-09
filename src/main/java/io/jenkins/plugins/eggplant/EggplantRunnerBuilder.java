@@ -266,7 +266,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
 
         public FormValidation doCheckServerURL(@QueryParameter String value) throws IOException{
             if(value.isEmpty()) {
-                return FormValidation.error("You must fill this box!");
+                return FormValidation.error("Server URL cannot be empty.");
             }
             else if(!isValidURL(value)){
                 return FormValidation.error("Invalid server_url.");
@@ -276,17 +276,24 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     
         public FormValidation doCheckTestConfigId(@QueryParameter String value) throws IOException {
             if(value.isEmpty()) {
-                return FormValidation.error("You must fill this box!");
+                return FormValidation.error("Test Config Id cannot be empty.");
             }
             else if(!isValidUuid(value)){
                 return FormValidation.error("Invalid test configuration id.");
             }
             return FormValidation.ok();
         }
+
+        public FormValidation doCheckClientId(@QueryParameter String value) throws IOException {
+            if(value.isEmpty()) {
+                return FormValidation.error("Client Id cannot be empty.");
+            }
+            return FormValidation.ok();
+        }
     
         public FormValidation doCheckClientSecret(@QueryParameter String value) throws IOException {
             if(value.isEmpty()) {
-                return FormValidation.error("You must fill this box!");
+                return FormValidation.error("Client Secret cannot be empty.");
             }
             else if(!isValidUuid(value)){
                 return FormValidation.error("Invalid Client Secret.");
