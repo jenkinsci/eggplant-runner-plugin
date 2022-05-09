@@ -6,6 +6,7 @@ import hudson.Launcher.ProcStarter;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
+import hudson.util.FormValidation;
 import hudson.util.Secret;
 import io.jenkins.cli.shaded.org.apache.commons.lang.LocaleUtils;
 import hudson.model.AbstractProject;
@@ -15,8 +16,10 @@ import hudson.tasks.Builder;
 import hudson.tasks.BuildStepDescriptor;
 import org.kohsuke.stapler.DataBoundConstructor;
 import jenkins.tasks.SimpleBuildStep;
+
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundSetter;
+import org.kohsuke.stapler.QueryParameter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,6 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -258,6 +262,54 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         @Override
         public String getDisplayName() {
             return "Eggplant Runner";
+        }
+
+        public FormValidation doCheckServerURL(@QueryParameter String value) throws IOException{
+            if(value.isEmpty()) {
+                return FormValidation.error("You must fill this box!");
+            }
+            else if(!isValidURL(value)){
+                return FormValidation.error("Invalid server_url.");
+            }
+            return FormValidation.ok();
+        }
+    
+        public FormValidation doCheckTestConfigId(@QueryParameter String value) throws IOException {
+            if(value.isEmpty()) {
+                return FormValidation.error("You must fill this box!");
+            }
+            else if(!isValidUuid(value)){
+                return FormValidation.error("Invalid test configuration id.");
+            }
+            return FormValidation.ok();
+        }
+    
+        public FormValidation doCheckClientSecret(@QueryParameter String value) throws IOException {
+            if(value.isEmpty()) {
+                return FormValidation.error("You must fill this box!");
+            }
+            else if(!isValidUuid(value)){
+                return FormValidation.error("Invalid Client Secret.");
+            }
+            return FormValidation.ok();
+        }
+
+        private Boolean isValidURL(String inputServerUrl){
+            try {
+                new URL(inputServerUrl).toURI();
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+        }
+
+        private Boolean isValidUuid(String inputTestConfigID){
+            Pattern p = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
+            Boolean isMatch=p.matcher(inputTestConfigID).matches();
+            if(isMatch)
+                return true;
+            else
+                return false;
         }
 
     }
