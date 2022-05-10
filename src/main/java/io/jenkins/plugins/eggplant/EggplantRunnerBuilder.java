@@ -6,6 +6,7 @@ import hudson.Launcher.ProcStarter;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
+import hudson.util.FormValidation;
 import hudson.util.Secret;
 import io.jenkins.cli.shaded.org.apache.commons.lang.LocaleUtils;
 import hudson.model.AbstractProject;
@@ -15,8 +16,10 @@ import hudson.tasks.Builder;
 import hudson.tasks.BuildStepDescriptor;
 import org.kohsuke.stapler.DataBoundConstructor;
 import jenkins.tasks.SimpleBuildStep;
+
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundSetter;
+import org.kohsuke.stapler.QueryParameter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,6 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -258,6 +262,123 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         @Override
         public String getDisplayName() {
             return "Eggplant Runner";
+        }
+
+        public FormValidation doCheckServerURL(@QueryParameter String value) throws IOException{
+            if(value.isEmpty()) {
+                return FormValidation.error("Server URL cannot be empty.");
+            }
+            else if(!isValidURL(value)){
+                return FormValidation.error("Invalid server_url.");
+            }
+            return FormValidation.ok();
+        }
+    
+        public FormValidation doCheckTestConfigId(@QueryParameter String value) throws IOException {
+            if(value.isEmpty()) {
+                return FormValidation.error("Test Config Id cannot be empty.");
+            }
+            else if(!isValidUuid(value)){
+                return FormValidation.error("Invalid test configuration id.");
+            }
+            return FormValidation.ok();
+        }
+
+        public FormValidation doCheckClientId(@QueryParameter String value) throws IOException {
+            if(value.isEmpty()) {
+                return FormValidation.error("Client Id cannot be empty.");
+            }
+            return FormValidation.ok();
+        }
+       
+        public FormValidation doCheckClientSecret(@QueryParameter String value) throws IOException {
+            if(value.isEmpty()) {
+                return FormValidation.error("Client Secret cannot be empty.");
+            }
+            else if(!isValidUuid(value)){
+                return FormValidation.error("Invalid Client Secret.");
+            }
+            return FormValidation.ok();
+        }
+
+        public FormValidation doCheckLogLevel(@QueryParameter String value) throws IOException {
+            if(!value.isEmpty()&&!isValidLogLevel(value)){
+                return FormValidation.error("Invalid Log Level.");
+            }
+            return FormValidation.ok();
+        }
+
+        public FormValidation doCheckPollInterval(@QueryParameter String value) throws IOException {
+            if(!value.isEmpty()&&!isValidNumeric(value)){
+                return FormValidation.error("Invalid Poll Interval.");
+            }
+            return FormValidation.ok();
+        }
+
+        public FormValidation doCheckRequestTimeout(@QueryParameter String value) throws IOException {
+            if(!value.isEmpty()&&!isValidNumeric(value)){
+                return FormValidation.error("Invalid Request Timeout.");
+            }
+            return FormValidation.ok();
+        }
+
+        public FormValidation doCheckRequestRetries(@QueryParameter String value) throws IOException {
+            if(!value.isEmpty()&&!isValidNumeric(value)){
+                return FormValidation.error("Invalid Request Retires.");
+            }
+            return FormValidation.ok();
+        }
+
+        public FormValidation doCheckBackoffFactor(@QueryParameter String value) throws IOException {
+            if(!value.isEmpty()&&!isValidDecimal(value)){
+                return FormValidation.error("Invalid Backoff Factor.");
+            }
+            return FormValidation.ok();
+        }
+
+        private Boolean isValidURL(String value){
+            try {
+                new URL(value).toURI();
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+        }
+
+        private Boolean isValidUuid(String value){
+            Pattern p = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
+            Boolean isMatch=p.matcher(value).matches();
+            if(isMatch)
+                return true;
+            else
+                return false;
+        }
+
+        private Boolean isValidNumeric(String value){
+            Pattern p = Pattern.compile("^\\d+$");
+            Boolean isMatch=p.matcher(value).matches();
+            if(isMatch)
+                return true;
+            else
+                return false;
+        }
+
+        private Boolean isValidDecimal(String value){
+            Pattern p = Pattern.compile("^\\d+\\.?\\d*$");
+            Boolean isMatch=p.matcher(value).matches();
+            if(isMatch)
+                return true;
+            else
+                return false;
+        }
+
+        private Boolean isValidLogLevel(String value){
+            Pattern p = Pattern.compile("INFO|DEBUG|WARNING|ERROR");
+            Boolean isMatch=p.matcher(value).matches();
+            if(isMatch)
+                return true;
+            else
+                return false;
         }
 
     }
