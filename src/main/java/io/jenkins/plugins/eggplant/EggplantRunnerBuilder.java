@@ -302,35 +302,35 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         }
 
         public FormValidation doCheckLogLevel(@QueryParameter String value) throws IOException {
-            if(!isValidLogLevel(value)){
+            if(!value.isEmpty()&&!isValidLogLevel(value)){
                 return FormValidation.error("Invalid Log Level.");
             }
             return FormValidation.ok();
         }
 
         public FormValidation doCheckPollInterval(@QueryParameter String value) throws IOException {
-            if(!isNumeric(value)){
+            if(!value.isEmpty()&&!isValidNumeric(value)){
                 return FormValidation.error("Invalid Poll Interval.");
             }
             return FormValidation.ok();
         }
 
         public FormValidation doCheckRequestTimeout(@QueryParameter String value) throws IOException {
-            if(!isNumeric(value)){
+            if(!value.isEmpty()&&!isValidNumeric(value)){
                 return FormValidation.error("Invalid Request Timeout.");
             }
             return FormValidation.ok();
         }
 
         public FormValidation doCheckRequestRetries(@QueryParameter String value) throws IOException {
-            if(!isNumeric(value)){
+            if(!value.isEmpty()&&!isValidNumeric(value)){
                 return FormValidation.error("Invalid Request Retires.");
             }
             return FormValidation.ok();
         }
 
         public FormValidation doCheckBackoffFactor(@QueryParameter String value) throws IOException {
-            if(!isNumeric(value)){
+            if(!value.isEmpty()&&!isValidDecimal(value)){
                 return FormValidation.error("Invalid Backoff Factor.");
             }
             return FormValidation.ok();
@@ -354,8 +354,17 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
                 return false;
         }
 
-        private Boolean isNumeric(String value){
-            Pattern p = Pattern.compile("-?\\d+(\\.\\d+)?");
+        private Boolean isValidNumeric(String value){
+            Pattern p = Pattern.compile("^\\d+$");
+            Boolean isMatch=p.matcher(value).matches();
+            if(isMatch)
+                return true;
+            else
+                return false;
+        }
+
+        private Boolean isValidDecimal(String value){
+            Pattern p = Pattern.compile("^\\d+\\.?\\d*$");
             Boolean isMatch=p.matcher(value).matches();
             if(isMatch)
                 return true;
