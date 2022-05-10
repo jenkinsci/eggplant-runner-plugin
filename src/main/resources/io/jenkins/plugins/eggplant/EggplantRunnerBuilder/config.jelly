@@ -27,27 +27,28 @@
     </f:entry>
     <f:advanced>
         <f:entry title="Log Level " field="logLevel">
-            <f:textbox />
+            <f:textbox default="INFO" />
             The logging level  <em>[default: INFO]</em>
+            <br><strong>E.g.</strong> <em> INFO / DEBUG / WARNING / ERROR </em></br>
         </f:entry>
         <f:entry title="CA Cert Path " field="caCertPath">
             <f:textbox />
             The path to an alternative Certificate Authority pem file
         </f:entry>
         <f:entry title="Poll Interval " field="pollInterval">
-            <f:textbox />
+            <f:textbox default="5" />
             The number of seconds to wait between each call to the DAI server  <em>[default: 5]</em>
         </f:entry>
         <f:entry title="Request Timeout " field="requestTimeout">
-            <f:textbox />
+            <f:textbox default="30" />
             The timeout in seconds for each HTTP request to the DAI server  <em>[default: 30]</em>
         </f:entry>
         <f:entry title="Request Retries " field="requestRetries">
-            <f:textbox />
+            <f:textbox default="5" />
             The number of times to attempt each HTTP request to the DAI server  <em>[default: 5]</em>
         </f:entry>
         <f:entry title="Backoff Factor " field="backoffFactor">
-            <f:textbox />
+            <f:textbox default="0.5" />
             The exponential backoff factor between each HTTP request  <em>[default: 0.5]</em>
         </f:entry>        
     </f:advanced>

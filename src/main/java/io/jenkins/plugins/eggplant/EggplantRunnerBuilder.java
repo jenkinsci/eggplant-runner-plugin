@@ -290,7 +290,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             }
             return FormValidation.ok();
         }
-    
+       
         public FormValidation doCheckClientSecret(@QueryParameter String value) throws IOException {
             if(value.isEmpty()) {
                 return FormValidation.error("Client Secret cannot be empty.");
@@ -301,18 +301,71 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             return FormValidation.ok();
         }
 
-        private Boolean isValidURL(String inputServerUrl){
+        public FormValidation doCheckLogLevel(@QueryParameter String value) throws IOException {
+            if(!isValidLogLevel(value)){
+                return FormValidation.error("Invalid Log Level.");
+            }
+            return FormValidation.ok();
+        }
+
+        public FormValidation doCheckPollInterval(@QueryParameter String value) throws IOException {
+            if(!isNumeric(value)){
+                return FormValidation.error("Invalid Poll Interval.");
+            }
+            return FormValidation.ok();
+        }
+
+        public FormValidation doCheckRequestTimeout(@QueryParameter String value) throws IOException {
+            if(!isNumeric(value)){
+                return FormValidation.error("Invalid Request Timeout.");
+            }
+            return FormValidation.ok();
+        }
+
+        public FormValidation doCheckRequestRetries(@QueryParameter String value) throws IOException {
+            if(!isNumeric(value)){
+                return FormValidation.error("Invalid Request Retires.");
+            }
+            return FormValidation.ok();
+        }
+
+        public FormValidation doCheckBackoffFactor(@QueryParameter String value) throws IOException {
+            if(!isNumeric(value)){
+                return FormValidation.error("Invalid Backoff Factor.");
+            }
+            return FormValidation.ok();
+        }
+
+        private Boolean isValidURL(String value){
             try {
-                new URL(inputServerUrl).toURI();
+                new URL(value).toURI();
                 return true;
             } catch (Exception e) {
                 return false;
             }
         }
 
-        private Boolean isValidUuid(String inputTestConfigID){
+        private Boolean isValidUuid(String value){
             Pattern p = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
-            Boolean isMatch=p.matcher(inputTestConfigID).matches();
+            Boolean isMatch=p.matcher(value).matches();
+            if(isMatch)
+                return true;
+            else
+                return false;
+        }
+
+        private Boolean isNumeric(String value){
+            Pattern p = Pattern.compile("-?\\d+(\\.\\d+)?");
+            Boolean isMatch=p.matcher(value).matches();
+            if(isMatch)
+                return true;
+            else
+                return false;
+        }
+
+        private Boolean isValidLogLevel(String value){
+            Pattern p = Pattern.compile("INFO|DEBUG|WARNING|ERROR");
+            Boolean isMatch=p.matcher(value).matches();
             if(isMatch)
                 return true;
             else
