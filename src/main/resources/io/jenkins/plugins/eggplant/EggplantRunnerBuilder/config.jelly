@@ -8,7 +8,7 @@
     <f:entry title="Test Config Id *" field="testConfigId">
         <f:textbox default="aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"/>
         Test configuration id that you want to execute test.
-        <br> Test configuration id can be obtain from test confi page URL in Eggplant DAI.</br>
+        <br> Test configuration id can be obtain from test config page URL in Eggplant DAI.</br>
         <br><strong>E.g. URL</strong> : https://localhost:8000/controller/test-config/<strong><em>307fee3e-9d6b-43e6-b31e-f1d379f27fff</em></strong> </br>
     </f:entry>
     <f:entry title="Client Id *" field="clientId">
