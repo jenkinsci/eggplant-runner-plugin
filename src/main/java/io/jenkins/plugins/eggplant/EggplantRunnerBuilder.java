@@ -50,7 +50,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     private String testConfigId;
     private String clientId;
     private Secret clientSecret;
-    private String logLevel;
+    private LogLevel logLevel;
     private String caCertPath;
     private String pollInterval;
     private String requestTimeout;
@@ -74,7 +74,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     public Secret getClientSecret() {
         return clientSecret;
     }
-    public String getLogLevel() {
+    public LogLevel getLogLevel() {
         return logLevel;
     }
     public String getCaCertPath() {
@@ -115,7 +115,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     }
 
     @DataBoundSetter
-    public void setLogLevel(String logLevel) {
+    public void setLogLevel(LogLevel logLevel) {
         this.logLevel = logLevel;
     }
     @DataBoundSetter
@@ -300,14 +300,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             }
             return FormValidation.ok();
         }
-
-        public FormValidation doCheckLogLevel(@QueryParameter String value) throws IOException {
-            if(!value.isEmpty()&&!isValidLogLevel(value)){
-                return FormValidation.error("Invalid Log Level.");
-            }
-            return FormValidation.ok();
-        }
-
+        
         public FormValidation doCheckPollInterval(@QueryParameter String value) throws IOException {
             if(!value.isEmpty()&&!isValidNumeric(value)){
                 return FormValidation.error("Invalid Poll Interval.");
@@ -372,15 +365,23 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
                 return false;
         }
 
-        private Boolean isValidLogLevel(String value){
-            Pattern p = Pattern.compile("INFO|DEBUG|WARNING|ERROR");
-            Boolean isMatch=p.matcher(value).matches();
-            if(isMatch)
-                return true;
-            else
-                return false;
-        }
-
     }
+
+    public enum LogLevel {
+        INFO("INFO"),
+        DEBUG("DEBUG"),
+        WARNING("WARNING"),
+        ERROR("ERROR");
+      
+        private final String logLevel;
+      
+        LogLevel(String logLevel) {
+          this.logLevel = logLevel;
+        }
+      
+        public String getLogLevel() {
+          return logLevel;
+        }
+      }
 
 }
