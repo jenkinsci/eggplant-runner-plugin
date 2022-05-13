@@ -232,7 +232,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         else if (env.get("DAI_CLIENT_SECRET") != null && !env.get("DAI_CLIENT_SECRET").equals("")) 
             commandList.add(String.format("--client-secret=%s", env.get("DAI_CLIENT_SECRET")));
 
-        if (this.logLevel != null && !this.logLevel.equals("")) // logLevelArg
+        if (this.logLevel != null) // logLevelArg
             commandList.add(String.format("--log-level=%s", this.logLevel)); 
         if (this.caCertPath != null && !this.caCertPath.equals("")) // caCertPathArg
             commandList.add(String.format("--ca-cert-path=%s", this.caCertPath)); 
