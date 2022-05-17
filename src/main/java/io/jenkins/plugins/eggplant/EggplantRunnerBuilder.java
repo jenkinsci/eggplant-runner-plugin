@@ -9,6 +9,7 @@ import hudson.FilePath;
 import hudson.util.FormValidation;
 import hudson.util.Secret;
 import io.jenkins.cli.shaded.org.apache.commons.lang.LocaleUtils;
+import io.jenkins.plugins.eggplant.common.LogLevel;
 import hudson.model.AbstractProject;
 import hudson.model.Run;
 import hudson.model.TaskListener;
@@ -366,22 +367,5 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         }
 
     }
-
-    public enum LogLevel {
-        INFO("INFO"),
-        DEBUG("DEBUG"),
-        WARNING("WARNING"),
-        ERROR("ERROR");
-      
-        private final String logLevel;
-      
-        LogLevel(String logLevel) {
-          this.logLevel = logLevel;
-        }
-      
-        public String getLogLevel() {
-          return logLevel;
-        }
-      }
 
 }
