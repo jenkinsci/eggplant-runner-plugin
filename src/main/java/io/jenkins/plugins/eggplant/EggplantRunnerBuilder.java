@@ -9,6 +9,7 @@ import hudson.FilePath;
 import hudson.util.FormValidation;
 import hudson.util.Secret;
 import io.jenkins.cli.shaded.org.apache.commons.lang.LocaleUtils;
+import io.jenkins.plugins.eggplant.common.LogLevel;
 import hudson.model.AbstractProject;
 import hudson.model.Run;
 import hudson.model.TaskListener;
@@ -50,7 +51,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     private String testConfigId;
     private String clientId;
     private Secret clientSecret;
-    private String logLevel;
+    private LogLevel logLevel;
     private String caCertPath;
     private String pollInterval;
     private String requestTimeout;
@@ -74,7 +75,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     public Secret getClientSecret() {
         return clientSecret;
     }
-    public String getLogLevel() {
+    public LogLevel getLogLevel() {
         return logLevel;
     }
     public String getCaCertPath() {
@@ -115,7 +116,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     }
 
     @DataBoundSetter
-    public void setLogLevel(String logLevel) {
+    public void setLogLevel(LogLevel logLevel) {
         this.logLevel = logLevel;
     }
     @DataBoundSetter
@@ -232,7 +233,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         else if (env.get("DAI_CLIENT_SECRET") != null && !env.get("DAI_CLIENT_SECRET").equals("")) 
             commandList.add(String.format("--client-secret=%s", env.get("DAI_CLIENT_SECRET")));
 
-        if (this.logLevel != null && !this.logLevel.equals("")) // logLevelArg
+        if (this.logLevel != null) // logLevelArg
             commandList.add(String.format("--log-level=%s", this.logLevel)); 
         if (this.caCertPath != null && !this.caCertPath.equals("")) // caCertPathArg
             commandList.add(String.format("--ca-cert-path=%s", this.caCertPath)); 
@@ -300,14 +301,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             }
             return FormValidation.ok();
         }
-
-        public FormValidation doCheckLogLevel(@QueryParameter String value) throws IOException {
-            if(!value.isEmpty()&&!isValidLogLevel(value)){
-                return FormValidation.error("Invalid Log Level.");
-            }
-            return FormValidation.ok();
-        }
-
+        
         public FormValidation doCheckPollInterval(@QueryParameter String value) throws IOException {
             if(!value.isEmpty()&&!isValidNumeric(value)){
                 return FormValidation.error("Invalid Poll Interval.");
@@ -365,15 +359,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
 
         private Boolean isValidDecimal(String value){
             Pattern p = Pattern.compile("^\\d+\\.?\\d*$");
-            Boolean isMatch=p.matcher(value).matches();
-            if(isMatch)
-                return true;
-            else
-                return false;
-        }
-
-        private Boolean isValidLogLevel(String value){
-            Pattern p = Pattern.compile("INFO|DEBUG|WARNING|ERROR");
             Boolean isMatch=p.matcher(value).matches();
             if(isMatch)
                 return true;

@@ -26,10 +26,9 @@
         <br>[env var: DAI_CLIENT_SECRET; required]</br>
     </f:entry>
     <f:advanced>
-        <f:entry title="Log Level " field="logLevel">
-            <f:textbox default="INFO" />
+        <f:entry title="Log Level" field="logLevel">
+            <f:enum name="Log level">${it}</f:enum>
             The logging level  <em>[default: INFO]</em>
-            <br><strong>E.g.</strong> <em> INFO / DEBUG / WARNING / ERROR </em></br>
         </f:entry>
         <f:entry title="CA Cert Path " field="caCertPath">
             <f:textbox />
