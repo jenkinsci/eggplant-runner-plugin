@@ -24,7 +24,7 @@
         name="_.clientSecret"
         checkmethod="post"
         checkurl="descriptorByName/io.jenkins.plugins.eggplant.EggplantRunnerBuilder/checkClientSecret"/>
-        <input type="checkbox" onclick="showPassword()"/>Show Password
+        <input type="checkbox" onclick="showPassword()"/>Show client secret in text
         <br/>
         <script>
             function showPassword() {
