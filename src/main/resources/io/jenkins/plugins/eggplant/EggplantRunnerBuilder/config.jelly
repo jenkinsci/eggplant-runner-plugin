@@ -18,8 +18,22 @@
         <br><em>[default: client:dai:agent:integration]</em></br>
     </f:entry>
     <f:entry title="Client Secret *" field="clientSecret">
-        <f:password value="aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee" />
-        The <strong>DAI Client Secret</strong> that used to authenticate with the DAI server.
+        <f:textbox id="clientSecret" value="aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee" />
+        <input type="checkbox" onclick="showPassword()"/>Show Password
+        <iframe onload="showPassword()" style="display:none" />
+        <br/>
+        <script>
+            function showPassword() {
+            var x = document.getElementById("clientSecret");
+            if (x.type === "password") {
+                x.type = "text";
+            } else {
+                x.type = "password";
+            }
+            }
+        </script>
+
+        <br>The <strong>DAI Client Secret</strong> that used to authenticate with the DAI server.</br>
         <br>Client Secret can be obtain from <strong>https://kc-localhost:8000/auth → client → credential → Secret</strong></br>
         <br><strong>E.g.</strong> <em> c49ce33d-5644-4198-b28f-9cf3d9ac05e4 </em></br>
         <br>Client Secret also can be set up as environment variable</br>
