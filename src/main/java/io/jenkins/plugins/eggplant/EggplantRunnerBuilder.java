@@ -40,12 +40,12 @@ import java.util.stream.Stream;
 
 
 public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
-    private final static String CLI_VERSION = "6.1";
+    private final static String CLI_VERSION = "6.1.2-1";
     private final static String CLI_DOWNLOAD_URL = "https://downloads.eggplantsoftware.com/downloads/EggplantRunner/${cliFilename}";
     private final static Map<OperatingSystem, String> CLI_FILENAME = Stream.of(
-        new AbstractMap.SimpleEntry<>(OperatingSystem.LINUX, "eggplant-runner-Linux-${cliVersion}-ci"),
-        new AbstractMap.SimpleEntry<>(OperatingSystem.MACOS, "eggplant-runner-MacOS-${cliVersion}-ci"), 
-        new AbstractMap.SimpleEntry<>(OperatingSystem.WINDOWS, "eggplant-runner-Windows-${cliVersion}-ci.exe")
+        new AbstractMap.SimpleEntry<>(OperatingSystem.LINUX, "eggplant-runner-Linux-${cliVersion}"),
+        new AbstractMap.SimpleEntry<>(OperatingSystem.MACOS, "eggplant-runner-MacOS-${cliVersion}"), 
+        new AbstractMap.SimpleEntry<>(OperatingSystem.WINDOWS, "eggplant-runner-Windows-${cliVersion}.exe")
     ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     private String serverURL;
     private String testConfigId;
@@ -183,7 +183,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             in = new URL(cliDownloadUrl).openStream();
         else
         {
-            URL url = new URL("https://gitlab.com/api/v4/projects/22402994/packages/generic/6.1-ci-cd/0.0.0/" + cliFilename);
+            URL url = new URL("https://gitlab.com/api/v4/projects/22402994/packages/generic/6.1.2-1/0.0.0/" + cliFilename);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.addRequestProperty ("PRIVATE-TOKEN", System.getenv("gitlabAccessToken"));
             connection.setDoOutput(true);
