@@ -1,5 +1,3 @@
-
-# This is pre-release version
 <img src="https://www.eggplantsoftware.com/hubfs/Branding/Keysight-Eggplant-Logo_RGB_full-color.svg" width="300px"/>
 
 # Eggplant DAI Plugin for Jenkins
