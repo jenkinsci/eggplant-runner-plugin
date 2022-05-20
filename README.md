@@ -2,8 +2,6 @@
 
 # Eggplant DAI Plugin for Jenkins
 
-Pre-Release
-
 ## Introduction
 
 The [Eggplant DAI](https://www.eggplantsoftware.com/digital-automation-intelligence) Plugin for Jenkins launches DAI tests from within a Jenkins pipeline.  You can use it to continuously test your application using Eggplant's [model-based approach to testing](https://docs.eggplantsoftware.com/docs/dai-using-eggplant-dai/).  For more information about Eggplant, visit https://www.eggplantsoftware.com.
@@ -38,7 +36,7 @@ Go to http://localhost:{portnumber}/ and login into your Jenkins account
 
 **Step 3**: Fill in **Eggplant Runner** parameter's value -> Click **Save**
 
-![image](https://user-images.githubusercontent.com/101400930/166877505-4993590a-c699-478d-9189-984ae92cefa5.png)
+![image](https://user-images.githubusercontent.com/101400930/169544488-6f039cde-0c7f-41bb-bd21-198663c0e5b0.png)
 
 ## Inputs
 
@@ -93,7 +91,7 @@ The **DAI Client ID** can be obtain by go to http://kc-localhost:8000/auth > cli
 ![image](https://user-images.githubusercontent.com/101400930/166877993-8fa5b585-205e-44c6-8c33-b03ded69cd83.png)
 
 Execution details are shown in **Console Output**
-![image](https://user-images.githubusercontent.com/101400930/166878200-fa755d3d-c15d-4039-852e-915f9fc000bf.png)
+![image](https://user-images.githubusercontent.com/101400930/169545643-8d83d7c5-be94-46b6-9a39-605353aafeb7.png)
 
 
 ## Advanced Usage
@@ -128,7 +126,8 @@ pipeline {
 
 **Step 4**: **Build** the pipeline project
 Output are shown in **Console Output**
-![image](https://user-images.githubusercontent.com/101400930/166881843-ffdeac28-9ae4-4203-ac5d-675233688a44.png)
+![image](https://user-images.githubusercontent.com/101400930/169546010-1fce3d53-daa2-42e4-8945-0f6f49870d5d.png)
+
 
 ## License
 
