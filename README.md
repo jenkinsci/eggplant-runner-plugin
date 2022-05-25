@@ -120,11 +120,8 @@ pipeline {
     }
 }
 ```
-> :warning: **Usage of backslashes**: Remember to escape backslash by replace all instances of \ with \\ inside string.
-For example, rather than:
-CACertPath: "C:\certs\rootCA.cer"
-you would use:
-CACertPath: "C:\\certs\\rootCA.cer"
+
+>:warning: **Usage of backslashes in script**: Remember to escape backslashes by replace all instances of `\` with `\\` inside a string.</br>For example, rather than:</br>`CACertPath: "C:\certs\rootCA.cer"`</br>you would use:</br>`CACertPath: "C:\\certs\\rootCA.cer"`
 
 ![image](https://user-images.githubusercontent.com/101400930/168762767-80706d26-e892-4ee1-bd7b-9490ba04ff80.png)
 
