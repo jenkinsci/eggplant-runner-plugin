@@ -339,7 +339,13 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         private Boolean isValidURL(String value){
             try {
                 new URL(value).toURI();
-                return true;
+                Pattern p = Pattern.compile("//$");
+                String lastTwoString = value.substring(Math.max(value.length() - 2, 0));
+                Boolean isMatch=p.matcher(lastTwoString).matches();
+                if(!isMatch)
+                    return true;
+                else
+                    return false;
             } catch (Exception e) {
                 return false;
             }
