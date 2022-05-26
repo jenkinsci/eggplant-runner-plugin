@@ -121,6 +121,8 @@ pipeline {
 }
 ```
 
+>:warning: **Usage of backslashes in script**: Remember to escape backslashes by replace all instances of `\` with `\\` inside a string.</br>For example, rather than:</br>`CACertPath: "C:\certs\rootCA.cer"`</br>you would use:</br>`CACertPath: "C:\\certs\\rootCA.cer"`
+
 ![image](https://user-images.githubusercontent.com/101400930/168762767-80706d26-e892-4ee1-bd7b-9490ba04ff80.png)
 
 **Step 3**: Setup **Public Credential** for **Client Secret** -> Click **Ok**
