@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -346,7 +347,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
                     return true;
                 else
                     return false;
-            } catch (Exception e) {
+            } catch (IOException | URISyntaxException e) {
                 return false;
             }
         }
