@@ -264,6 +264,10 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         public String getDisplayName() {
             return "Eggplant Runner";
         }
+        private Secret clientSecretUI = Secret.fromString("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
+        public Secret getClientSecret(){
+            return clientSecretUI;
+        }
 
         public FormValidation doCheckServerURL(@QueryParameter String value) throws IOException{
             if(value.isEmpty()) {
@@ -299,6 +303,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             else if(!isValidUuid(value)){
                 return FormValidation.error("Invalid Client Secret.");
             }
+            clientSecretUI = Secret.fromString(value);
             return FormValidation.ok();
         }
         
