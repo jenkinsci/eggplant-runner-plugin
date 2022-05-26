@@ -1,7 +1,5 @@
 <img src="https://www.eggplantsoftware.com/hubfs/Branding/Keysight-Eggplant-Logo_RGB_full-color.svg" width="300px"/>
 
-# THIS IS PRE-RELEASE VERSION
-
 # Eggplant DAI Plugin for Jenkins
 
 ## Introduction
