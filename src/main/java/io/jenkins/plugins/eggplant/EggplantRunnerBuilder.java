@@ -52,7 +52,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     private String clientId;
     private Secret clientSecret;
     private LogLevel logLevel;
-    private String caCertPath;
+    private String CACertPath;
     private String pollInterval;
     private String requestTimeout;
     private String requestRetries;
@@ -78,8 +78,8 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     public LogLevel getLogLevel() {
         return logLevel;
     }
-    public String getCaCertPath() {
-        return caCertPath;
+    public String getCACertPath() {
+        return CACertPath;
     }
     public String getPollInterval() {
         return pollInterval;
@@ -120,8 +120,8 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         this.logLevel = logLevel;
     }
     @DataBoundSetter
-    public void setCaCertPath(String caCertPath) {
-        this.caCertPath = caCertPath;
+    public void setCACertPath(String CACertPath) {
+        this.CACertPath = CACertPath;
     }
     @DataBoundSetter
     public void setPollInterval(String pollInterval) {
@@ -235,9 +235,9 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
 
         if (this.logLevel != null) // logLevelArg
             commandList.add(String.format("--log-level=%s", this.logLevel)); 
-        if (this.caCertPath != null && !this.caCertPath.equals("")) // caCertPathArg
-            commandList.add(String.format("--ca-cert-path=%s", this.caCertPath)); 
-        if (this.pollInterval != null && !this.pollInterval.equals("")) // caCertPathArg
+        if (this.CACertPath != null && !this.CACertPath.equals("")) // CACertPathArg
+            commandList.add(String.format("--ca-cert-path=%s", this.CACertPath)); 
+        if (this.pollInterval != null && !this.pollInterval.equals("")) // CACertPathArg
             commandList.add(String.format("--poll-interval=%s", this.pollInterval)); 
         if (this.requestTimeout != null && !this.requestTimeout.equals("")) // requestTimeoutArg
             commandList.add(String.format("--request-timeout=%s", this.requestTimeout)); 
