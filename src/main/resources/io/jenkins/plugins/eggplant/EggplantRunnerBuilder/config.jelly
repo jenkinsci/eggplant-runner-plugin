@@ -9,12 +9,12 @@
         <f:textbox default="aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"/>
         Test configuration id that you want to execute test.
         <br> Test configuration id can be obtain from test config page URL in Eggplant DAI.</br>
-        <br><strong>E.g. URL</strong> : https://localhost:8000/controller/test-config/<strong><em>307fee3e-9d6b-43e6-b31e-f1d379f27fff</em></strong> </br>
+        <br><strong>E.g. </strong>URL : https://localhost:8000/controller/test-config/<strong><em>307fee3e-9d6b-43e6-b31e-f1d379f27fff</em></strong> </br>
     </f:entry>
     <f:entry title="Client Id *" field="clientId">
         <f:textbox value="client:dai:agent:integration"/>
         The <strong>DAI Client Id</strong> that used to authenticate with the DAI server.
-        <br>Client Id can be obtain from <strong>https://kc-localhost:8000/auth → client → search for integration</strong></br>        
+        <br>Obtain from <strong>https://kc-localhost:8000/auth → Administration Console → Clients → search for integration</strong></br>        
         <br><em>[default: client:dai:agent:integration]</em></br>
     </f:entry>
     <f:entry title="Client Secret *" field="clientSecret">
@@ -38,10 +38,10 @@
         </script>
 
         <br>The <strong>DAI Client Secret</strong> that used to authenticate with the DAI server.</br>
-        <br>Client Secret can be obtain from <strong>https://kc-localhost:8000/auth → client → credential → Secret</strong></br>
+        <br>Obtain from <strong>https://kc-localhost:8000/auth → Administration Console → Clients → Client:dai:agent:integration → Credentials → Secret</strong></br>
         <br><strong>E.g.</strong> <em> c49ce33d-5644-4198-b28f-9cf3d9ac05e4 </em></br>
         <br>Client Secret also can be set up as environment variable</br>
-        <br>[env var: DAI_CLIENT_SECRET; required]</br>
+        <br><em>[env var: DAI_CLIENT_SECRET; required]</em></br>
     </f:entry>
     <f:advanced>
         <f:entry title="Log Level" field="logLevel">
