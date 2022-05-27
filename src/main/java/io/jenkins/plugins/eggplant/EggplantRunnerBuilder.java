@@ -337,7 +337,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         }
 
         private Boolean isValidURL(String value){
-            Pattern p = Pattern.compile("^https?://\\w+(.\\w)*(:[0-9]+)?(/?)$");
+            Pattern p = Pattern.compile("^https?:\\/\\/([a-zA-Z0-9]+)((\\-|\\.)[a-zA-Z0-9]+)*(:[0-9]+)?(\\/?)$");
             Boolean isMatch=p.matcher(value).matches();
             if(isMatch)
                 return true;
