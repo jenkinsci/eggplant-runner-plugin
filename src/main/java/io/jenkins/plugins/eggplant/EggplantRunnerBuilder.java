@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.HttpURLConnection;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -338,18 +337,12 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         }
 
         private Boolean isValidURL(String value){
-            try {
-                new URL(value).toURI();
-                Pattern p = Pattern.compile("//$");
-                String lastTwoString = value.substring(Math.max(value.length() - 2, 0));
-                Boolean isMatch=p.matcher(lastTwoString).matches();
-                if(!isMatch)
-                    return true;
-                else
-                    return false;
-            } catch (IOException | URISyntaxException e) {
+            Pattern p = Pattern.compile("^https?://\\w+(.\\w)*(:[0-9]+)?(/?)$");
+            Boolean isMatch=p.matcher(value).matches();
+            if(isMatch)
+                return true;
+            else
                 return false;
-            }
         }
 
         private Boolean isValidUuid(String value){
