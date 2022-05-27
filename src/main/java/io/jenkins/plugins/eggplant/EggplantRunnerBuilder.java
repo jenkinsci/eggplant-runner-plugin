@@ -337,12 +337,12 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         }
 
         private Boolean isValidURL(String value){
-            Pattern p = Pattern.compile("^https?://\\w+(.\\w)*(:[0-9]+)?(/?)$");
-            Boolean isMatch=p.matcher(value).matches();
-            if(isMatch)
+            try {
+                new URL(value).toURI();
                 return true;
-            else
+            } catch (Exception e) {
                 return false;
+            }
         }
 
         private Boolean isValidUuid(String value){
