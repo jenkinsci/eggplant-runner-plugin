@@ -135,6 +135,12 @@ Output are shown in **Console Output**
 
 This plug-in is licensed under the terms of the [MIT license](LICENSE.md)
 
+## Releases Note
+
+30th May 2022
+
+- Fix Jenkins Plugins "Eggplant Runner" Client Secret textbox behaviour
+
 ## Contributing
 
 You need to install the following dependencies if you want to contribute to the Eggplant DAI Runner for Jenkins:

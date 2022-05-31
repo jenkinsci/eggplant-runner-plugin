@@ -18,13 +18,9 @@
         <br><em>[default: client:dai:agent:integration]</em></br>
     </f:entry>
     <f:entry title="Client Secret *" field="clientSecret">
-        <input id="clientSecret" type="password" value="${descriptor.getClientSecret()}"
-        class="complex-password-field hidden-password-field setting-input validated"
-        checkdependson=""
-        name="_.clientSecret"
-        checkmethod="post"
-        checkurl="descriptorByName/io.jenkins.plugins.eggplant.EggplantRunnerBuilder/checkClientSecret"/>
-        <input type="checkbox" onclick="showPassword()"/>Show client secret in text
+        <f:textbox default="aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee" id="clientSecret"/>
+        <input type="checkbox" onclick="showPassword()" />Show client secret in text
+        <iframe onload="showPassword()" style="display:none" />
         <br/>
         <script>
             function showPassword() {
@@ -34,6 +30,16 @@
             } else {
                 x.type = "password";
             }
+            }
+        </script>
+        <script>
+            var x = document.getElementById('clientSecret');
+            if (x != null) {
+                if (x.type === "password") {
+                    x.type = "text";
+                } else {
+                    x.type = "password";
+                }
             }
         </script>
 
