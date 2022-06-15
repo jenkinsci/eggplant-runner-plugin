@@ -53,6 +53,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     private Secret clientSecret;
     private LogLevel logLevel;
     private String CACertPath;
+    private String testResultPath;
     private String pollInterval;
     private String requestTimeout;
     private String requestRetries;
@@ -80,6 +81,9 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     }
     public String getCACertPath() {
         return CACertPath;
+    }
+    public String getTestResultPath() {
+        return testResultPath;
     }
     public String getPollInterval() {
         return pollInterval;
@@ -122,6 +126,10 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     @DataBoundSetter
     public void setCACertPath(String CACertPath) {
         this.CACertPath = CACertPath;
+    }
+    @DataBoundSetter
+    public void setTestResultPath(String testResultPath) {
+        this.testResultPath = testResultPath;
     }
     @DataBoundSetter
     public void setPollInterval(String pollInterval) {
@@ -236,12 +244,14 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         if (this.logLevel != null) // logLevelArg
             commandList.add(String.format("--log-level=%s", this.logLevel)); 
         if (this.CACertPath != null && !this.CACertPath.equals("")) // CACertPathArg
-            commandList.add(String.format("--ca-cert-path=%s", this.CACertPath)); 
-        if (this.pollInterval != null && !this.pollInterval.equals("")) // CACertPathArg
+            commandList.add(String.format("--ca-cert-path=%s", this.CACertPath));
+        if (this.testResultPath != null && !this.testResultPath.equals("") && this.testResultPath.trim().length()!=0) // testResultPathArg
+            commandList.add(String.format("--test-result-path=%s", this.testResultPath)); 
+        if (this.pollInterval != null && !this.pollInterval.equals("")) // pollIntervalArg
             commandList.add(String.format("--poll-interval=%s", this.pollInterval)); 
         if (this.requestTimeout != null && !this.requestTimeout.equals("")) // requestTimeoutArg
             commandList.add(String.format("--request-timeout=%s", this.requestTimeout)); 
-        if (this.requestRetries != null && !this.requestRetries.equals("")) // requestTimeoutArg
+        if (this.requestRetries != null && !this.requestRetries.equals("")) // requestRetriesArg
             commandList.add(String.format("--request-retries=%s", this.requestRetries)); 
         if (this.dryRun != null && this.dryRun) // dryRunArg
             commandList.add("--dry-run");
@@ -302,6 +312,13 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             return FormValidation.ok();
         }
         
+        public FormValidation doCheckTestResultPath(@QueryParameter String value) throws IOException {
+            if(!value.isEmpty()&&value.trim().length()==0){
+                return FormValidation.error("Test result path consists of empty spaces only.");
+            }
+            return FormValidation.ok();
+        }
+
         public FormValidation doCheckPollInterval(@QueryParameter String value) throws IOException {
             if(!value.isEmpty()&&!isValidNumeric(value)){
                 return FormValidation.error("Invalid Poll Interval.");
