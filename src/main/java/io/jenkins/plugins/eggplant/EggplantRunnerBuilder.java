@@ -245,7 +245,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             commandList.add(String.format("--log-level=%s", this.logLevel)); 
         if (this.CACertPath != null && !this.CACertPath.equals("")) // CACertPathArg
             commandList.add(String.format("--ca-cert-path=%s", this.CACertPath));
-        if (this.testResultPath != null && !this.testResultPath.equals("") && this.testResultPath.trim().length()!=0) // testResultPathArg
+        if (this.testResultPath != null && !this.testResultPath.equals("")) // testResultPathArg
             commandList.add(String.format("--test-result-path=%s", this.testResultPath)); 
         if (this.pollInterval != null && !this.pollInterval.equals("")) // pollIntervalArg
             commandList.add(String.format("--poll-interval=%s", this.pollInterval)); 
@@ -313,8 +313,8 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         }
         
         public FormValidation doCheckTestResultPath(@QueryParameter String value) throws IOException {
-            if(!value.isEmpty()&&value.trim().length()==0){
-                return FormValidation.error("Test result path consists of empty spaces only.");
+            if(!value.isEmpty()&&value.trim().length()==0&&!isValidPath(value)){
+                return FormValidation.error("Invalid Test Result Path");
             }
             return FormValidation.ok();
         }
@@ -376,6 +376,15 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
 
         private Boolean isValidDecimal(String value){
             Pattern p = Pattern.compile("^\\d+\\.?\\d*$");
+            Boolean isMatch=p.matcher(value).matches();
+            if(isMatch)
+                return true;
+            else
+                return false;
+        }
+
+        private Boolean isValidPath(String value){
+            Pattern p = Pattern.compile("^(?:[A-Za-z]:)?[\\/\\\\]{0,2}(?:[.\\/\\\\ ](?![.\\/\\\\\\n])|[^<>:\"|?!*.\\/\\\\ \\n])+$");
             Boolean isMatch=p.matcher(value).matches();
             if(isMatch)
                 return true;
