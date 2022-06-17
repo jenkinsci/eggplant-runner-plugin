@@ -23,6 +23,7 @@ import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -280,7 +281,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
                 return FormValidation.error("Server URL cannot be empty.");
             }
             else if(!isValidURL(value)){
-                return FormValidation.error("Invalid server_url.");
+                return FormValidation.error("Invalid server url.");
             }
             return FormValidation.ok();
         }
@@ -312,9 +313,16 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             return FormValidation.ok();
         }
         
+        public FormValidation doCheckCACertPath(@QueryParameter String value) throws IOException {
+            if(!value.isEmpty()&&!isValidFile(value,"cer")){
+                return FormValidation.error("Invalid CA Cert Path.");
+            }
+            return FormValidation.ok();
+        }
+
         public FormValidation doCheckTestResultPath(@QueryParameter String value) throws IOException {
-            if(!value.isEmpty()&&value.trim().length()==0&&!isValidPath(value)){
-                return FormValidation.error("Invalid Test Result Path");
+            if(!value.isEmpty()&&!isValidPath(value)){
+                return FormValidation.error("Invalid Test Result Path.");
             }
             return FormValidation.ok();
         }
@@ -384,14 +392,26 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         }
 
         private Boolean isValidPath(String value){
-            Pattern p = Pattern.compile("^(?:[A-Za-z]:)?[\\/\\\\]{0,2}(?:[.\\/\\\\ ](?![.\\/\\\\\\n])|[^<>:\"|?!*.\\/\\\\ \\n])+$");
-            Boolean isMatch=p.matcher(value).matches();
-            if(isMatch)
+            File f = new File(value);
+            if (f.isDirectory())
                 return true;
-            else
+            else 
                 return false;
         }
 
+        private Boolean isValidFile(String filePath, String extension){
+            File f = new File(filePath);
+            if (f.isFile()){
+                Pattern p = Pattern.compile(".*"+extension+"$");
+                Boolean isMatch=p.matcher(filePath).matches();
+                if(isMatch)
+                    return true;
+                else 
+                    return false;
+            }
+            else 
+                return false;
+        }
     }
 
 }
