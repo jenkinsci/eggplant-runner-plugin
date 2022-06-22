@@ -9,6 +9,7 @@ import hudson.FilePath;
 import hudson.util.FormValidation;
 import hudson.util.Secret;
 import io.jenkins.cli.shaded.org.apache.commons.lang.LocaleUtils;
+import org.apache.commons.io.FilenameUtils;
 import io.jenkins.plugins.eggplant.common.LogLevel;
 import hudson.model.AbstractProject;
 import hudson.model.Run;
@@ -401,14 +402,9 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
 
         private Boolean isValidFile(String filePath, String extension){
             File f = new File(filePath);
-            if (f.isFile()){
-                Pattern p = Pattern.compile(".*"+extension+"$");
-                Boolean isMatch=p.matcher(filePath).matches();
-                if(isMatch)
-                    return true;
-                else 
-                    return false;
-            }
+            String fileExtension=FilenameUtils.getExtension(filePath);
+            if (f.isFile()&&fileExtension.equals(extension))
+                return true;
             else 
                 return false;
         }
