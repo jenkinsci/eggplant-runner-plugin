@@ -9,6 +9,7 @@ import hudson.FilePath;
 import hudson.util.FormValidation;
 import hudson.util.Secret;
 import io.jenkins.cli.shaded.org.apache.commons.lang.LocaleUtils;
+import org.apache.commons.io.FilenameUtils;
 import io.jenkins.plugins.eggplant.common.LogLevel;
 import hudson.model.AbstractProject;
 import hudson.model.Run;
@@ -23,6 +24,7 @@ import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -53,6 +55,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     private Secret clientSecret;
     private LogLevel logLevel;
     private String CACertPath;
+    private String testResultPath;
     private String pollInterval;
     private String requestTimeout;
     private String requestRetries;
@@ -80,6 +83,9 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     }
     public String getCACertPath() {
         return CACertPath;
+    }
+    public String getTestResultPath() {
+        return testResultPath;
     }
     public String getPollInterval() {
         return pollInterval;
@@ -122,6 +128,10 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     @DataBoundSetter
     public void setCACertPath(String CACertPath) {
         this.CACertPath = CACertPath;
+    }
+    @DataBoundSetter
+    public void setTestResultPath(String testResultPath) {
+        this.testResultPath = testResultPath;
     }
     @DataBoundSetter
     public void setPollInterval(String pollInterval) {
@@ -236,12 +246,14 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         if (this.logLevel != null) // logLevelArg
             commandList.add(String.format("--log-level=%s", this.logLevel)); 
         if (this.CACertPath != null && !this.CACertPath.equals("")) // CACertPathArg
-            commandList.add(String.format("--ca-cert-path=%s", this.CACertPath)); 
-        if (this.pollInterval != null && !this.pollInterval.equals("")) // CACertPathArg
+            commandList.add(String.format("--ca-cert-path=%s", this.CACertPath));
+        if (this.testResultPath != null && !this.testResultPath.equals("")) // testResultPathArg
+            commandList.add(String.format("--test-result-path=%s", this.testResultPath)); 
+        if (this.pollInterval != null && !this.pollInterval.equals("")) // pollIntervalArg
             commandList.add(String.format("--poll-interval=%s", this.pollInterval)); 
         if (this.requestTimeout != null && !this.requestTimeout.equals("")) // requestTimeoutArg
             commandList.add(String.format("--request-timeout=%s", this.requestTimeout)); 
-        if (this.requestRetries != null && !this.requestRetries.equals("")) // requestTimeoutArg
+        if (this.requestRetries != null && !this.requestRetries.equals("")) // requestRetriesArg
             commandList.add(String.format("--request-retries=%s", this.requestRetries)); 
         if (this.dryRun != null && this.dryRun) // dryRunArg
             commandList.add("--dry-run");
@@ -270,7 +282,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
                 return FormValidation.error("Server URL cannot be empty.");
             }
             else if(!isValidURL(value)){
-                return FormValidation.error("Invalid server_url.");
+                return FormValidation.error("Invalid server url.");
             }
             return FormValidation.ok();
         }
@@ -302,6 +314,20 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             return FormValidation.ok();
         }
         
+        public FormValidation doCheckCACertPath(@QueryParameter String value) throws IOException {
+            if(!value.isEmpty()&&!isValidFile(value,"cer")){
+                return FormValidation.error("Invalid CA Cert Path.");
+            }
+            return FormValidation.ok();
+        }
+
+        public FormValidation doCheckTestResultPath(@QueryParameter String value) throws IOException {
+            if(!value.isEmpty()&&!isValidPath(value)){
+                return FormValidation.error("Invalid Test Result Path.");
+            }
+            return FormValidation.ok();
+        }
+
         public FormValidation doCheckPollInterval(@QueryParameter String value) throws IOException {
             if(!value.isEmpty()&&!isValidNumeric(value)){
                 return FormValidation.error("Invalid Poll Interval.");
@@ -366,6 +392,22 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
                 return false;
         }
 
+        private Boolean isValidPath(String value){
+            File f = new File(value);
+            if (f.isDirectory())
+                return true;
+            else 
+                return false;
+        }
+
+        private Boolean isValidFile(String filePath, String extension){
+            File f = new File(filePath);
+            String fileExtension=FilenameUtils.getExtension(filePath);
+            if (f.isFile()&&fileExtension.equals(extension))
+                return true;
+            else 
+                return false;
+        }
     }
 
 }
