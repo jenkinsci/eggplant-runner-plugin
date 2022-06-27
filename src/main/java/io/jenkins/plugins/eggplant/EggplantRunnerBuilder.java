@@ -322,7 +322,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         }
 
         public FormValidation doCheckTestResultPath(@QueryParameter String value) throws IOException {
-            if(!value.isEmpty()&&!isValidPath(value)){
+            if(!value.isEmpty()&&!FilenameUtils.getExtension(value).equals("xml")){
                 return FormValidation.error("Invalid Test Result Path.");
             }
             return FormValidation.ok();
@@ -389,14 +389,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             if(isMatch)
                 return true;
             else
-                return false;
-        }
-
-        private Boolean isValidPath(String value){
-            File f = new File(value);
-            if (f.isDirectory())
-                return true;
-            else 
                 return false;
         }
 
