@@ -86,7 +86,8 @@ The **DAI Client Secret** can be obtain by go to http://kc-localhost:8000/auth >
 **Optional** The path to an alternative Certificate Authority pem file<br />
 
 ### `testResultPath`
-**Optional** The path to store the test results generated from test configuration execution<br />
+**Optional** The full path with filename extension ".xml" to store test results generated from test configuration execution<br />
+**Example** `C:\results\result.xml`
 
 ## Output
 
