@@ -57,7 +57,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     private Secret clientSecret;
     private LogLevel logLevel;
     private String CACertPath;
-    private String testResultPath;
     private String pollInterval;
     private String requestTimeout;
     private String requestRetries;
@@ -85,9 +84,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     }
     public String getCACertPath() {
         return CACertPath;
-    }
-    public String getTestResultPath() {
-        return testResultPath;
     }
     public String getPollInterval() {
         return pollInterval;
@@ -130,10 +126,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     @DataBoundSetter
     public void setCACertPath(String CACertPath) {
         this.CACertPath = CACertPath;
-    }
-    @DataBoundSetter
-    public void setTestResultPath(String testResultPath) {
-        this.testResultPath = testResultPath;
     }
     @DataBoundSetter
     public void setPollInterval(String pollInterval) {
@@ -249,8 +241,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             commandList.add(String.format("--log-level=%s", this.logLevel)); 
         if (this.CACertPath != null && !this.CACertPath.equals("")) // CACertPathArg
             commandList.add(String.format("--ca-cert-path=%s", this.CACertPath));
-        if (this.testResultPath != null && !this.testResultPath.equals("")) // testResultPathArg
-            commandList.add(String.format("--test-result-path=%s", this.testResultPath)); 
         if (this.pollInterval != null && !this.pollInterval.equals("")) // pollIntervalArg
             commandList.add(String.format("--poll-interval=%s", this.pollInterval)); 
         if (this.requestTimeout != null && !this.requestTimeout.equals("")) // requestTimeoutArg
@@ -319,13 +309,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         public FormValidation doCheckCACertPath(@QueryParameter String value) throws IOException {
             if(!value.isEmpty()&&!isValidFile(value,"cer")){
                 return FormValidation.error("Invalid CA Cert Path.");
-            }
-            return FormValidation.ok();
-        }
-
-        public FormValidation doCheckTestResultPath(@QueryParameter String value) throws IOException {
-            if(!value.isEmpty()&&(!isValidPath(value)||!FilenameUtils.getExtension(value).equals("xml"))){
-                return FormValidation.error("Invalid Test Result Path.");
             }
             return FormValidation.ok();
         }
@@ -401,16 +384,8 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
                 return true;
             else 
                 return false;
-        }
+        }       
         
-        public static boolean isValidPath(String path) {
-            try {
-                Paths.get(path);
-            } catch(Exception e){
-                return false;
-            }
-            return true;
-        }        
     }
 
 }
