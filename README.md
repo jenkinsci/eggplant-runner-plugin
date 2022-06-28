@@ -85,10 +85,6 @@ The **DAI Client Secret** can be obtain by go to http://kc-localhost:8000/auth >
 ### `CACertPath`
 **Optional** The path to an alternative Certificate Authority pem file<br />
 
-### `testResultPath`
-**Optional** Path to a file where the test results will be stored in junit xml format<br />
-**Example** `C:\results\result.xml`
-
 ## Output
 
 **Build** the project to run the step
