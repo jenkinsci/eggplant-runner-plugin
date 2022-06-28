@@ -61,8 +61,8 @@
         </f:entry>
         <f:entry title="Test Result Path " field="testResultPath">
             <f:textbox />
-            Full file path (.xml) to store the test results generated from test configuration execution
-             <br><strong>E.g.</strong> <em> C:\results\result.xml </em></br>
+            Path to a file where the test results will be stored in junit xml format
+            <br><strong>E.g.</strong> <em> C:\results\result.xml </em></br>
         </f:entry> 
         <f:entry title="Poll Interval " field="pollInterval">
             <f:textbox default="5" />

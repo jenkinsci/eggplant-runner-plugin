@@ -30,6 +30,8 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Paths;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -322,7 +324,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         }
 
         public FormValidation doCheckTestResultPath(@QueryParameter String value) throws IOException {
-            if(!value.isEmpty()&&!FilenameUtils.getExtension(value).equals("xml")){
+            if(!value.isEmpty()&&(!isValidPath(value)||!FilenameUtils.getExtension(value).equals("xml"))){
                 return FormValidation.error("Invalid Test Result Path.");
             }
             return FormValidation.ok();
@@ -400,6 +402,15 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             else 
                 return false;
         }
+        
+        public static boolean isValidPath(String path) {
+            try {
+                Paths.get(path);
+            } catch(Exception e){
+                return false;
+            }
+            return true;
+        }        
     }
 
 }
