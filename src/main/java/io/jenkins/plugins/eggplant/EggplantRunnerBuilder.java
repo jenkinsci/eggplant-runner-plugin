@@ -315,13 +315,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             }
             return FormValidation.ok();
         }
-        
-        public FormValidation doCheckCACertPath(@QueryParameter String value) throws IOException {
-            if(!value.isEmpty()){
-                return FormValidation.error("Invalid CA Cert Path.");
-            }
-            return FormValidation.ok();
-        }
 
         public FormValidation doCheckTestResultPath(@QueryParameter String value) throws IOException {
             if(!value.isEmpty()&&(!isValidPath(value)||!FilenameUtils.getExtension(value).equals("xml"))){
