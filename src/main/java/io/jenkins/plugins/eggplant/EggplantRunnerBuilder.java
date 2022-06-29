@@ -317,7 +317,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         }
         
         public FormValidation doCheckCACertPath(@QueryParameter String value) throws IOException {
-            if(!value.isEmpty()&&!isValidFile(value,"cer")){
+            if(!value.isEmpty()){
                 return FormValidation.error("Invalid CA Cert Path.");
             }
             return FormValidation.ok();
