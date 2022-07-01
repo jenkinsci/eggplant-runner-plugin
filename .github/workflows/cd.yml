@@ -7,6 +7,9 @@ on:
     types:
       - completed
 
+env:
+  GITLABACCESSTOKEN: ${{ secrets.GITLAB_ACCESS_TOKEN }}
+
 jobs:
   validate:
     runs-on: ubuntu-latest
