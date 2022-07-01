@@ -18,6 +18,7 @@ jobs:
         id: verify-ci-status
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLABACCESSTOKEN: ${{ secrets.GITLAB_ACCESS_TOKEN }}
           output_result: true
 
       - name: Release Drafter
@@ -29,6 +30,7 @@ jobs:
           version: next
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLABACCESSTOKEN: ${{ secrets.GITLAB_ACCESS_TOKEN }}
 
       - name: Check interesting categories
         uses: jenkins-infra/interesting-category-action@v1.0.0
@@ -36,6 +38,7 @@ jobs:
         if: steps.verify-ci-status.outputs.result == 'success'
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLABACCESSTOKEN: ${{ secrets.GITLAB_ACCESS_TOKEN }}
 
   release:
     runs-on: ubuntu-latest
@@ -57,4 +60,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
         MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
-        GITLABACCESSTOKEN: ${{ secrets.GITLAB_ACCESS_TOKEN }}
+        
