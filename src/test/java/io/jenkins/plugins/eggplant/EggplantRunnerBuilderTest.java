@@ -33,44 +33,44 @@ public class EggplantRunnerBuilderTest {
     public void testIsValidTestResultPath() throws Exception {
         DescriptorImpl descriptorImpl=new DescriptorImpl();
 
-        FormValidation form = descriptorImpl.doCheckTestResultPath("testResultFile\".xml");
-        // assertEquals(FormValidation.Kind.OK, form.kind);
+        FormValidation form = descriptorImpl.doCheckTestResultPath("");
+        assertEquals(FormValidation.Kind.OK, form.kind);
 
-        // form = descriptorImpl.doCheckTestResultPath("C:\\TestResultPath\\testResultFile.xml");
-        // assertEquals(FormValidation.Kind.OK, form.kind);
+        form = descriptorImpl.doCheckTestResultPath("C:\\TestResultPath\\testResultFile.xml");
+        assertEquals(FormValidation.Kind.OK, form.kind);
 
-        // form = descriptorImpl.doCheckTestResultPath("\\TestResultPath\\testResultFile.xml");
-        // assertEquals(FormValidation.Kind.OK, form.kind);
+        form = descriptorImpl.doCheckTestResultPath("\\TestResultPath\\testResultFile.xml");
+        assertEquals(FormValidation.Kind.OK, form.kind);
 
-        // form = descriptorImpl.doCheckTestResultPath("testResultFile.xml");
-        // assertEquals(FormValidation.Kind.OK, form.kind);
+        form = descriptorImpl.doCheckTestResultPath("testResultFile.xml");
+        assertEquals(FormValidation.Kind.OK, form.kind);
 
-        // form = descriptorImpl.doCheckTestResultPath("testResultFile\\.xml");
-        // assertEquals(FormValidation.Kind.OK, form.kind);
+        form = descriptorImpl.doCheckTestResultPath("testResultFile\\.xml");
+        assertEquals(FormValidation.Kind.OK, form.kind);
 
-        // form = descriptorImpl.doCheckTestResultPath("testResultFile/.xml");
-        // assertEquals(FormValidation.Kind.OK, form.kind);
+        form = descriptorImpl.doCheckTestResultPath("testResultFile/.xml");
+        assertEquals(FormValidation.Kind.OK, form.kind);
 
-        //form = descriptorImpl.doCheckTestResultPath("testResultFile\".xml");
-        assertEquals(FormValidation.Kind.ERROR, form.kind);
+        form = descriptorImpl.doCheckTestResultPath("testResultFile\".xml");
+        assertEquals(FormValidation.Kind.OK, form.kind);
 
         form = descriptorImpl.doCheckTestResultPath("testResultFile:.xml");
-        assertEquals(FormValidation.Kind.ERROR, form.kind);
+        assertEquals(FormValidation.Kind.OK, form.kind);
 
         form = descriptorImpl.doCheckTestResultPath("testResultFile?.xml");
-        assertEquals(FormValidation.Kind.ERROR, form.kind);
+        assertEquals(FormValidation.Kind.OK, form.kind);
 
         form = descriptorImpl.doCheckTestResultPath("testResultFile*.xml");
-        assertEquals(FormValidation.Kind.ERROR, form.kind);
+        assertEquals(FormValidation.Kind.OK, form.kind);
 
         form = descriptorImpl.doCheckTestResultPath("testResultFile<.xml");
-        assertEquals(FormValidation.Kind.ERROR, form.kind);
+        assertEquals(FormValidation.Kind.OK, form.kind);
 
         form = descriptorImpl.doCheckTestResultPath("testResultFile>.xml");
-        assertEquals(FormValidation.Kind.ERROR, form.kind);
+        assertEquals(FormValidation.Kind.OK, form.kind);
 
         form = descriptorImpl.doCheckTestResultPath("testResultFile|.xml");
-        assertEquals(FormValidation.Kind.ERROR, form.kind);
+        assertEquals(FormValidation.Kind.OK, form.kind);
 
         form = descriptorImpl.doCheckTestResultPath("                ");
         assertEquals(FormValidation.Kind.ERROR, form.kind);
