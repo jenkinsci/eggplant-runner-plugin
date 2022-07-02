@@ -36,6 +36,9 @@ public class EggplantRunnerBuilderTest {
         FormValidation form = descriptorImpl.doCheckTestResultPath("");
         assertEquals(FormValidation.Kind.OK, form.kind);        
 
+        // form = descriptorImpl.doCheckTestResultPath("testResultFile\".xml");
+        // assertEquals(FormValidation.Kind.ERROR, form.kind);
+
         form = descriptorImpl.doCheckTestResultPath("testResultFile:.xml");
         assertEquals(FormValidation.Kind.ERROR, form.kind);
 
@@ -75,6 +78,8 @@ public class EggplantRunnerBuilderTest {
         form = descriptorImpl.doCheckTestResultPath("testResultFile\\.xml");
         assertEquals(FormValidation.Kind.OK, form.kind);
 
+        form = descriptorImpl.doCheckTestResultPath("testResultFile/.xml");
+        assertEquals(FormValidation.Kind.OK, form.kind);
      }
    
 }
