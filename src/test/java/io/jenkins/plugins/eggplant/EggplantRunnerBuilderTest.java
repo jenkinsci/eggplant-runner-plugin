@@ -45,9 +45,6 @@ public class EggplantRunnerBuilderTest {
         form = descriptorImpl.doCheckTestResultPath("C:\\TestResultPath\\testResultFile.txt");
         assertEquals(FormValidation.Kind.ERROR, form.kind);
 
-        form = descriptorImpl.doCheckTestResultPath("testResultFile|.xml");
-        assertEquals(FormValidation.Kind.ERROR, form.kind);
-
         form = descriptorImpl.doCheckTestResultPath("C:\\TestResultPath\\testResultFile.xml");
         assertEquals(FormValidation.Kind.OK, form.kind);
 
