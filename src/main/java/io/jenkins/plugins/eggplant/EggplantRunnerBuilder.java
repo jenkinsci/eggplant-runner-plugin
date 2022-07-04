@@ -398,12 +398,12 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         }
         
         public static boolean isValidPath(String path) {
-            try {
-                Paths.get(path);
-            } catch(Exception e){
-                return false;
-            }
-            return true;
+                Pattern p = Pattern.compile("[^?\"*<>|]+");
+                Boolean isMatch=p.matcher(path).matches();
+                if(isMatch)
+                    return true;
+                else
+                    return false;
         }        
     }
 
