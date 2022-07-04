@@ -318,7 +318,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
 
         public FormValidation doCheckTestResultPath(@QueryParameter String value) throws IOException {
             try {
-                if(!value.isEmpty()&&(!isValidPath(value)||!FilenameUtils.getExtension(value).equals("xml"))){
+                if(!value.isEmpty()&&(!isValidPath(value)||!isValidExtension(value,"xml"))){
                     return FormValidation.error("Invalid Test Result Path.");
                 }
                 else
@@ -393,22 +393,22 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
                 return false;
         }
 
-        private Boolean isValidFile(String filePath, String extension){
-            File f = new File(filePath);
-            String fileExtension=FilenameUtils.getExtension(filePath);
-            if (f.isFile()&&fileExtension.equals(extension))
+        private Boolean isValidExtension(String filePath, String extension){
+            Pattern p = Pattern.compile(".*."+extension+"$");
+            Boolean isMatch=p.matcher(filePath).matches();
+            if(isMatch)
                 return true;
-            else 
+            else
                 return false;
         }
         
         public static boolean isValidPath(String path) {
-                Pattern p = Pattern.compile("[^?\"*<>|]+");
-                Boolean isMatch=p.matcher(path).matches();
-                if(isMatch)
-                    return true;
-                else
-                    return false;
+            Pattern p = Pattern.compile("[^?\"*<>|]+");
+            Boolean isMatch=p.matcher(path).matches();
+            if(isMatch)
+                return true;
+            else
+                return false;
         }        
     }
 
