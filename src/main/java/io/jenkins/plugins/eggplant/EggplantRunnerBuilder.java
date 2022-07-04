@@ -317,11 +317,16 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         }
 
         public FormValidation doCheckTestResultPath(@QueryParameter String value) throws IOException {
-            if(!value.isEmpty()&&(!isValidPath(value)||!FilenameUtils.getExtension(value).equals("xml"))){
+            try {
+                if(!value.isEmpty()&&(!isValidPath(value)||!FilenameUtils.getExtension(value).equals("xml"))){
+                    return FormValidation.error("Invalid Test Result Path.");
+                }
+                else
+                    return FormValidation.ok();
+            } catch (Exception e) {
                 return FormValidation.error("Invalid Test Result Path.");
             }
-            else
-                return FormValidation.ok();
+            
         }
 
         public FormValidation doCheckPollInterval(@QueryParameter String value) throws IOException {
