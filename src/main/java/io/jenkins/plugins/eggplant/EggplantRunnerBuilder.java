@@ -44,7 +44,7 @@ import java.util.stream.Stream;
 
 
 public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
-    private final static String CLI_VERSION = "6.1.2-1";
+    private final static String CLI_VERSION = "aub-13519_cicd_junit_file_implementation";
     private final static String CLI_DOWNLOAD_URL = "https://downloads.eggplantsoftware.com/downloads/EggplantRunner/${cliFilename}";
     private final static Map<OperatingSystem, String> CLI_FILENAME = Stream.of(
         new AbstractMap.SimpleEntry<>(OperatingSystem.LINUX, "eggplant-runner-Linux-${cliVersion}"),
@@ -194,8 +194,9 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         if (System.getenv("gitlabAccessToken") == null) 
             in = new URL(cliDownloadUrl).openStream();
         else
-        {
-            URL url = new URL("https://gitlab.com/api/v4/projects/22402994/packages/generic/6.1.2-1/0.0.0/" + cliFilename);
+        {   
+            String ENG_BRANCH="AUB-13519_CICD_Junit_file_implementation";
+            URL url = new URL("https://gitlab.com/api/v4/projects/22402994/packages/generic/"+ENG_BRANCH+"/0.0.0/" + cliFilename);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.addRequestProperty ("PRIVATE-TOKEN", System.getenv("gitlabAccessToken"));
             connection.setDoOutput(true);
