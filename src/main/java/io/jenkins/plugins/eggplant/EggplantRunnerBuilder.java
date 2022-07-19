@@ -44,7 +44,7 @@ import java.util.stream.Stream;
 
 
 public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
-    private final static String CLI_VERSION = "6.1.2-1";
+    private final static String CLI_VERSION = "6.2.1-0";
     private final static String CLI_DOWNLOAD_URL = "https://downloads.eggplantsoftware.com/downloads/EggplantRunner/${cliFilename}";
     private final static String ENG_BRANCH = "AUB-13519_CICD_Junit_file_implementation";
     private final static String ENG_EXEC_NAME="aub-13519_cicd_junit_file_implementation";
