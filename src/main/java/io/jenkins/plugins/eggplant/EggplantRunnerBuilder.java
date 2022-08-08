@@ -8,9 +8,10 @@ import hudson.Extension;
 import hudson.FilePath;
 import hudson.util.FormValidation;
 import hudson.util.Secret;
-import io.jenkins.cli.shaded.org.apache.commons.lang.LocaleUtils;
-import org.apache.commons.io.FilenameUtils;
 import io.jenkins.plugins.eggplant.common.LogLevel;
+import io.jenkins.plugins.eggplant.common.OperatingSystem;
+import io.jenkins.plugins.eggplant.exception.CLIExitException;
+import io.jenkins.plugins.eggplant.utils.CLIHelper;
 import hudson.model.AbstractProject;
 import hudson.model.Run;
 import hudson.model.TaskListener;
@@ -24,35 +25,15 @@ import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.file.InvalidPathException;
-import java.nio.file.Paths;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 
 public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
-    private final static String CLI_VERSION = "6.2.1-2";
-    private final static String CLI_DOWNLOAD_URL = "https://downloads.eggplantsoftware.com/downloads/EggplantRunner/${cliFilename}";
-    private final static String ENG_BRANCH = "AUB-13519_CICD_Junit_file_implementation";
-    private final static String ENG_EXEC_NAME="aub-13519_cicd_junit_file_implementation";
-    private final static Map<OperatingSystem, String> CLI_FILENAME = Stream.of(
-        new AbstractMap.SimpleEntry<>(OperatingSystem.LINUX, "eggplant-runner-Linux-${cliVersion}"),
-        new AbstractMap.SimpleEntry<>(OperatingSystem.MACOS, "eggplant-runner-MacOS-${cliVersion}"), 
-        new AbstractMap.SimpleEntry<>(OperatingSystem.WINDOWS, "eggplant-runner-Windows-${cliVersion}.exe")
-    ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     private String serverURL;
     private String testConfigId;
     private String clientId;
@@ -63,8 +44,9 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     private String pollInterval;
     private String requestTimeout;
     private String requestRetries;
-    private Boolean dryRun;
     private String backoffFactor;
+    private Boolean dryRun;
+    private String eggplantRunnerPath;
 
     @DataBoundConstructor
     public EggplantRunnerBuilder() {
@@ -102,7 +84,10 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     }
     public String getBackoffFactor() {
         return backoffFactor;
-    }    
+    }
+    public String getEggplantRunnerPath() {
+        return eggplantRunnerPath;
+    }        
 
     @DataBoundSetter
     public void setServerURL(String serverURL) {
@@ -119,7 +104,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         this.clientId= clientId;
     }
 
-    
     @DataBoundSetter
     public void setClientSecret(Secret clientSecret) {
         this.clientSecret = clientSecret;
@@ -129,41 +113,56 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     public void setLogLevel(LogLevel logLevel) {
         this.logLevel = logLevel;
     }
+
     @DataBoundSetter
     public void setCACertPath(String CACertPath) {
         this.CACertPath = CACertPath;
     }
+
     @DataBoundSetter
     public void setTestResultPath(String testResultPath) {
         this.testResultPath = testResultPath;
     }
+
     @DataBoundSetter
     public void setPollInterval(String pollInterval) {
         this.pollInterval = pollInterval;
     }
+
     @DataBoundSetter
     public void setRequestTimeout(String requestTimeout) {
         this.requestTimeout = requestTimeout;
     }
+
     @DataBoundSetter
     public void setRequestRetries(String requestRetries) {
         this.requestRetries = requestRetries;
     }
+
     @DataBoundSetter
     public void setBackoffFactor(String backoffFactor) {
         this.backoffFactor = backoffFactor;
-    }    
+    }   
+
     @DataBoundSetter
     public void setDryRun(boolean dryRun) {
         this.dryRun = dryRun;
     }
+
+    @DataBoundSetter
+    public void setEggplantRunnerPath(String eggplantRunnerPath) {
+        this.eggplantRunnerPath = eggplantRunnerPath;
+    }
+
     @Override
     public void perform(Run<?, ?> run, FilePath workspace, EnvVars env, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
         PrintStream logger = listener.getLogger();
         String buildId = run.getId();
         String localeString = "";
         Locale locale = Locale.getDefault();
-
+        OperatingSystem os = this.getOperatingSystem(workspace, launcher);
+        FilePath uniqueWorkspace = workspace.child(buildId); 
+        
         logger.println("locale: " + locale);
         logger.println("locale.getCountry(): " + locale.getCountry());
         if (!locale.getCountry().equals(""))
@@ -171,44 +170,27 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         else
             localeString = String.format("%s.utf-8", "en_US");
 
-        OperatingSystem os = this.getOperatingSystem(workspace, launcher);
-        FilePath uniqueWorkspace = workspace.child(buildId); 
-        FilePath cliFile = this.downloadCLIExecutable(uniqueWorkspace, os);
-        logger.println("cliFile: " + cliFile);
-        String[] command = this.getCommand(cliFile, buildId, os, env);
+        CLIHelper cliHelper = new CLIHelper(workspace, logger, buildId, os);
+
+        if(eggplantRunnerPath == null | eggplantRunnerPath.equals(""))
+            cliHelper.downloadRunner(System.getenv("gitlabAccessToken"));
+        else
+            cliHelper.copyRunnerFrom(this.eggplantRunnerPath);
+
+        FilePath cliPath = cliHelper.getFilePath();
+        String[] command = this.getCommand(cliPath, buildId, os, env);
         logger.println("command: " + Arrays.toString(command));
         EnvVars envVars = new EnvVars();
         envVars.put("LC_ALL", localeString);
         envVars.put("LANG", localeString);
 
+        cliPath.chmod(0755);
+        logger.println(">> Executing " + cliPath);
+        
         ProcStarter procStarter = launcher.launch();
         Proc process = procStarter.pwd(uniqueWorkspace).cmds(command).envs(envVars).quiet(false).stderr(logger).stdout(logger).start();
         int exitCode = process.join();
-        if (exitCode != 0) throw new EggplantRunnerExitException(exitCode);
-    }
-
-    private FilePath downloadCLIExecutable(FilePath workspace, OperatingSystem os) throws IOException, InterruptedException {
-        String cliFilename = CLI_FILENAME.get(os).replace("${cliVersion}", CLI_VERSION);
-        String cliDownloadUrl = CLI_DOWNLOAD_URL.replace("${cliFilename}", cliFilename);
-        InputStream in;
-
-        // It will only use gitlab package registry if no gitlab Access token (for development)
-        if (System.getenv("gitlabAccessToken") == null) 
-            in = new URL(cliDownloadUrl).openStream();
-        else
-        {   
-            cliFilename = CLI_FILENAME.get(os).replace("${cliVersion}", ENG_EXEC_NAME);
-            URL url = new URL("https://gitlab.com/api/v4/projects/22402994/packages/generic/"+ENG_BRANCH+"/0.0.0/" + cliFilename);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.addRequestProperty ("PRIVATE-TOKEN", System.getenv("gitlabAccessToken"));
-            connection.setDoOutput(true);
-            in = connection.getInputStream();
-        }
-
-        FilePath filePath = workspace.child(cliFilename);
-        filePath.copyFrom(in);
-        filePath.chmod(0755);
-        return filePath;
+        if (exitCode != 0) throw new CLIExitException(exitCode);
     }
 
     private OperatingSystem getOperatingSystem(FilePath workspace, Launcher launcher) throws IOException, InterruptedException {
@@ -230,7 +212,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         // Linux
         return OperatingSystem.LINUX;
       }
-    
 
     private String[] getCommand(FilePath cliFile, String buildId, OperatingSystem os, EnvVars env) {
         List<String> commandList = new ArrayList<String>();
@@ -343,7 +324,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
 
         public FormValidation doCheckRequestRetries(@QueryParameter String value) throws IOException {
             if(!value.isEmpty()&&!isValidNumeric(value)){
-                return FormValidation.error("Invalid Request Retires.");
+                return FormValidation.error("Invalid Request Retries.");
             }
             return FormValidation.ok();
         }
@@ -398,7 +379,8 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
                 return true;
             else
                 return false;
-        }        
+        }
+   
     }
 
 }
