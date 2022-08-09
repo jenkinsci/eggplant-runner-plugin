@@ -33,11 +33,11 @@ public class CLIHelper{
   private String cliFilename;
   private FilePath cliFilePath;
   
-  public CLIHelper(FilePath workspace, PrintStream logger, String buildId, OperatingSystem os){
+  public CLIHelper(FilePath workspace, OperatingSystem os, PrintStream logger){
     this.workspace = workspace;
+    this.cliFilename = CLI_FILENAME.get(os).replace("${cliVersion}", CLI_VERSION.toLowerCase()); // CLI filename must be lowercase
+    this.cliFilePath = workspace.child("downloads").child(cliFilename);
     this.logger = logger;
-    this.cliFilename = CLI_FILENAME.get(os).replace("${cliVersion}", CLI_VERSION.toLowerCase()); // CLI filename must be lowercase;
-    this.cliFilePath = workspace.child(buildId).child(cliFilename);
   }
 
   public FilePath getFilePath(){
@@ -88,27 +88,23 @@ public void downloadRunner(String gitlabAccessToken) throws IOException, Interru
     if(defaultCache.exists())
     {
       logger.println("Runner found in default directory, skipping download.");
-      cliFilePath.copyFrom(defaultCache);
     }
     else
     {
       downloadFromUrl(cliDownloadUrl, properties);
-      // save to cache
-      cliFilePath.copyTo(defaultCache);
     }
 
   }
   else{
-
     cliDownloadUrl = CLI_ENG_DOWNLOAD_URL.replace("${cliVersion}", CLI_VERSION).replace("${cliFilename}", cliFilename);
     properties.put("PRIVATE-TOKEN", gitlabAccessToken);
+    cliFilePath = workspace.child("downloads").child("eng").child(cliFilename);
     downloadFromUrl(cliDownloadUrl,properties);
-
   }
 
 }
 
-public FilePath downloadFromUrl(String url, Map<String, String> properties) throws BuilderException {
+private FilePath downloadFromUrl(String url, Map<String, String> properties) throws BuilderException {
 
   try{
 
@@ -124,7 +120,7 @@ public FilePath downloadFromUrl(String url, Map<String, String> properties) thro
     logger.println("Download successfully.");
 
   }catch(Exception e){
-    throw new BuilderException("Download failed. " + e.toString());
+    throw new BuilderException("Download failed. Unable to download from url: "+ url +". Error details:" + e.toString());
   }
 
   return cliFilePath;

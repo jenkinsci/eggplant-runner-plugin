@@ -161,7 +161,8 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         String localeString = "";
         Locale locale = Locale.getDefault();
         OperatingSystem os = this.getOperatingSystem(workspace, launcher);
-        FilePath uniqueWorkspace = workspace.child(buildId); 
+        FilePath uniqueWorkspace = workspace.child(buildId);
+        uniqueWorkspace.mkdirs(); 
         
         logger.println("locale: " + locale);
         logger.println("locale.getCountry(): " + locale.getCountry());
@@ -170,10 +171,10 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         else
             localeString = String.format("%s.utf-8", "en_US");
 
-        CLIHelper cliHelper = new CLIHelper(workspace, logger, buildId, os);
+        CLIHelper cliHelper = new CLIHelper(workspace, os, logger);
 
         if(eggplantRunnerPath == null | eggplantRunnerPath.equals(""))
-            cliHelper.downloadRunner(System.getenv("gitlabAccessToken"));
+            cliHelper.downloadRunner(env.get("gitlabAccessToken"));
         else
             cliHelper.copyRunnerFrom(this.eggplantRunnerPath);
 
