@@ -11,7 +11,7 @@ import hudson.util.Secret;
 import io.jenkins.plugins.eggplant.common.LogLevel;
 import io.jenkins.plugins.eggplant.common.OperatingSystem;
 import io.jenkins.plugins.eggplant.exception.CLIExitException;
-import io.jenkins.plugins.eggplant.utils.CLIHelper;
+import io.jenkins.plugins.eggplant.utils.CLIRunnerHelper;
 import hudson.model.AbstractProject;
 import hudson.model.Run;
 import hudson.model.TaskListener;
@@ -171,22 +171,21 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         else
             localeString = String.format("%s.utf-8", "en_US");
 
-        CLIHelper cliHelper = new CLIHelper(workspace, os, logger);
-
-        if(eggplantRunnerPath == null | eggplantRunnerPath.equals(""))
-            cliHelper.downloadRunner(env.get("gitlabAccessToken"));
+        CLIRunnerHelper CLIRunnerHelper = new CLIRunnerHelper(workspace, os, logger);
+        if(this.eggplantRunnerPath != null && !this.eggplantRunnerPath.equals(""))
+            CLIRunnerHelper.copyRunnerFrom(this.eggplantRunnerPath);
         else
-            cliHelper.copyRunnerFrom(this.eggplantRunnerPath);
+            CLIRunnerHelper.downloadRunner(env.get("gitlabAccessToken"));
 
-        FilePath cliPath = cliHelper.getFilePath();
-        String[] command = this.getCommand(cliPath, buildId, os, env);
+        FilePath cliRunnerPath = CLIRunnerHelper.getFilePath();
+        String[] command = this.getCommand(cliRunnerPath, buildId, os, env);
         logger.println("command: " + Arrays.toString(command));
         EnvVars envVars = new EnvVars();
         envVars.put("LC_ALL", localeString);
         envVars.put("LANG", localeString);
 
-        cliPath.chmod(0755);
-        logger.println(">> Executing " + cliPath);
+        cliRunnerPath.chmod(0755);
+        logger.println(">> Executing " + cliRunnerPath);
         
         ProcStarter procStarter = launcher.launch();
         Proc process = procStarter.pwd(uniqueWorkspace).cmds(command).envs(envVars).quiet(false).stderr(logger).stdout(logger).start();
@@ -217,8 +216,8 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     private String[] getCommand(FilePath cliFile, String buildId, OperatingSystem os, EnvVars env) {
         List<String> commandList = new ArrayList<String>();
         
-        //commandList.add("./" + cliFile.getName()); // cliPath
-        commandList.add(cliFile.getRemote()); // cliPath
+        //commandList.add("./" + cliFile.getName()); // cliRunnerPath
+        commandList.add(cliFile.getRemote()); // cliRunnerPath
         commandList.add(this.serverURL); // serverURLArg
         commandList.add(this.testConfigId); // testConfigIdArgs
         if (this.clientId != null && !this.clientId.equals("")) // clientIdArg

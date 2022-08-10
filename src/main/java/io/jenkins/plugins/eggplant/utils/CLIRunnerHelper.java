@@ -17,7 +17,7 @@ import io.jenkins.plugins.eggplant.common.OperatingSystem;
 import io.jenkins.plugins.eggplant.exception.BuilderException;
 import io.jenkins.plugins.eggplant.exception.InvalidRunnerException;
 
-public class CLIHelper{
+public class CLIRunnerHelper{
 
   private final static String CLI_VERSION = "6.2.1-2";
   private final static Map<OperatingSystem, String> CLI_FILENAME = Stream.of(
@@ -33,7 +33,7 @@ public class CLIHelper{
   private String cliFilename;
   private FilePath cliFilePath;
   
-  public CLIHelper(FilePath workspace, OperatingSystem os, PrintStream logger){
+  public CLIRunnerHelper(FilePath workspace, OperatingSystem os, PrintStream logger){
     this.workspace = workspace;
     this.cliFilename = CLI_FILENAME.get(os).replace("${cliVersion}", CLI_VERSION.toLowerCase()); // CLI filename must be lowercase
     this.cliFilePath = workspace.child("downloads").child(cliFilename);
