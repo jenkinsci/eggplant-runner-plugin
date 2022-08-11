@@ -48,7 +48,7 @@ public class CLIRunnerHelperTest {
     @Test
     public void testDowloadRunner() throws Exception {
 
-        //first download
+        //first download - download successful
         helper.downloadRunner(null);
         assertTrue(outContent.toString().contains("Download successfully"));
         
