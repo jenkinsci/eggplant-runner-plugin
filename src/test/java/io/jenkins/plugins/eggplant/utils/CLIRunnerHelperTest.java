@@ -45,44 +45,44 @@ public class CLIRunnerHelperTest {
        System.setOut(System.out);
 	}
 
-    @Test
-    public void testDowloadRunner() throws Exception {
+    // @Test
+    // public void testDowloadRunner() throws Exception {
 
-        //first download - download successful
-        helper.downloadRunner(null);
-        assertTrue(outContent.toString().contains("Download successfully"));
+    //     //first download - download successful
+    //     helper.downloadRunner(null);
+    //     assertTrue(outContent.toString().contains("Download successfully"));
         
-        //second download - skip download
-        helper.downloadRunner(null);
-        assertTrue(outContent.toString().contains("Runner found in default directory, skipping download."));
+    //     //second download - skip download
+    //     helper.downloadRunner(null);
+    //     assertTrue(outContent.toString().contains("Runner found in default directory, skipping download."));
 
-    }
+    // }
 
-    @Test
-    public void testCopyRunnerFromPath() throws Exception {
+    // @Test
+    // public void testCopyRunnerFromPath() throws Exception {
 
-        // Path does not exist
-        InvalidRunnerException thrown = assertThrows(InvalidRunnerException.class, ()->{
-            helper.copyRunnerFrom("a path");
-        });
-        assertTrue(thrown.getMessage().contains("No such file or permission denied."));   
+    //     // Path does not exist
+    //     InvalidRunnerException thrown = assertThrows(InvalidRunnerException.class, ()->{
+    //         helper.copyRunnerFrom("a path");
+    //     });
+    //     assertTrue(thrown.getMessage().contains("No such file or permission denied."));   
 
-        Path userPath = Files.createDirectory(tempDir.toPath().resolve("user"));
+    //     Path userPath = Files.createDirectory(tempDir.toPath().resolve("user"));
 
-        // path exist but mismatch filename
-        thrown = assertThrows(InvalidRunnerException.class, ()->{
-            Path filepath = userPath.resolve("eggplant-runner.exe");
-            Files.createFile(filepath);
-            helper.copyRunnerFrom(filepath.toString());
-            });
-        assertTrue(thrown.getMessage().contains("Cannot find '"+helper.getFilename()+"'"));
+    //     // path exist but mismatch filename
+    //     thrown = assertThrows(InvalidRunnerException.class, ()->{
+    //         Path filepath = userPath.resolve("eggplant-runner.exe");
+    //         Files.createFile(filepath);
+    //         helper.copyRunnerFrom(filepath.toString());
+    //         });
+    //     assertTrue(thrown.getMessage().contains("Cannot find '"+helper.getFilename()+"'"));
         
-        // path exist and valid
-        Path cliPath = userPath.resolve(helper.getFilename());
-        Files.createFile(cliPath);
-        helper.copyRunnerFrom(cliPath.toString());
-        assertTrue(outContent.toString().contains("Fetch complete."));
+    //     // path exist and valid
+    //     Path cliPath = userPath.resolve(helper.getFilename());
+    //     Files.createFile(cliPath);
+    //     helper.copyRunnerFrom(cliPath.toString());
+    //     assertTrue(outContent.toString().contains("Fetch complete."));
 
-    }
+    // }
 
 }
