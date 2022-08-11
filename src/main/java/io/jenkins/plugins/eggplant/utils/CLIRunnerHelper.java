@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -110,8 +111,9 @@ private FilePath downloadFromUrl(String url, Map<String, String> properties) thr
 
     logger.println("GET " + url);
     HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-    for (String key : properties.keySet()) {
-      connection.addRequestProperty (key,properties.get(key));
+
+    for(Entry<String, String> entry: properties.entrySet()){
+      connection.addRequestProperty (entry.getKey(), entry.getValue());
     }
 
     connection.setDoOutput(true);
