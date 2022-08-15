@@ -52,13 +52,13 @@ public class CLIRunnerHelper{
   public void copyRunnerFrom(String path) throws IOException, InterruptedException
   {
     logger.println(">> Checking runner...");
-    FilePath filePath = CLIPathValidation(path);
+    FilePath filePath = CLIValidation(path);
     logger.println("Fetching runner from " + path);
     cliFilePath.copyFrom(filePath);
     logger.println("Fetch complete.");
   }
 
-  public FilePath CLIPathValidation(String path) throws IOException
+  public FilePath CLIValidation(String path) throws IOException
   {
     File file = new File(path);    
     if(file.canRead() == false)
