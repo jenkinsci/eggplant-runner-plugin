@@ -52,80 +52,73 @@ public class CLIRunnerHelper{
   public void copyRunnerFrom(String path) throws IOException, InterruptedException
   {
     logger.println(">> Checking runner...");
+    FilePath filePath = CLIPathValidation(path);
+    logger.println("Fetching runner from " + path);
+    cliFilePath.copyFrom(filePath);
+    logger.println("Fetch complete.");
+  }
 
-    File file = new File(path);
-
+  public FilePath CLIPathValidation(String path) throws IOException
+  {
+    File file = new File(path);    
     if(file.canRead() == false)
     {
       /* if the file does not exist, read access would be denied because the Java virtual machine has 
       insufficient privileges, or access cannot be determined */
       throw new InvalidRunnerException("No such file or permission denied", path);
     }
-    
+
     FilePath filePath = new FilePath(file);
-    
-    if(filePath.getName().equals(cliFilename))
+    if(!filePath.getName().equals(cliFilename))
     {
-        logger.println("Fetching runner from " + path);
-        cliFilePath.copyFrom(filePath);
-        logger.println("Fetch complete.");
+      throw new InvalidRunnerException("Mismatch of version/file.Eggplant runner version supported: '" + cliFilename + "'", path);
     }
-    else
-    {
-        throw new InvalidRunnerException("Cannot find '" + cliFilename + "'", path);
-    }
+    return filePath;
   }
 
-public void downloadRunner(String gitlabAccessToken) throws IOException, InterruptedException{
-  String cliDownloadUrl = CLI_DOWNLOAD_URL.replace("${cliFilename}", cliFilename);
-  Map<String,String> properties = new HashMap<>();
+  public void downloadRunner(String gitlabAccessToken) throws IOException, InterruptedException{
+    String cliDownloadUrl = CLI_DOWNLOAD_URL.replace("${cliFilename}", cliFilename);   
+    Map<String,String> properties = new HashMap<>();
 
-  logger.println(">> Downloading runner...");
+    logger.println(">> Downloading runner...");
 
-  if(gitlabAccessToken == null){
-
-    FilePath defaultCache = workspace.child("downloads").child(cliFilename);
-
-    if(defaultCache.exists())
-    {
-      logger.println("Runner found in default directory, skipping download.");
+    if(gitlabAccessToken == null){
+      FilePath defaultCache = workspace.child("downloads").child(cliFilename);
+      if(defaultCache.exists())
+      {
+        logger.println("Runner found in default directory, skipping download.");
+        return;
+      }
     }
-    else
-    {
-      downloadFromUrl(cliDownloadUrl, properties);
+    else{      
+      cliDownloadUrl = CLI_ENG_DOWNLOAD_URL.replace("${cliVersion}", CLI_VERSION).replace("${cliFilename}", cliFilename);
+      properties.put("PRIVATE-TOKEN", gitlabAccessToken);
+      cliFilePath = workspace.child("downloads").child("eng").child(cliFilename);
     }
-
-  }
-  else{
-    cliDownloadUrl = CLI_ENG_DOWNLOAD_URL.replace("${cliVersion}", CLI_VERSION).replace("${cliFilename}", cliFilename);
-    properties.put("PRIVATE-TOKEN", gitlabAccessToken);
-    cliFilePath = workspace.child("downloads").child("eng").child(cliFilename);
-    downloadFromUrl(cliDownloadUrl,properties);
+    downloadFromUrl(cliDownloadUrl, properties);
   }
 
-}
+  private FilePath downloadFromUrl(String url, Map<String, String> properties) throws BuilderException {
 
-private FilePath downloadFromUrl(String url, Map<String, String> properties) throws BuilderException {
+    try{
 
-  try{
+      logger.println("GET " + url);
+      HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
 
-    logger.println("GET " + url);
-    HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+      for(Entry<String, String> entry: properties.entrySet()){
+        connection.addRequestProperty (entry.getKey(), entry.getValue());
+      }
 
-    for(Entry<String, String> entry: properties.entrySet()){
-      connection.addRequestProperty (entry.getKey(), entry.getValue());
+      connection.setDoOutput(true);
+      InputStream in = connection.getInputStream();
+      cliFilePath.copyFrom(in);
+      logger.println("Download successfully.");
+
+    }catch(Exception e){
+      throw new BuilderException("Download failed. Unable to download from url: "+ url +". Error details:" + e.toString());
     }
 
-    connection.setDoOutput(true);
-    InputStream in = connection.getInputStream();
-    cliFilePath.copyFrom(in);
-    logger.println("Download successfully.");
-
-  }catch(Exception e){
-    throw new BuilderException("Download failed. Unable to download from url: "+ url +". Error details:" + e.toString());
+    return cliFilePath;
   }
-
-  return cliFilePath;
-}
 
 }
