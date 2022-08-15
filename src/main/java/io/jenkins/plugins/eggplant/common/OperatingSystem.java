@@ -1,4 +1,4 @@
-package io.jenkins.plugins.eggplant;
+package io.jenkins.plugins.eggplant.common;
 
 public enum OperatingSystem {
   WINDOWS,

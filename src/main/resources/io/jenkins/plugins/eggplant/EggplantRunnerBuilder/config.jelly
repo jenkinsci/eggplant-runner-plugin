@@ -79,6 +79,11 @@
         <f:entry title="Backoff Factor " field="backoffFactor">
             <f:textbox default="0.5" />
             The exponential backoff factor between each HTTP request  <em>[default: 0.5]</em>
+        </f:entry>  
+        <f:entry title="Eggplant Runner Path " field="eggplantRunnerPath">
+            <f:textbox />
+            The path to eggplant runner CLI executable
+            <br><strong>E.g.</strong> <em> C:\eggplant\eggplant-runner-Windows-x.x.x-x.exe </em></br>
         </f:entry>        
     </f:advanced>
 </j:jelly>

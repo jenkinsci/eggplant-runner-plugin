@@ -89,6 +89,9 @@ The **DAI Client Secret** can be obtain by go to http://kc-localhost:8000/auth >
 **Optional** Path to a file where the test results will be stored in junit xml format<br />
 **Example** `C:\results\result.xml`
 
+### `eggplantRunnerPath`
+**Optional** The path to eggplant runner CLI executable<br />
+
 ## Output
 
 **Build** the project to run the step
