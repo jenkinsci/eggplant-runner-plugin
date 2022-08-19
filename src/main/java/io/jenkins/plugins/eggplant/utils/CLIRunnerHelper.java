@@ -49,6 +49,10 @@ public class CLIRunnerHelper{
     return cliFilename;
   }
 
+  public String getPublicDownloadLink(){
+    return CLI_DOWNLOAD_URL.replace("${cliFilename}", cliFilename); 
+  }
+
   public void copyRunnerFrom(String path) throws IOException, InterruptedException
   {
     logger.println(">> Checking runner...");
@@ -65,19 +69,25 @@ public class CLIRunnerHelper{
     {
       /* if the file does not exist, read access would be denied because the Java virtual machine has 
       insufficient privileges, or access cannot be determined */
-      throw new InvalidRunnerException("No such file or permission denied", path);
+      throw new InvalidRunnerException("No such file or permission denied. Eggplant Runner Path: " + path);
+    }
+
+    if(file.isDirectory() == true)
+    {
+      throw new InvalidRunnerException("Path provided must not be a directory. Eggplant Runner Path: " + path);
     }
 
     FilePath filePath = new FilePath(file);
+
     if(!filePath.getName().equals(cliFilename))
     {
-      throw new InvalidRunnerException("Mismatch of version/file.Eggplant runner version supported: '" + cliFilename + "'", path);
+      throw new InvalidRunnerException("File found is invalid. Required: " + cliFilename + ". Please download from " +  getPublicDownloadLink());
     }
     return filePath;
   }
 
   public void downloadRunner(String gitlabAccessToken) throws IOException, InterruptedException{
-    String cliDownloadUrl = CLI_DOWNLOAD_URL.replace("${cliFilename}", cliFilename);   
+    String cliDownloadUrl = getPublicDownloadLink();   
     Map<String,String> properties = new HashMap<>();
 
     logger.println(">> Downloading runner...");

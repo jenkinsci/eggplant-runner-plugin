@@ -75,7 +75,7 @@ public class CLIRunnerHelperTest {
             Files.createFile(filepath);
             helper.copyRunnerFrom(filepath.toString());
             });
-        assertTrue(thrown.getMessage().contains("Mismatch of version/file.Eggplant runner version supported: '"+helper.getFilename()+"'"));
+        assertTrue(thrown.getMessage().contains("File found is invalid. Required: "+helper.getFilename()+". Please download from " + helper.getPublicDownloadLink()));
         
         // path exist and valid
         Path cliPath = userPath.resolve(helper.getFilename());
