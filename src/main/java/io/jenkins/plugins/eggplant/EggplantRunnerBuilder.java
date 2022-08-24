@@ -166,10 +166,18 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         
         logger.println("locale: " + locale);
         logger.println("locale.getCountry(): " + locale.getCountry());
+        
         if (!locale.getCountry().equals(""))
             localeString = String.format("%s.utf-8", locale.toString());
-        else
-            localeString = String.format("%s.utf-8", "en_US");
+        else{
+            // use default system locale if there is no locale found for Linux
+            if (os == OperatingSystem.LINUX){
+                localeString = String.format("%s.UTF-8", "C"); 
+            }
+            else{
+                localeString = String.format("%s.utf-8", "en_US");
+            }            
+        }
 
         CLIRunnerHelper CLIRunnerHelper = new CLIRunnerHelper(workspace, os, logger);
         if(this.eggplantRunnerPath != null && !this.eggplantRunnerPath.equals(""))
