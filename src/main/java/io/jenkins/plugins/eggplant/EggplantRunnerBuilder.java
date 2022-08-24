@@ -159,17 +159,22 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         PrintStream logger = listener.getLogger();
         String buildId = run.getId();
         String localeString = "";
-        Locale locale = Locale.getDefault();
         OperatingSystem os = this.getOperatingSystem(workspace, launcher);
         FilePath uniqueWorkspace = workspace.child(buildId);
         uniqueWorkspace.mkdirs(); 
         
-        logger.println("locale: " + locale);
-        logger.println("locale.getCountry(): " + locale.getCountry());
-        if (!locale.getCountry().equals(""))
-            localeString = String.format("%s.utf-8", locale.toString());
-        else
+        // Use legacy locale for Linux
+        if (os == OperatingSystem.LINUX){
+            localeString = String.format("%s.UTF-8", "C"); 
+        }
+        else{
             localeString = String.format("%s.utf-8", "en_US");
+        }            
+    
+        logger.println("Exported locale: " +  localeString);
+        EnvVars envVars = new EnvVars();
+        envVars.put("LC_ALL", localeString);
+        envVars.put("LANG",  localeString);
 
         CLIRunnerHelper CLIRunnerHelper = new CLIRunnerHelper(workspace, os, logger);
         if(this.eggplantRunnerPath != null && !this.eggplantRunnerPath.equals(""))
@@ -180,9 +185,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         FilePath cliRunnerPath = CLIRunnerHelper.getFilePath();
         String[] command = this.getCommand(cliRunnerPath, buildId, os, env);
         logger.println("command: " + Arrays.toString(command));
-        EnvVars envVars = new EnvVars();
-        envVars.put("LC_ALL", localeString);
-        envVars.put("LANG", localeString);
 
         cliRunnerPath.chmod(0755);
         logger.println(">> Executing " + cliRunnerPath);
