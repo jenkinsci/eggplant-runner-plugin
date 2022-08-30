@@ -139,6 +139,7 @@ public class CLIRunnerHelper{
         String proxyUsername = Jenkins.get().proxy.getUserName();
         String proxyPassword = Jenkins.get().proxy.getSecretPassword().getPlainText();
         this.setProxy(proxyHostname, port, proxyUsername, proxyPassword);
+        logger.println("Connected through proxxy server."); 
         connection = (HttpURLConnection) new URL(url).openConnection(proxy);
       }
       else
