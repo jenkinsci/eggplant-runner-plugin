@@ -114,15 +114,26 @@ public class CLIRunnerHelper{
   }
 
   private Proxy proxy;
-  public void setProxy(String ip, int port, String username, String password) {   
-    this.proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(ip, port));
-    Authenticator authenticator = new Authenticator() {
+  public void setProxy(String ip, int port, String username, String password) {    
+    Authenticator.setDefault(new Authenticator() {
       @Override
       public PasswordAuthentication getPasswordAuthentication() {
-        return (new PasswordAuthentication(username, password.toCharArray()));
-      }
-    };
-    Authenticator.setDefault(authenticator);
+          if (getRequestorType() == RequestorType.PROXY) {
+              if (getRequestingHost().equalsIgnoreCase(ip)) {
+                  if (port == getRequestingPort()) {
+                      return new PasswordAuthentication(username, password.toCharArray());  
+                  }
+              }
+          }
+          return null;
+      }  
+    });
+    System.setProperty("http.proxyHost", ip);
+    System.setProperty("http.proxyPort", String.valueOf(port));
+    System.setProperty("http.proxyUser", username);
+    System.setProperty("http.proxyPassword", password);
+    System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "");
+    this.proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(ip, port));
   }
   
   private FilePath downloadFromUrl(String url, Map<String, String> properties) throws BuilderException {
