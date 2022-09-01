@@ -38,6 +38,7 @@ public class CLIRunnerHelper{
   private FilePath workspace;
   private String cliFilename;
   private FilePath cliFilePath;
+  private Proxy proxy;
   
   public CLIRunnerHelper(FilePath workspace, OperatingSystem os, PrintStream logger){
     this.workspace = workspace;
@@ -113,7 +114,6 @@ public class CLIRunnerHelper{
     downloadFromUrl(cliDownloadUrl, properties);
   }
 
-  private Proxy proxy;
   public void setProxy(String ip, int port, String username, String password) {    
     Authenticator.setDefault(new Authenticator() {
       @Override
