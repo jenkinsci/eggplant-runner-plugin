@@ -4,7 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.net.Authenticator;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.PasswordAuthentication;
 import java.net.URL;
 import java.util.AbstractMap;
 import java.util.HashMap;
@@ -13,10 +16,12 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import java.net.Proxy;
 import hudson.FilePath;
 import io.jenkins.plugins.eggplant.common.OperatingSystem;
 import io.jenkins.plugins.eggplant.exception.BuilderException;
 import io.jenkins.plugins.eggplant.exception.InvalidRunnerException;
+import jenkins.model.Jenkins;
 
 public class CLIRunnerHelper{
 
@@ -108,12 +113,49 @@ public class CLIRunnerHelper{
     downloadFromUrl(cliDownloadUrl, properties);
   }
 
+  public Proxy setProxy(String ip, int port, String username, String password) {    
+    Authenticator.setDefault(new Authenticator() {
+      @Override
+      public PasswordAuthentication getPasswordAuthentication() {
+          if (getRequestorType() == RequestorType.PROXY) {
+              if (getRequestingHost().equalsIgnoreCase(ip)) {
+                  if (port == getRequestingPort()) {
+                      return new PasswordAuthentication(username, password.toCharArray());  
+                  }
+              }
+          }
+          return null;
+      }  
+    });
+    System.setProperty("http.proxyHost", ip);
+    System.setProperty("http.proxyPort", String.valueOf(port));
+    System.setProperty("http.proxyUser", username);
+    System.setProperty("http.proxyPassword", password);
+    System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "");
+    return new Proxy(Proxy.Type.HTTP, new InetSocketAddress(ip, port));
+  }
+  
   private FilePath downloadFromUrl(String url, Map<String, String> properties) throws BuilderException {
 
     try{
 
-      logger.println("GET " + url);
-      HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+      logger.println("GET " + url);      
+      HttpURLConnection connection = null;
+
+      if (Jenkins.get().proxy != null)
+      {
+        String proxyHostname = Jenkins.get().proxy.name;
+        int port = Jenkins.get().proxy.port;
+        String proxyUsername = Jenkins.get().proxy.getUserName();
+        String proxyPassword = Jenkins.get().proxy.getSecretPassword().getPlainText();
+        Proxy proxy = this.setProxy(proxyHostname, port, proxyUsername, proxyPassword);
+        logger.println("Connected through proxy server."); 
+        connection = (HttpURLConnection) new URL(url).openConnection(proxy);
+      }
+      else
+      {
+        connection = (HttpURLConnection) new URL(url).openConnection();
+      }
 
       for(Entry<String, String> entry: properties.entrySet()){
         connection.addRequestProperty (entry.getKey(), entry.getValue());
