@@ -38,7 +38,6 @@ public class CLIRunnerHelper{
   private FilePath workspace;
   private String cliFilename;
   private FilePath cliFilePath;
-  private Proxy proxy;
   
   public CLIRunnerHelper(FilePath workspace, OperatingSystem os, PrintStream logger){
     this.workspace = workspace;
@@ -114,7 +113,7 @@ public class CLIRunnerHelper{
     downloadFromUrl(cliDownloadUrl, properties);
   }
 
-  public void setProxy(String ip, int port, String username, String password) {    
+  public Proxy setProxy(String ip, int port, String username, String password) {    
     Authenticator.setDefault(new Authenticator() {
       @Override
       public PasswordAuthentication getPasswordAuthentication() {
@@ -133,7 +132,7 @@ public class CLIRunnerHelper{
     System.setProperty("http.proxyUser", username);
     System.setProperty("http.proxyPassword", password);
     System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "");
-    this.proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(ip, port));
+    return new Proxy(Proxy.Type.HTTP, new InetSocketAddress(ip, port));
   }
   
   private FilePath downloadFromUrl(String url, Map<String, String> properties) throws BuilderException {
@@ -149,7 +148,7 @@ public class CLIRunnerHelper{
         int port = Jenkins.get().proxy.port;
         String proxyUsername = Jenkins.get().proxy.getUserName();
         String proxyPassword = Jenkins.get().proxy.getSecretPassword().getPlainText();
-        this.setProxy(proxyHostname, port, proxyUsername, proxyPassword);
+        Proxy proxy = this.setProxy(proxyHostname, port, proxyUsername, proxyPassword);
         logger.println("Connected through proxy server."); 
         connection = (HttpURLConnection) new URL(url).openConnection(proxy);
       }
