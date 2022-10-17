@@ -137,7 +137,7 @@ pipeline {
 Output are shown in **Console Output**
 ![image](https://user-images.githubusercontent.com/101400930/169546010-1fce3d53-daa2-42e4-8945-0f6f49870d5d.png)
 
-## Release for DAI
+## Release for DAI 
 <table>
   <thead>
     <tr>
