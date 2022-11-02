@@ -10,7 +10,7 @@ The [Eggplant DAI](https://www.eggplantsoftware.com/digital-automation-intellige
 
 **Step 1:** Login to your Jenkins
 
-Go to http://localhost:{portnumber}/ and login into your Jenkins account
+Go to http://your_dai_server:{portnumber}/ and login into your Jenkins account
 ![image](https://user-images.githubusercontent.com/101400930/165949547-26ab3829-466f-478f-ad36-04427d2c7da3.png)
 
 **Step 2**: Manage Jenkins
@@ -41,12 +41,12 @@ Go to http://localhost:{portnumber}/ and login into your Jenkins account
 ## Inputs
 
 ### `serverURL`
-**Required** The URL of the Eggplant DAI server, e.g. `http://localhost:8000`.
+**Required** The URL of the Eggplant DAI server, e.g. `http(s)://your_dai_server:8000`.
 
 ### `testConfigID`
 **Required** The ID of the Eggplant DAI test configuration that you want to run, e.g. `09c48b7d-fc5b-481d-af80-fcffad5d9587`.
 Test configuration ID can be obtain by go to test config > look for a particular test config > test config id can be obtain from url.
-![image](https://user-images.githubusercontent.com/101400930/169785982-73302f9a-29a8-4438-b9b1-a58976ce5103.png)
+![image](https://user-images.githubusercontent.com/103989779/199387398-5bf852d0-2570-450b-a0ff-191c29ab26a5.png)
 
 
 ### `clientSecret`
@@ -54,8 +54,8 @@ Test configuration ID can be obtain by go to test config > look for a particular
              Alternatively, you could set a repo secret in `Repo Settings > Secrets > Actions` and refer to it like below:<br />
              `clientSecret: "${{ secrets.DAI_CLIENT_SECRET }}"`.
 
-The **DAI Client Secret** can be obtain by go to http://kc-localhost:8000/auth > client > search for client:dai:agent:integration > credential
-![image](https://user-images.githubusercontent.com/101400930/167881013-7b164d9e-41f1-4ce2-b08a-21704acb9d36.png)
+The **DAI Client Secret** can be obtain by go to http://kc-your_dai_server:8000/auth > client > search for client:dai:agent:integration > credential
+![image](https://user-images.githubusercontent.com/103989779/199387447-de1e1996-e2ba-413b-b0cd-e22efdd98178.png)
 
              
 ### `clientID`
