@@ -36,7 +36,8 @@ Go to `http://dai_server_hostname:portnumber/` and login into your Jenkins accou
 
 **Step 3**: Fill in **Eggplant Runner** parameter's value -> Click **Save**
 
-![image](https://user-images.githubusercontent.com/103989779/199420322-2e8fd34b-dbd3-4beb-88aa-60bb05bc3a0c.png)
+![image](https://user-images.githubusercontent.com/103989779/199642774-f776a734-e0de-4991-b0e5-2e2779483dbe.png)
+
 
 ## Inputs
 
