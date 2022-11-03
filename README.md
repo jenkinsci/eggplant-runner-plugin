@@ -41,12 +41,12 @@ Go to http://your_dai_server:{portnumber}/ and login into your Jenkins account
 ## Inputs
 
 ### `serverURL`
-**Required** The URL of the Eggplant DAI server, e.g. `http(s)://your_dai_server:8000`.
+**Required** The URL of the Eggplant DAI server, `http(s)://dai_server_hostname:portnumber`.
 
 ### `testConfigID`
 **Required** The ID of the Eggplant DAI test configuration that you want to run, e.g. `09c48b7d-fc5b-481d-af80-fcffad5d9587`.
 Test configuration ID can be obtain by go to test config > look for a particular test config > test config id can be obtain from url.
-![image](https://user-images.githubusercontent.com/103989779/199387398-5bf852d0-2570-450b-a0ff-191c29ab26a5.png)
+![image](https://user-images.githubusercontent.com/103989779/199636740-57d4bfd2-3c94-449c-b2d5-597d69d2f03e.png)
 
 
 ### `clientSecret`
@@ -54,12 +54,12 @@ Test configuration ID can be obtain by go to test config > look for a particular
              Alternatively, you could set a repo secret in `Repo Settings > Secrets > Actions` and refer to it like below:<br />
              `clientSecret: "${{ secrets.DAI_CLIENT_SECRET }}"`.
 
-The **DAI Client Secret** can be obtain by go to http://kc-your_dai_server:8000/auth > client > search for client:dai:agent:integration > credential
-![image](https://user-images.githubusercontent.com/103989779/199387447-de1e1996-e2ba-413b-b0cd-e22efdd98178.png)
+The **DAI Client Secret** can be obtain by go to http://dai_server_hostname:portnumber/auth > client > search for client:dai:agent:integration > credential
+![image](https://user-images.githubusercontent.com/103989779/199636556-700ac626-87ad-4373-ab97-b78773f25176.png)
 
              
 ### `clientID`
-**Optional** The client ID to use to authenticate with the Eggplant DAI server.<br />
+**Required** The client ID to use to authenticate with the Eggplant DAI server.<br />
 **Default:** `client:dai:agent:integration`
 
 ### `requestTimeout`
