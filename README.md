@@ -10,7 +10,7 @@ The [Eggplant DAI](https://www.eggplantsoftware.com/digital-automation-intellige
 
 **Step 1:** Login to your Jenkins
 
-Go to http://your_dai_server:{portnumber}/ and login into your Jenkins account
+Go to `http://dai_server_hostname:portnumber/` and login into your Jenkins account
 ![image](https://user-images.githubusercontent.com/101400930/165949547-26ab3829-466f-478f-ad36-04427d2c7da3.png)
 
 **Step 2**: Manage Jenkins
