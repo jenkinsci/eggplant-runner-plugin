@@ -82,4 +82,15 @@ public class EggplantRunnerBuilderTest {
         assertEquals(FormValidation.Kind.ERROR, form.kind);
      }
    
+     @Test
+     public void testIsValidTestEnvironmentTimeout() throws Exception {
+        DescriptorImpl descriptorImpl=new DescriptorImpl();
+
+        FormValidation form = descriptorImpl.doCheckTestEnvironmentTimeout("a");
+        assertEquals(FormValidation.Kind.ERROR, form.kind);
+
+        form = descriptorImpl.doCheckTestEnvironmentTimeout("20");
+        assertEquals(FormValidation.Kind.OK, form.kind);
+
+    }
 }
