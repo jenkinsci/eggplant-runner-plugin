@@ -76,6 +76,10 @@
             <f:textbox default="5" />
             The number of times to attempt each HTTP request to the DAI server  <em>[default: 5]</em>
         </f:entry>
+        <f:entry title="Test Environment Timeout " field="testEnvironmentTimeout">
+            <f:textbox default="15" />
+            The timeout in seconds for checking test environment readiness <em>[default: 15]</em>
+        </f:entry>
         <f:entry title="Backoff Factor " field="backoffFactor">
             <f:textbox default="0.5" />
             The exponential backoff factor between each HTTP request  <em>[default: 0.5]</em>
