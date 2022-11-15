@@ -44,6 +44,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     private String pollInterval;
     private String requestTimeout;
     private String requestRetries;
+    private String testEnvironmentTimeout;
     private String backoffFactor;
     private Boolean dryRun;
     private String eggplantRunnerPath;
@@ -81,6 +82,9 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     }
     public String getRequestRetries() {
         return requestRetries;
+    }
+    public String getTestEnvironmentTimeout() {
+        return testEnvironmentTimeout;
     }
     public String getBackoffFactor() {
         return backoffFactor;
@@ -137,6 +141,11 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     @DataBoundSetter
     public void setRequestRetries(String requestRetries) {
         this.requestRetries = requestRetries;
+    }
+
+    @DataBoundSetter
+    public void setTestEnvironmentTimeout(String testEnvironmentTimeout) {
+        this.testEnvironmentTimeout = testEnvironmentTimeout;
     }
 
     @DataBoundSetter
@@ -243,6 +252,8 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             commandList.add(String.format("--request-timeout=%s", this.requestTimeout)); 
         if (this.requestRetries != null && !this.requestRetries.equals("")) // requestRetriesArg
             commandList.add(String.format("--request-retries=%s", this.requestRetries)); 
+        if (this.testEnvironmentTimeout != null && !this.testEnvironmentTimeout.equals("")) // testEnvironmentTimeoutArg
+            commandList.add(String.format("--test-environment-timeout=%s", this.testEnvironmentTimeout)); 
         if (this.dryRun != null && this.dryRun) // dryRunArg
             commandList.add("--dry-run");
         if (this.backoffFactor != null && !this.backoffFactor.equals("")) // backoffFactorArg
@@ -327,6 +338,13 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         public FormValidation doCheckRequestRetries(@QueryParameter String value) throws IOException {
             if(!value.isEmpty()&&!isValidNumeric(value)){
                 return FormValidation.error("Invalid Request Retries.");
+            }
+            return FormValidation.ok();
+        }
+
+        public FormValidation doCheckTestEnvironmentTimeout(@QueryParameter String value) throws IOException {
+            if(!value.isEmpty()&&!isValidNumeric(value)){
+                return FormValidation.error("Invalid Test Environment Timeout.");
             }
             return FormValidation.ok();
         }

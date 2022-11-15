@@ -79,6 +79,10 @@ The **DAI Client Secret** can be obtain by go to http://dai_server_hostname:port
 **Optional** The number of seconds to wait between each call to the Eggplant DAI server<br />
 **Default:** `5`
 
+### `testEnvironmentTimeout`
+**Optional** The timeout in seconds for checking test environment readiness<br />
+**Default:** `15`
+
 ### `logLevel`
 **Optional** The logging level<br />
 **Default:** `INFO`
