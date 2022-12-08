@@ -151,9 +151,13 @@ Output are shown in **Console Output**
     </tr>
   </thead>
   <tbody>
+    <tr>
+      <td>6.4.0-3</td>
+      <td><a href="https://plugins.jenkins.io/eggplant-runner/">latest</a></td>
+  </tr>
   <tr>
       <td>6.3.0-3</td>
-      <td><a href="https://plugins.jenkins.io/eggplant-runner/">latest</a></td>
+      <td><a href="https://updates.jenkins.io/download/plugins/eggplant-runner/0.0.1.191.v72dea_07931b_6/eggplant-runner.hpi"> 0.0.1.191.v72dea_07931b_6</a> | <a href="https://updates.jenkins.io/download/plugins/eggplant-runner/0.0.1.189.v1e3397db_cee8/eggplant-runner.hpi">0.0.1.189.v1e3397db_cee8</a></td>
   </tr>
   <tr>
       <td>6.2.1-2</td>
