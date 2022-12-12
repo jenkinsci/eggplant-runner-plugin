@@ -12,12 +12,12 @@
         <br><strong>E.g. </strong>URL : https://dai_server_hostname:portnumber/controller/test-config/<strong><em>307fee3e-9d6b-43e6-b31e-f1d379f27fff</em></strong> </br>
     </f:entry>
     <f:entry title="Client Id *" field="clientId">
-        <f:textbox default="Dummy-Client-Id"/>
+        <f:textbox default="DAI-Client-Id"/>
         The <strong>DAI Client Id</strong> that used to authenticate with the DAI server.
         <br>Obtain from <strong>https://dai_server_hostname:portnumber/ → System → API Access → Add New (for new API access creation)</strong></br>      
     </f:entry>
     <f:entry title="Client Secret *" field="clientSecret">
-        <f:textbox default="Dummy-Client-Secret" id="clientSecret"/>
+        <f:textbox default="DAI-Client-Secret" id="clientSecret"/>
         <input type="checkbox" onclick="showPassword()" />Show client secret in text
         <iframe onload="showPassword()" style="display:none" />
         <br/>
