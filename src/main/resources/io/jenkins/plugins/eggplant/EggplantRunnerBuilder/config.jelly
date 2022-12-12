@@ -12,10 +12,9 @@
         <br><strong>E.g. </strong>URL : https://dai_server_hostname:portnumber/controller/test-config/<strong><em>307fee3e-9d6b-43e6-b31e-f1d379f27fff</em></strong> </br>
     </f:entry>
     <f:entry title="Client Id *" field="clientId">
-        <f:textbox default="client:dai:agent:integration"/>
+        <f:textbox default="Dummy-Client-Id"/>
         The <strong>DAI Client Id</strong> that used to authenticate with the DAI server.
-        <br>Obtain from <strong>https://kc-dai_server_hostname:portnumber/auth → Administration Console → Clients → search for integration</strong></br>        
-        <br><em>[default: client:dai:agent:integration]</em></br>
+        <br>Obtain from <strong>https://dai_server_hostname:portnumber/ → System → API Access → Add New (for new API access creation)</strong></br>      
     </f:entry>
     <f:entry title="Client Secret *" field="clientSecret">
         <f:textbox default="Dummy-Client-Secret" id="clientSecret"/>
@@ -44,7 +43,7 @@
         </script>
 
         <br>The <strong>DAI Client Secret</strong> that used to authenticate with the DAI server.</br>
-        <br>Obtain from <strong>https://dai_server_hostname:portnumber/system/api-access</strong></br>
+        <br>Obtain from <strong>https://dai_server_hostname:portnumber/ → System → API Access → Add New (for new API access creation)</strong></br>
         <br>Client Secret also can be set up as environment variable</br>
         <br><em>[env var: DAI_CLIENT_SECRET; required]</em></br>
     </f:entry>
