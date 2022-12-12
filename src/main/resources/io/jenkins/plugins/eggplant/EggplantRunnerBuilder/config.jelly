@@ -18,7 +18,7 @@
         <br><em>[default: client:dai:agent:integration]</em></br>
     </f:entry>
     <f:entry title="Client Secret *" field="clientSecret">
-        <f:textbox default="aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee" id="clientSecret"/>
+        <f:textbox default="Dummy-Client-Secret" id="clientSecret"/>
         <input type="checkbox" onclick="showPassword()" />Show client secret in text
         <iframe onload="showPassword()" style="display:none" />
         <br/>
