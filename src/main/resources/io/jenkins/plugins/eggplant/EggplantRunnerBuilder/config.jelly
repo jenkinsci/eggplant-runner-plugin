@@ -44,8 +44,7 @@
         </script>
 
         <br>The <strong>DAI Client Secret</strong> that used to authenticate with the DAI server.</br>
-        <br>Obtain from <strong>https://kc-dai_server_hostname:portnumber/auth → Administration Console → Clients → Client:dai:agent:integration → Credentials → Secret</strong></br>
-        <br><strong>E.g.</strong> <em> c49ce33d-5644-4198-b28f-9cf3d9ac05e4 </em></br>
+        <br>Obtain from <strong>https://dai_server_hostname:portnumber/system/api-access</strong></br>
         <br>Client Secret also can be set up as environment variable</br>
         <br><em>[env var: DAI_CLIENT_SECRET; required]</em></br>
     </f:entry>
