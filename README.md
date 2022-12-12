@@ -36,8 +36,7 @@ Go to your Jenkins home page and login into your Jenkins account
 
 **Step 3**: Fill in **Eggplant Runner** parameter's value -> Click **Save**
 
-![image](https://user-images.githubusercontent.com/101400930/206940407-a51f6f7d-08f7-4273-b93d-8c46348f98a1.png)
-
+![image](https://user-images.githubusercontent.com/101400930/206946834-63efe4a4-79e9-479f-8569-b164cccbf0de.png)
 
 ## Inputs
 
