@@ -36,8 +36,7 @@ Go to your Jenkins home page and login into your Jenkins account
 
 **Step 3**: Fill in **Eggplant Runner** parameter's value -> Click **Save**
 
-![image](https://user-images.githubusercontent.com/103989779/199642774-f776a734-e0de-4991-b0e5-2e2779483dbe.png)
-
+![image](https://user-images.githubusercontent.com/101400930/206946834-63efe4a4-79e9-479f-8569-b164cccbf0de.png)
 
 ## Inputs
 
@@ -51,12 +50,13 @@ Test configuration ID can be obtain by go to test config > look for a particular
 
 
 ### `clientSecret`
-**Required** The client secret to use to authenticate with the Eggplant DAI server, e.g. `e9c15662-8c1b-472e-930d-aa0b11726093`.<br />
+**Required** The client secret to use to authenticate with the Eggplant DAI server.<br />
              Alternatively, you could set a repo secret in `Repo Settings > Secrets > Actions` and refer to it like below:<br />
              `clientSecret: "${{ secrets.DAI_CLIENT_SECRET }}"`.
 
-The **DAI Client Secret** can be obtain by go to http://dai_server_hostname:portnumber/auth > client > search for client:dai:agent:integration > credential
-![image](https://user-images.githubusercontent.com/103989779/199636556-700ac626-87ad-4373-ab97-b78773f25176.png)
+The **DAI Client Secret** can be obtain by go to http(s):/dai_server_hostname:portnumber/ > System > API Access > "Add New" (for new API access creation)
+
+![image](https://user-images.githubusercontent.com/101400930/206938890-07a45761-3c49-40a7-bf48-1a1b6f3b3659.png)
 
              
 ### `clientID`
