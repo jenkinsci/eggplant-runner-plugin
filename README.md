@@ -51,7 +51,7 @@ Test configuration ID can be obtain by go to test config > look for a particular
 
 
 ### `clientSecret`
-**Required** The client secret to use to authenticate with the Eggplant DAI server, e.g. `e9c15662-8c1b-472e-930d-aa0b11726093`.<br />
+**Required** The client secret to use to authenticate with the Eggplant DAI server.<br />
              Alternatively, you could set a repo secret in `Repo Settings > Secrets > Actions` and refer to it like below:<br />
              `clientSecret: "${{ secrets.DAI_CLIENT_SECRET }}"`.
 
