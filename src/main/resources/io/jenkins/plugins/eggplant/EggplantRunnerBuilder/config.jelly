@@ -18,27 +18,39 @@
     </f:entry>
     <f:entry title="Client Secret *" field="clientSecret">
         <f:textbox default="DAI-Client-Secret" id="clientSecret"/>
-        <input type="checkbox" onclick="showPassword()" />Show client secret in text
-        <iframe onload="showPassword()" style="display:none" />
+        <input type="checkbox" onclick="showPassword()" id="ckBox"/>Show client secret in text
+        <iframe onload="doNotShowPassword()" style="display:none" />
         <br/>
         <script>
             function showPassword() {
-            var x = document.getElementById("clientSecret");
-            if (x.type === "password") {
-                x.type = "text";
-            } else {
-                x.type = "password";
-            }
+                document.querySelectorAll('*').forEach(function(node) {
+                    if(node.id==="clientSecret"){
+                        if(node.type ==="password"){
+                            node.type = "text";
+                        }
+                        else
+                        {
+                            node.type = "password";
+                        }
+                    };
+                    if(node.id==="ckBox"){
+                        if (document.getElementById("clientSecret").type === "password"){
+                            node.checked = false;
+                        }
+                        else{
+                            node.checked = true;
+                        }
+                    }
+                });
             }
         </script>
         <script>
-            var x = document.getElementById('clientSecret');
-            if (x != null) {
-                if (x.type === "password") {
-                    x.type = "text";
-                } else {
-                    x.type = "password";
-                }
+            function doNotShowPassword(){
+                document.querySelectorAll('*').forEach(function(node) {
+                    if(node.id==="clientSecret"){
+                        node.type = "password";
+                    }
+                });
             }
         </script>
 
