@@ -2,50 +2,60 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
     <f:entry title="DAI Server URL: *" field="serverURL">
         <f:textbox default="http://dai-server" />
-        <br>The URL of the <strong>Eggplant DAI</strong>,  http://dai_server_hostname:portnumber</br>    
+        <br>The URL of the <strong>Eggplant DAI</strong>,  http(s)://dai_server_hostname:portnumber</br>    
 
     </f:entry>
     <f:entry title="Test Config Id *" field="testConfigId">
         <f:textbox default="aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"/>
         Test configuration id that you want to execute test.
         <br> Test configuration id can be obtain from test config page URL in Eggplant DAI.</br>
-        <br><strong>E.g. </strong>URL : https://dai_server_hostname:portnumber/controller/test-config/<strong><em>307fee3e-9d6b-43e6-b31e-f1d379f27fff</em></strong> </br>
+        <br><strong>E.g. </strong>URL : http(s)://dai_server_hostname:portnumber/controller/test-config/<strong><em>307fee3e-9d6b-43e6-b31e-f1d379f27fff</em></strong> </br>
     </f:entry>
     <f:entry title="Client Id *" field="clientId">
-        <f:textbox default="client:dai:agent:integration"/>
+        <f:textbox default="DAI-Client-Id"/>
         The <strong>DAI Client Id</strong> that used to authenticate with the DAI server.
-        <br>Obtain from <strong>https://kc-dai_server_hostname:portnumber/auth → Administration Console → Clients → search for integration</strong></br>        
-        <br><em>[default: client:dai:agent:integration]</em></br>
+        <br>Obtain from <strong>http(s)://dai_server_hostname:portnumber/ → System → API Access → Add New (for new API access creation)</strong></br>      
     </f:entry>
     <f:entry title="Client Secret *" field="clientSecret">
-        <f:textbox default="aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee" id="clientSecret"/>
-        <input type="checkbox" onclick="showPassword()" />Show client secret in text
-        <iframe onload="showPassword()" style="display:none" />
+        <f:textbox default="DAI-Client-Secret" id="clientSecret"/>
+        <input type="checkbox" onclick="showPassword()" id="ckBox"/>Show client secret in text
+        <iframe onload="doNotShowPassword()" style="display:none" />
         <br/>
         <script>
             function showPassword() {
-            var x = document.getElementById("clientSecret");
-            if (x.type === "password") {
-                x.type = "text";
-            } else {
-                x.type = "password";
-            }
+                document.querySelectorAll('*').forEach(function(node) {
+                    if(node.id==="clientSecret"){
+                        if(node.type ==="password"){
+                            node.type = "text";
+                        }
+                        else
+                        {
+                            node.type = "password";
+                        }
+                    };
+                    if(node.id==="ckBox"){
+                        if (document.getElementById("clientSecret").type === "password"){
+                            node.checked = false;
+                        }
+                        else{
+                            node.checked = true;
+                        }
+                    }
+                });
             }
         </script>
         <script>
-            var x = document.getElementById('clientSecret');
-            if (x != null) {
-                if (x.type === "password") {
-                    x.type = "text";
-                } else {
-                    x.type = "password";
-                }
+            function doNotShowPassword(){
+                document.querySelectorAll('*').forEach(function(node) {
+                    if(node.id==="clientSecret"){
+                        node.type = "password";
+                    }
+                });
             }
         </script>
 
         <br>The <strong>DAI Client Secret</strong> that used to authenticate with the DAI server.</br>
-        <br>Obtain from <strong>https://kc-dai_server_hostname:portnumber/auth → Administration Console → Clients → Client:dai:agent:integration → Credentials → Secret</strong></br>
-        <br><strong>E.g.</strong> <em> c49ce33d-5644-4198-b28f-9cf3d9ac05e4 </em></br>
+        <br>Obtain from <strong>http(s)://dai_server_hostname:portnumber/ → System → API Access → Add New (for new API access creation)</strong></br>
         <br>Client Secret also can be set up as environment variable</br>
         <br><em>[env var: DAI_CLIENT_SECRET; required]</em></br>
     </f:entry>

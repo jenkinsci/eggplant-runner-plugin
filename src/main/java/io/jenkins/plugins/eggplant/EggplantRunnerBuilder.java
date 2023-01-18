@@ -307,9 +307,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             if(value.isEmpty()) {
                 return FormValidation.error("Client Secret cannot be empty.");
             }
-            else if(!isValidUuid(value)){
-                return FormValidation.error("Invalid Client Secret.");
-            }
             return FormValidation.ok();
         }
 
