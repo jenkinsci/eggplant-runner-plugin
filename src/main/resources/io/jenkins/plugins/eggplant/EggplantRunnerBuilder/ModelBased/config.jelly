@@ -23,11 +23,11 @@ THE SOFTWARE.
 -->
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
-  <f:entry title="Test Config Name *" name="name" field="name" value="${testConfigKeyType.name}">
+  <f:entry title="Test Config Name *" name="name" field="name" value="${testConfig.name}">
       <f:textbox default="DAI-Test-Config-Name"/>
       The name of the Eggplant DAI test configuration that you want to run.
   </f:entry>
-  <f:entry title="Model Name *" name="model" field="model" value="${testConfigKeyType.model}">
+  <f:entry title="Model Name *" name="model" field="model" value="${testConfig.model}">
       <f:textbox default="DAI-Test-Config-Model-Name"/>
       DAI model name for the specified test configuration.
   </f:entry>

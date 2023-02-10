@@ -53,7 +53,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     private String backoffFactor;
     private Boolean dryRun;
     private String eggplantRunnerPath;
-    private TestConfigKeyType testConfigKeyType;
+    private TestConfig testConfig;
 
     @DataBoundConstructor
     public EggplantRunnerBuilder() {
@@ -99,14 +99,18 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         return eggplantRunnerPath;
     }  
     
-    public TestConfigKeyType getTestConfigKeyType() {
+    public Boolean getDryRun() {
+        return dryRun;
+    } 
+
+    public TestConfig getTestConfig() {
         // Could return currently configured/saved item here to initialized form with this data
         // return null;
-        return testConfigKeyType;
+        return testConfig;
     }
     
-    public DescriptorExtensionList<TestConfigKeyType,Descriptor<TestConfigKeyType>> getTestConfigKeyTypeDescriptors() {
-        return Jenkins.get().getDescriptorList(TestConfigKeyType.class);
+    public DescriptorExtensionList<TestConfig,Descriptor<TestConfig>> getTestConfigDescriptors() {
+        return Jenkins.get().getDescriptorList(TestConfig.class);
     }
 
     @DataBoundSetter
@@ -180,8 +184,8 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     }
 
     @DataBoundSetter
-    public void setTestConfigKeyType(TestConfigKeyType testConfigKeyType) {
-        this.testConfigKeyType = testConfigKeyType;
+    public void setTestConfig(TestConfig testConfig) {
+        this.testConfig = testConfig;
     }    
 
 
@@ -253,29 +257,35 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         commandList.add(cliFile.getRemote()); // cliRunnerPath
        
         ////////////// NEW HANDLING /////////////////
-        if(this.testConfigKeyType != null)
+        if(this.testConfig != null)
         {
-            if(this.testConfigKeyType instanceof TestConfigId){
-                TestConfigId testconfigid = (TestConfigId) this.testConfigKeyType;
+            if(this.testConfig instanceof TestConfigId){
+                TestConfigId testconfigid = (TestConfigId) this.testConfig;
                 commandList.add(this.serverURL); // serverURLArg
                 commandList.add(testconfigid.getId()); // testConfigIdArgs
             }
 
-            if(this.testConfigKeyType instanceof ModelBased){
-                ModelBased modelbased = (ModelBased) this.testConfigKeyType;
+            if(this.testConfig instanceof ModelBased){
+                ModelBased modelbased = (ModelBased) this.testConfig;
                 commandList.add("modelbased");
                 commandList.add(this.serverURL); // serverURLArg
                 commandList.add(String.format("--test-config-name=%s", modelbased.getName())); 
                 commandList.add(String.format("--model-name=%s", modelbased.getModel()));
             }
 
-            if(this.testConfigKeyType instanceof ScriptBased){
-                ScriptBased scriptbased = (ScriptBased) this.testConfigKeyType;
+            if(this.testConfig instanceof ScriptBased){
+                ScriptBased scriptbased = (ScriptBased) this.testConfig;
                 commandList.add("scriptbased");
                 commandList.add(this.serverURL); // serverURLArg
                 commandList.add(String.format("--test-config-name=%s", scriptbased.getName())); 
                 commandList.add(String.format("--suite-name=%s", scriptbased.getSuite()));
             }
+        }
+        else
+        {
+            // Backward compatibility with pipeline
+            commandList.add(this.serverURL); // serverURLArg
+            commandList.add(this.testConfigId); // testConfigIdArgs
         }
         ////////////// NEW HANDLING ////////////////
 
@@ -333,16 +343,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             }
             return FormValidation.ok();
         }
-    
-        // public FormValidation doCheckTestConfigId(@QueryParameter String value) throws IOException {
-        //     if(value.isEmpty()) {
-        //         return FormValidation.error("Test Config Id cannot be empty.");
-        //     }
-        //     else if(!isValidUuid(value)){
-        //         return FormValidation.error("Invalid test configuration id.");
-        //     }
-        //     return FormValidation.ok();
-        // }
 
         public FormValidation doCheckClientId(@QueryParameter String value) throws IOException {
             if(value.isEmpty()) {
@@ -439,23 +439,19 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
    
     }
 
-    public static abstract class TestConfigKeyType implements ExtensionPoint, Describable<TestConfigKeyType> {
+    public static abstract class TestConfig implements ExtensionPoint, Describable<TestConfig> {
         protected String name;
-        protected TestConfigKeyType(String name) { this.name = name; }
+        protected TestConfig(String name) { this.name = name; }
 
-        public String getLabel(){
-            return name;
-        }
-
-        public Descriptor<TestConfigKeyType> getDescriptor() {
+        public Descriptor<TestConfig> getDescriptor() {
             return Jenkins.get().getDescriptor(getClass());
         }
     }
 
-    public static class TestConfigKeyTypeDescriptor extends Descriptor<TestConfigKeyType> {
+    public static class TestConfigDescriptor extends Descriptor<TestConfig> {
     } 
 
-    public static class TestConfigId extends TestConfigKeyType {
+    public static class TestConfigId extends TestConfig {
         private final String id;
         @DataBoundConstructor public TestConfigId(String id) {
             super("Test Config Id");
@@ -467,7 +463,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         }
 
         @Extension
-        public static final class DescriptorImpl extends TestConfigKeyTypeDescriptor {
+        public static final class DescriptorImpl extends TestConfigDescriptor {
 
             @Override
             public String getDisplayName() {
@@ -497,7 +493,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     }
 
 
-    public static class ScriptBased extends TestConfigKeyType {
+    public static class ScriptBased extends TestConfig {
         private final String name;
         private final String suite;
         @DataBoundConstructor public ScriptBased(String name, String suite) {
@@ -514,7 +510,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         }
 
         @Extension
-        public static final class DescriptorImpl extends TestConfigKeyTypeDescriptor {
+        public static final class DescriptorImpl extends TestConfigDescriptor {
 
             @Override
             public String getDisplayName() {
@@ -537,7 +533,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         }
     }
 
-    public static class ModelBased extends TestConfigKeyType {
+    public static class ModelBased extends TestConfig {
         private final String name;
         private final String model;
 
@@ -557,7 +553,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         }
     
         @Extension
-        public static final class DescriptorImpl extends TestConfigKeyTypeDescriptor {
+        public static final class DescriptorImpl extends TestConfigDescriptor {
 
             @Override
             public String getDisplayName() {
