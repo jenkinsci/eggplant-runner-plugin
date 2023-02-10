@@ -12,6 +12,7 @@ import hudson.util.FormValidation;
 import hudson.util.Secret;
 import io.jenkins.plugins.eggplant.common.LogLevel;
 import io.jenkins.plugins.eggplant.common.OperatingSystem;
+import io.jenkins.plugins.eggplant.exception.BuilderException;
 import io.jenkins.plugins.eggplant.exception.CLIExitException;
 import io.jenkins.plugins.eggplant.utils.CLIRunnerHelper;
 import hudson.model.AbstractProject;
@@ -41,6 +42,9 @@ import java.util.regex.Pattern;
 public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     private String serverURL;
     private String testConfigId;
+    private String testConfigName;
+    private String modelName;
+    private String suiteName;    
     private String clientId;
     private Secret clientSecret;
     private LogLevel logLevel;
@@ -64,6 +68,15 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     }
     public String getTestConfigId() {
         return testConfigId;
+    }
+    public String getTestConfigName() {
+        return testConfigName;
+    }
+    public String getModelName() {
+        return modelName;
+    }
+    public String getSuiteName() {
+        return suiteName;
     }
     public String getClientId() {
         return clientId;
@@ -121,6 +134,21 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     @DataBoundSetter
     public void setTestConfigId(String testConfigId) {
         this.testConfigId = testConfigId;
+    }
+
+    @DataBoundSetter
+    public void setTestConfigName(String testConfigName) {
+        this.testConfigName = testConfigName;
+    }
+
+    @DataBoundSetter
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
+    }
+
+    @DataBoundSetter
+    public void setSuiteName(String suiteName) {
+        this.suiteName = suiteName;
     }
 
     @DataBoundSetter
@@ -250,45 +278,54 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         return OperatingSystem.LINUX;
       }
 
-    private String[] getCommand(FilePath cliFile, String buildId, OperatingSystem os, EnvVars env) {
+    private String[] getCommand(FilePath cliFile, String buildId, OperatingSystem os, EnvVars env) throws BuilderException {
         List<String> commandList = new ArrayList<String>();
         
         //commandList.add("./" + cliFile.getName()); // cliRunnerPath
         commandList.add(cliFile.getRemote()); // cliRunnerPath
        
-        ////////////// NEW HANDLING /////////////////
-        if(this.testConfig != null)
+        if(this.testConfig == null)
         {
-            if(this.testConfig instanceof TestConfigId){
-                TestConfigId testconfigid = (TestConfigId) this.testConfig;
-                commandList.add(this.serverURL); // serverURLArg
-                commandList.add(testconfigid.getId()); // testConfigIdArgs
+            // Backward compatibility for pipeline syntax
+            if(this.testConfigId != null)
+                this.testConfig = new TestConfigId(this.testConfigId);
+            else if(this.testConfigName != null)
+            {
+                if(this.modelName != null && this.suiteName != null)
+                    throw new BuilderException("Error: modelName and suiteName found,  Use testConfigName with only suiteName or modelName to continue.");
+                else if(this.modelName != null)
+                    this.testConfig = new ModelBased(this.testConfigName,this.modelName);
+                else if(this.suiteName != null)
+                    this.testConfig = new ScriptBased(this.testConfigName,this.suiteName);
+                else
+                    throw new BuilderException("Error: testConfigName found, suiteName or modelName is required.");
             }
-
-            if(this.testConfig instanceof ModelBased){
-                ModelBased modelbased = (ModelBased) this.testConfig;
-                commandList.add("modelbased");
-                commandList.add(this.serverURL); // serverURLArg
-                commandList.add(String.format("--test-config-name=%s", modelbased.getName())); 
-                commandList.add(String.format("--model-name=%s", modelbased.getModel()));
-            }
-
-            if(this.testConfig instanceof ScriptBased){
-                ScriptBased scriptbased = (ScriptBased) this.testConfig;
-                commandList.add("scriptbased");
-                commandList.add(this.serverURL); // serverURLArg
-                commandList.add(String.format("--test-config-name=%s", scriptbased.getName())); 
-                commandList.add(String.format("--suite-name=%s", scriptbased.getSuite()));
-            }
+            else
+                throw new BuilderException("Error:  testConfigId and testConfigName not found. Use only testConfigId or testConfigName (with modelName or suiteName) to continue.");
         }
-        else
-        {
-            // Backward compatibility with pipeline
+
+        if(this.testConfig instanceof TestConfigId){
+            TestConfigId testconfigid = (TestConfigId) this.testConfig;
             commandList.add(this.serverURL); // serverURLArg
-            commandList.add(this.testConfigId); // testConfigIdArgs
+            commandList.add(testconfigid.getId()); // testConfigIdArgs
         }
-        ////////////// NEW HANDLING ////////////////
 
+        if(this.testConfig instanceof ModelBased){
+            ModelBased modelbased = (ModelBased) this.testConfig;
+            commandList.add("modelbased");
+            commandList.add(this.serverURL); // serverURLArg
+            commandList.add(String.format("--test-config-name=%s", modelbased.getName())); 
+            commandList.add(String.format("--model-name=%s", modelbased.getModel()));
+        }
+
+        if(this.testConfig instanceof ScriptBased){
+            ScriptBased scriptbased = (ScriptBased) this.testConfig;
+            commandList.add("scriptbased");
+            commandList.add(this.serverURL); // serverURLArg
+            commandList.add(String.format("--test-config-name=%s", scriptbased.getName())); 
+            commandList.add(String.format("--suite-name=%s", scriptbased.getSuite()));
+        }
+        
         if (this.clientId != null && !this.clientId.equals("")) // clientIdArg
             commandList.add(String.format("--client-id=%s", this.clientId)); 
 
