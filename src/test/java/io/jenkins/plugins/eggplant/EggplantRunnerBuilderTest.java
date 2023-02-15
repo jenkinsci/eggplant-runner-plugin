@@ -9,7 +9,6 @@ import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.util.FormValidation;
 import io.jenkins.plugins.eggplant.EggplantRunnerBuilder.DescriptorImpl;
-import io.jenkins.plugins.eggplant.EggplantRunnerBuilder.TestConfigId;
 
 public class EggplantRunnerBuilderTest {
     
@@ -21,8 +20,8 @@ public class EggplantRunnerBuilderTest {
         FreeStyleProject project = jenkins.createFreeStyleProject();
         EggplantRunnerBuilder builder = new EggplantRunnerBuilder();
         builder.setServerURL("http://localhost:8080");
-        TestConfigId testConfigId = new TestConfigId("test-Config-Id");
-        builder.setTestConfig(testConfigId);
+        builder.setTestConfig("id");
+        builder.setTestConfigId("test-Config-Id");
         builder.setClientSecret(hudson.util.Secret.fromString("c38ce33d-5644-4198-b28f-9cf3d9ac05e4"));
         builder.setDryRun(true);
         project.getBuildersList().add(builder);
