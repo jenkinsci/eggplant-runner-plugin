@@ -7,47 +7,8 @@
     </f:entry>
 
     <strong>Provide your test config information using one of the following method:</strong>
-
-    <f:radioBlock name="testConfig" field="testConfig" value="BY_ID" checked="${instance.testConfig == 'BY_ID' || instance.testConfig == null}" title="Test Config Id" inline="true">
-        <f:nested>
-           <f:entry title="Test Config Id *" field="testConfigId">
-                <f:textbox default="aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee" name="testConfigId" />
-                Test configuration id that you want to execute test.
-                <br> Test configuration id can be obtain from test config page URL in Eggplant DAI.</br>
-                <br><strong>E.g. </strong>URL : http(s)://dai_server_hostname:portnumber/controller/test-config/<strong><em>307fee3e-9d6b-43e6-b31e-f1d379f27fff</em></strong> </br>
-            </f:entry>
-        </f:nested>
-    </f:radioBlock>
-
-    <f:radioBlock name="testConfig" field="testConfig" value="BY_NAME" checked="${instance.testConfig == 'BY_NAME'}" title="Test Config Name" inline="true" onChange="resetFields()">
-        <f:nested>
-            <f:entry title="Test Config Name *" field="testConfigName">
-                <f:textbox default="DAI-Test-Config-Name"/>
-                The name of the Eggplant DAI test configuration that you want to run.
-            </f:entry>
-            <f:radioBlock name="testConfigType" value="MODEL" checked="${instance.testConfigType == 'MODEL' || instance.testConfigType == null}" title="Model-based" inline="true">
-                <f:nested>
-                    <f:entry title="Model Name *" field="modelName">
-                        <f:textbox default="DAI-Test-Config-Model-Name"/>
-                        DAI model name for the specified test configuration.
-                    </f:entry>
-                </f:nested>
-            </f:radioBlock>
-            <f:radioBlock name="testConfigType" value="SCRIPT" checked="${instance.testConfigType == 'SCRIPT'}" title="Script-based" inline="true">
-                <f:nested>
-                    <f:entry title="Suite Name *" field="suiteName" value="${instance.suiteName}">
-                        <f:textbox default="DAI-Test-Config-Suite-Name"/>
-                        DAI suite name for the specified test configuration.
-                    </f:entry>
-                </f:nested>
-            </f:radioBlock>
-        </f:nested>
-    </f:radioBlock>
-
-    <!--
     <f:dropdownDescriptorSelector field="testConfig" title="DAI Test Config: *" descriptors="${it.testConfigDescriptors}">
     </f:dropdownDescriptorSelector>
-    -->
    
     <f:entry title="Client Id *" field="clientId">
         <f:textbox default="DAI-Client-Id"/>
@@ -138,12 +99,4 @@
             <br><strong>E.g.</strong> <em> C:\eggplant\eggplant-runner-Windows-x.x.x-x.exe </em></br>
         </f:entry>        
     </f:advanced>
-
-
-<script>
-function resetFields() {
-    document.getElementById("testConfigId").value = "";
-}
-</script>
-
 </j:jelly>

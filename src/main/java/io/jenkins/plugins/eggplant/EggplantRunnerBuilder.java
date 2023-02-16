@@ -3,8 +3,10 @@ package io.jenkins.plugins.eggplant;
 import hudson.Launcher;
 import hudson.Proc;
 import hudson.Launcher.ProcStarter;
+import hudson.DescriptorExtensionList;
 import hudson.EnvVars;
 import hudson.Extension;
+import hudson.ExtensionPoint;
 import hudson.FilePath;
 import hudson.util.FormValidation;
 import hudson.util.Secret;
@@ -14,12 +16,15 @@ import io.jenkins.plugins.eggplant.exception.BuilderException;
 import io.jenkins.plugins.eggplant.exception.CLIExitException;
 import io.jenkins.plugins.eggplant.utils.CLIRunnerHelper;
 import hudson.model.AbstractProject;
+import hudson.model.Describable;
+import hudson.model.Descriptor;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.Builder;
 import hudson.tasks.BuildStepDescriptor;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
 
 import org.jenkinsci.Symbol;
@@ -52,8 +57,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     private String backoffFactor;
     private Boolean dryRun;
     private String eggplantRunnerPath;
-    private String testConfig;
-    private String testConfigType;
+    private TestConfig testConfig;
 
     @DataBoundConstructor
     public EggplantRunnerBuilder() {
@@ -112,14 +116,14 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         return dryRun;
     } 
 
-    public String getTestConfig() {
+    public TestConfig getTestConfig() {
         // Could return currently configured/saved item here to initialized form with this data
         // return null;
         return testConfig;
     }
-
-    public String getTestConfigType() {
-        return testConfigType;
+    
+    public DescriptorExtensionList<TestConfig,Descriptor<TestConfig>> getTestConfigDescriptors() {
+        return Jenkins.get().getDescriptorList(TestConfig.class);
     }
 
     @DataBoundSetter
@@ -208,14 +212,10 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     }
 
     @DataBoundSetter
-    public void setTestConfig(String testConfig) {
+    public void setTestConfig(TestConfig testConfig) {
         this.testConfig = testConfig;
-    }  
-
-    @DataBoundSetter
-    public void setTestConfigType(String testConfigType) {
-        this.testConfigType = testConfigType;
     }    
+
 
     @Override
     public void perform(Run<?, ?> run, FilePath workspace, EnvVars env, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
@@ -225,7 +225,15 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         OperatingSystem os = this.getOperatingSystem(workspace, launcher);
         FilePath uniqueWorkspace = workspace.child(buildId);
         uniqueWorkspace.mkdirs(); 
-
+        
+        // Use legacy locale for Linux
+        if (os == OperatingSystem.LINUX){
+            localeString = String.format("%s.UTF-8", "C"); 
+        }
+        else{
+            localeString = String.format("%s.utf-8", "en_US");
+        }            
+    
         logger.println("Exported locale: " +  localeString);
         EnvVars envVars = new EnvVars();
         envVars.put("LC_ALL", localeString);
@@ -238,7 +246,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             CLIRunnerHelper.downloadRunner(env.get("gitlabAccessToken"));
 
         FilePath cliRunnerPath = CLIRunnerHelper.getFilePath();
-        String[] command = this.getCommand(cliRunnerPath, env);
+        String[] command = this.getCommand(cliRunnerPath, buildId, os, env);
         logger.println("command: " + Arrays.toString(command));
 
         cliRunnerPath.chmod(0755);
@@ -270,46 +278,54 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         return OperatingSystem.LINUX;
       }
 
-    
-    private String[] getCommand(FilePath cliFile, EnvVars env) throws BuilderException {
+    private String[] getCommand(FilePath cliFile, String buildId, OperatingSystem os, EnvVars env) throws BuilderException {
         List<String> commandList = new ArrayList<String>();
-
+        
         //commandList.add("./" + cliFile.getName()); // cliRunnerPath
         commandList.add(cliFile.getRemote()); // cliRunnerPath
-
-         TestConfigCommand cmd = new TestConfigCommand();
-         cmd.serverURL = this.serverURL;
-
-        if(this.testConfig != null)
+       
+        if(this.testConfig == null)
         {
-            if(this.testConfig.equals("BY_ID"))
+            // Backward compatibility for pipeline syntax
+            if(this.testConfigId != null)
+                this.testConfig = new TestConfigId(this.testConfigId);
+            else if(this.testConfigName != null)
             {
-               cmd.testConfigId = this.testConfigId;
+                if(this.modelName != null && this.suiteName != null)
+                    throw new BuilderException("Error: modelName and suiteName found,  Use testConfigName with only suiteName or modelName to continue.");
+                else if(this.modelName != null)
+                    this.testConfig = new ModelBased(this.testConfigName,this.modelName);
+                else if(this.suiteName != null)
+                    this.testConfig = new ScriptBased(this.testConfigName,this.suiteName);
+                else
+                    throw new BuilderException("Error: testConfigName found, suiteName or modelName is required.");
             }
-            else if(this.testConfig.equals("BY_NAME"))
-            {
-               cmd.testConfigName = this.testConfigName;
-               
-               if(this.testConfigType != null)
-                {
-                    if(this.testConfigType.equals("MODEL"))
-                        cmd.modelName = this.modelName;
-                    else if (this.testConfigType.equals("SCRIPT"))
-                        cmd.suiteName = this.suiteName;
-                }
-            }
+            else
+                throw new BuilderException("Error:  testConfigId and testConfigName not found. Use only testConfigId or testConfigName (with modelName or suiteName) to continue.");
         }
-        else
-        {
-            // pipeline 
-            cmd.testConfigId = this.testConfigId;
-            cmd.testConfigName = this.testConfigName;
-            cmd.modelName = this.modelName;
-            cmd.suiteName = this.suiteName;
+
+        if(this.testConfig instanceof TestConfigId){
+            TestConfigId testconfigid = (TestConfigId) this.testConfig;
+            commandList.add(this.serverURL); // serverURLArg
+            commandList.add(testconfigid.getId()); // testConfigIdArgs
+        }
+
+        if(this.testConfig instanceof ModelBased){
+            ModelBased modelbased = (ModelBased) this.testConfig;
+            commandList.add("modelbased");
+            commandList.add(this.serverURL); // serverURLArg
+            commandList.add(String.format("--test-config-name=%s", modelbased.getName())); 
+            commandList.add(String.format("--model-name=%s", modelbased.getModel()));
+        }
+
+        if(this.testConfig instanceof ScriptBased){
+            ScriptBased scriptbased = (ScriptBased) this.testConfig;
+            commandList.add("scriptbased");
+            commandList.add(this.serverURL); // serverURLArg
+            commandList.add(String.format("--test-config-name=%s", scriptbased.getName())); 
+            commandList.add(String.format("--suite-name=%s", scriptbased.getSuite()));
         }
         
-        commandList.addAll(cmd.getCommand());
-
         if (this.clientId != null && !this.clientId.equals("")) // clientIdArg
             commandList.add(String.format("--client-id=%s", this.clientId)); 
 
@@ -341,56 +357,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         return commandList.toArray(new String[0]);
     }
 
-    public class TestConfigCommand
-    {
-        public String serverURL = null;
-        public String testConfigId = null;
-        public String testConfigName = null;
-        public String modelName = null;
-        public String suiteName = null;
-
-        TestConfigCommand(){
-
-        }
- 
-        public List<String> getCommand() throws BuilderException
-        {
-            List<String> commandList = new ArrayList<String>();
-          
-            if(this.testConfigId != null)
-            {
-                commandList.add(this.serverURL);
-                commandList.add(this.testConfigId);
-            }
-            else if(this.testConfigName != null)
-            {
-                if(this.modelName != null && this.suiteName != null)
-                    throw new BuilderException("Error: modelName and suiteName found,  Use testConfigName with only suiteName or modelName to continue.");
-
-                if(this.modelName != null)
-                {
-                    commandList.add("modelbased");
-                    commandList.add(this.serverURL);
-                    commandList.add(String.format("--test-config-name=%s", this.testConfigName));
-                    commandList.add(String.format("--model-name=%s", this.modelName));
-                }
-                else if(this.suiteName != null)
-                {
-                    commandList.add("scriptbased");
-                    commandList.add(this.serverURL);
-                    commandList.add(String.format("--test-config-name=%s", this.testConfigName));
-                    commandList.add(String.format("--suite-name=%s", this.suiteName));
-                }
-                else
-                    throw new BuilderException("Error: testConfigName found, suiteName or modelName is required.");
-            }
-            else
-                throw new BuilderException("Error:  testConfigId and testConfigName not found. Use only testConfigId or testConfigName (with modelName or suiteName) to continue.");
-        
-            return commandList;
-        }
-    }
-    
     @Symbol("eggplantRunner")
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
@@ -411,37 +377,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             }
             else if(!isValidURL(value)){
                 return FormValidation.error("Invalid server url.");
-            }
-            return FormValidation.ok();
-        }
-
-        public FormValidation doCheckTestConfigId(@QueryParameter String value) throws IOException {
-            if(value.isEmpty()) {
-                return FormValidation.error("Test Config Id cannot be empty.");
-            }
-            else if(!isValidUuid(value)){
-                return FormValidation.error("Invalid test configuration id.");
-            }
-            return FormValidation.ok();
-        }
-
-        public FormValidation doCheckTestConfigName(@QueryParameter String value) throws IOException {
-            if(value.isEmpty()) {
-                return FormValidation.error("Test Config Name cannot be empty.");
-            }
-            return FormValidation.ok();
-        }
-
-        public FormValidation doCheckSuiteName(@QueryParameter String value) throws IOException {
-            if(value.isEmpty()) {
-                return FormValidation.error("Suite Name cannot be empty.");
-            }
-            return FormValidation.ok();
-        }
-
-        public FormValidation doCheckModelName(@QueryParameter String value) throws IOException {
-            if(value.isEmpty()) {
-                return FormValidation.error("Model Name cannot be empty.");
             }
             return FormValidation.ok();
         }
@@ -512,15 +447,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
                 return false;
         }
 
-        private Boolean isValidUuid(String value){
-            Pattern p = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
-            Boolean isMatch=p.matcher(value).matches();
-            if(isMatch)
-                return true;
-            else
-                return false;
-        }
-
         private Boolean isValidNumeric(String value){
             Pattern p = Pattern.compile("^\\d+$");
             Boolean isMatch=p.matcher(value).matches();
@@ -547,7 +473,146 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             else
                 return false;
         }
-
+   
     }
+
+    public static abstract class TestConfig implements ExtensionPoint, Describable<TestConfig> {
+        protected String name;
+        protected TestConfig(String name) { this.name = name; }
+
+        public Descriptor<TestConfig> getDescriptor() {
+            return Jenkins.get().getDescriptor(getClass());
+        }
+    }
+
+    public static class TestConfigDescriptor extends Descriptor<TestConfig> {
+    } 
+
+    public static class TestConfigId extends TestConfig {
+        private final String id;
+        @DataBoundConstructor public TestConfigId(String id) {
+            super("Test Config Id");
+            this.id=id;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        @Extension
+        public static final class DescriptorImpl extends TestConfigDescriptor {
+
+            @Override
+            public String getDisplayName() {
+                return "Test Config Id";
+            }
+
+            public FormValidation doCheckId(@QueryParameter String value) throws IOException {
+                if(value.isEmpty()) {
+                    return FormValidation.error("Test Config Id cannot be empty.");
+                }
+                else if(!isValidUuid(value)){
+                    return FormValidation.error("Invalid test configuration id.");
+                }
+                return FormValidation.ok();
+            }
+
+            private Boolean isValidUuid(String value){
+                Pattern p = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
+                Boolean isMatch=p.matcher(value).matches();
+                if(isMatch)
+                    return true;
+                else
+                    return false;
+            }
+
+        }
+    }
+
+
+    public static class ScriptBased extends TestConfig {
+        private final String name;
+        private final String suite;
+        @DataBoundConstructor public ScriptBased(String name, String suite) {
+            super("Script Based");
+            this.name=name;
+            this.suite=suite;
+        }
+        public String getName() {
+            return name;
+        }
+
+        public String getSuite() {
+            return suite;
+        }
+
+        @Extension
+        public static final class DescriptorImpl extends TestConfigDescriptor {
+
+            @Override
+            public String getDisplayName() {
+                return "Script Based";
+            }
+
+            public FormValidation doCheckName(@QueryParameter String value) throws IOException {
+                if(value.isEmpty()) {
+                    return FormValidation.error("Test Config Name cannot be empty.");
+                }
+                return FormValidation.ok();
+            }
+
+            public FormValidation doCheckSuite(@QueryParameter String value) throws IOException {
+                if(value.isEmpty()) {
+                    return FormValidation.error("Suite Name cannot be empty.");
+                }
+                return FormValidation.ok();
+            }
+        }
+    }
+
+    public static class ModelBased extends TestConfig {
+        private final String name;
+        private final String model;
+
+        @DataBoundConstructor 
+        public ModelBased(String name, String model) {
+            super("Model Based");
+            this.name = name;
+            this.model = model;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getModel() {
+            return model;
+        }
+    
+        @Extension
+        public static final class DescriptorImpl extends TestConfigDescriptor {
+
+            @Override
+            public String getDisplayName() {
+                return "Model Based";
+            }
+
+            public FormValidation doCheckName(@QueryParameter String value) throws IOException {
+                if(value.isEmpty()) {
+                    return FormValidation.error("Test Config Name cannot be empty.");
+                }
+                return FormValidation.ok();
+            }
+
+            public FormValidation doCheckModel(@QueryParameter String value) throws IOException {
+                if(value.isEmpty()) {
+                    return FormValidation.error("Model Name cannot be empty.");
+                }
+                return FormValidation.ok();
+            }
+
+        }
+    }
+
     
 }
