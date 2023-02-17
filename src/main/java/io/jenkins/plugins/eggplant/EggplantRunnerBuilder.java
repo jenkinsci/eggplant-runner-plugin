@@ -3,7 +3,6 @@ package io.jenkins.plugins.eggplant;
 import hudson.Launcher;
 import hudson.Proc;
 import hudson.Launcher.ProcStarter;
-import hudson.DescriptorExtensionList;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.ExtensionPoint;
@@ -111,20 +110,29 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     public String getEggplantRunnerPath() {
         return eggplantRunnerPath;
     }  
-    
-    public Boolean getDryRun() {
-        return dryRun;
-    } 
 
     public TestConfig getTestConfig() {
         // Could return currently configured/saved item here to initialized form with this data
         // return null;
         return testConfig;
     }
-    
-    public DescriptorExtensionList<TestConfig,Descriptor<TestConfig>> getTestConfigDescriptors() {
-        return Jenkins.get().getDescriptorList(TestConfig.class);
-    }
+
+    // public DescriptorExtensionList<TestConfig,Descriptor<TestConfig>> getTestConfigDescriptors() {
+    //     DescriptorExtensionList<TestConfig,Descriptor<TestConfig>> list = 
+    //         Jenkins.get().getDescriptorList(TestConfig.class);
+
+    //     for (Descriptor<TestConfig> descriptor : list) {
+    //         System.out.println(descriptor.getDisplayName());
+    //     }
+
+    //     list.reverseView();
+
+    //     for (Descriptor<TestConfig> descriptor : list) {
+    //         System.out.println(descriptor.getDisplayName());
+    //     }
+
+    //     return list;
+    // }
 
     @DataBoundSetter
     public void setServerURL(String serverURL) {
@@ -490,8 +498,10 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
 
     public static class TestConfigId extends TestConfig {
         private final String id;
-        @DataBoundConstructor public TestConfigId(String id) {
-            super("Test Config Id");
+
+        @DataBoundConstructor 
+        public TestConfigId(String id) {
+            super("TestConfigId");
             this.id=id;
         }
 
@@ -504,7 +514,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
 
             @Override
             public String getDisplayName() {
-                return "Test Config Id";
+                return "By Id";
             }
 
             public FormValidation doCheckId(@QueryParameter String value) throws IOException {
@@ -534,7 +544,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         private final String name;
         private final String suite;
         @DataBoundConstructor public ScriptBased(String name, String suite) {
-            super("Script Based");
+            super("ScriptBased");
             this.name=name;
             this.suite=suite;
         }
@@ -551,7 +561,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
 
             @Override
             public String getDisplayName() {
-                return "Script Based";
+                return "By Test Config Name and Suite Name (Script-based)";
             }
 
             public FormValidation doCheckName(@QueryParameter String value) throws IOException {
@@ -576,7 +586,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
 
         @DataBoundConstructor 
         public ModelBased(String name, String model) {
-            super("Model Based");
+            super("ModelBased");
             this.name = name;
             this.model = model;
         }
@@ -594,7 +604,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
 
             @Override
             public String getDisplayName() {
-                return "Model Based";
+                return "By Test Config Name and Model Name (Model-based)";
             }
 
             public FormValidation doCheckName(@QueryParameter String value) throws IOException {
