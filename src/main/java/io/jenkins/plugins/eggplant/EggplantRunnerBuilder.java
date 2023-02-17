@@ -117,22 +117,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         return testConfig;
     }
 
-    // public DescriptorExtensionList<TestConfig,Descriptor<TestConfig>> getTestConfigDescriptors() {
-    //     DescriptorExtensionList<TestConfig,Descriptor<TestConfig>> list = 
-    //         Jenkins.get().getDescriptorList(TestConfig.class);
-
-    //     for (Descriptor<TestConfig> descriptor : list) {
-    //         System.out.println(descriptor.getDisplayName());
-    //     }
-
-    //     list.reverseView();
-
-    //     for (Descriptor<TestConfig> descriptor : list) {
-    //         System.out.println(descriptor.getDisplayName());
-    //     }
-
-    //     return list;
-    // }
 
     @DataBoundSetter
     public void setServerURL(String serverURL) {
