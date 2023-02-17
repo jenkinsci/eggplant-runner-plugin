@@ -112,8 +112,12 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     }  
 
     public TestConfig getTestConfig() {
-        // Could return currently configured/saved item here to initialized form with this data
-        // return null;
+        if(this.testConfigId != null)
+        {
+            // Backward compatibility - converts old UI input field
+            testConfig = new TestConfigId(this.testConfigId);
+            this.testConfigId = null;
+        }
         return testConfig;
     }
 
@@ -469,8 +473,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     }
 
     public static abstract class TestConfig implements ExtensionPoint, Describable<TestConfig> {
-        protected String name;
-        protected TestConfig(String name) { this.name = name; }
 
         public Descriptor<TestConfig> getDescriptor() {
             return Jenkins.get().getDescriptor(getClass());
@@ -485,7 +487,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
 
         @DataBoundConstructor 
         public TestConfigId(String id) {
-            super("TestConfigId");
             this.id=id;
         }
 
@@ -528,7 +529,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         private final String name;
         private final String suite;
         @DataBoundConstructor public ScriptBased(String name, String suite) {
-            super("ScriptBased");
             this.name=name;
             this.suite=suite;
         }
@@ -570,7 +570,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
 
         @DataBoundConstructor 
         public ModelBased(String name, String model) {
-            super("ModelBased");
             this.name = name;
             this.model = model;
         }
