@@ -6,7 +6,6 @@
 
     </f:entry>
 
-    <strong>Provide your test config information using one of the following method:</strong>
     <f:dropdownDescriptorSelector field="testConfig" title="DAI Test Config: *" descriptors="${it.testConfigDescriptors}">
     </f:dropdownDescriptorSelector>
    

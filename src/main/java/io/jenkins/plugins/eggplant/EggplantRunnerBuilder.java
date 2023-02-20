@@ -242,7 +242,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             CLIRunnerHelper.downloadRunner(env.get("gitlabAccessToken"));
 
         FilePath cliRunnerPath = CLIRunnerHelper.getFilePath();
-        String[] command = this.getCommand(cliRunnerPath, buildId, os, env);
+        String[] command = this.getCommand(cliRunnerPath, env);
         logger.println("command: " + Arrays.toString(command));
 
         cliRunnerPath.chmod(0755);
@@ -274,38 +274,34 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         return OperatingSystem.LINUX;
       }
 
-    private String[] getCommand(FilePath cliFile, String buildId, OperatingSystem os, EnvVars env) throws BuilderException {
-        List<String> commandList = new ArrayList<String>();
-        
-        //commandList.add("./" + cliFile.getName()); // cliRunnerPath
-        commandList.add(cliFile.getRemote()); // cliRunnerPath
-       
+    public void getBackwardCompatibilityCommands() throws BuilderException{
+
         if(this.testConfig == null)
         {
-            // Backward compatibility for pipeline syntax
             if(this.testConfigId != null)
                 this.testConfig = new TestConfigId(this.testConfigId);
             else if(this.testConfigName != null)
             {
                 if(this.modelName != null && this.suiteName != null)
-                    throw new BuilderException("Error: modelName and suiteName found,  Use testConfigName with only suiteName or modelName to continue.");
+                    throw new BuilderException("modelName and suiteName found,  Use testConfigName with only suiteName or modelName to continue.");
                 else if(this.modelName != null)
                     this.testConfig = new ModelBased(this.testConfigName,this.modelName);
                 else if(this.suiteName != null)
                     this.testConfig = new ScriptBased(this.testConfigName,this.suiteName);
                 else
-                    throw new BuilderException("Error: testConfigName found, suiteName or modelName is required.");
+                    throw new BuilderException("testConfigName found, suiteName or modelName is required.");
             }
             else
-                throw new BuilderException("Error:  testConfigId and testConfigName not found. Use only testConfigId or testConfigName (with modelName or suiteName) to continue.");
+                throw new BuilderException("testConfigId and testConfigName not found. Use only testConfigId or testConfigName (with modelName or suiteName) to continue.");
         }
+    }
 
+    public List<String> getMandatoryCommandList(List<String> commandList, EnvVars env){
         if(this.testConfig instanceof TestConfigId){
             TestConfigId testconfigid = (TestConfigId) this.testConfig;
             commandList.add(this.serverURL); // serverURLArg
             commandList.add(testconfigid.getId()); // testConfigIdArgs
         }
-
         if(this.testConfig instanceof ModelBased){
             ModelBased modelbased = (ModelBased) this.testConfig;
             commandList.add("modelbased");
@@ -313,7 +309,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             commandList.add(String.format("--test-config-name=%s", modelbased.getName())); 
             commandList.add(String.format("--model-name=%s", modelbased.getModel()));
         }
-
         if(this.testConfig instanceof ScriptBased){
             ScriptBased scriptbased = (ScriptBased) this.testConfig;
             commandList.add("scriptbased");
@@ -321,16 +316,17 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             commandList.add(String.format("--test-config-name=%s", scriptbased.getName())); 
             commandList.add(String.format("--suite-name=%s", scriptbased.getSuite()));
         }
-        
         if (this.clientId != null && !this.clientId.equals("")) // clientIdArg
-            commandList.add(String.format("--client-id=%s", this.clientId)); 
-
+        commandList.add(String.format("--client-id=%s", this.clientId)); 
         // clientSecretArg
         if (this.clientSecret != null && !this.clientSecret.getPlainText().isEmpty()) 
             commandList.add(String.format("--client-secret=%s", this.clientSecret));
         else if (env.get("DAI_CLIENT_SECRET") != null && !env.get("DAI_CLIENT_SECRET").equals("")) 
             commandList.add(String.format("--client-secret=%s", env.get("DAI_CLIENT_SECRET")));
+        return commandList;
+    }
 
+    public List<String> getOptionalCommandList(List<String> commandList){
         if (this.logLevel != null) // logLevelArg
             commandList.add(String.format("--log-level=%s", this.logLevel)); 
         if (this.CACertPath != null && !this.CACertPath.equals("")) // CACertPathArg
@@ -348,9 +344,18 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         if (this.dryRun != null && this.dryRun) // dryRunArg
             commandList.add("--dry-run");
         if (this.backoffFactor != null && !this.backoffFactor.equals("")) // backoffFactorArg
-            commandList.add(String.format("--backoff-factor=%s", this.backoffFactor));             
+            commandList.add(String.format("--backoff-factor=%s", this.backoffFactor)); 
+        return commandList;
+    }
 
-        return commandList.toArray(new String[0]);
+    private String[] getCommand(FilePath cliFile, EnvVars env) throws BuilderException {
+        List<String> commandList = new ArrayList<String>();
+            //commandList.add("./" + cliFile.getName()); // cliRunnerPath
+            commandList.add(cliFile.getRemote()); // cliRunnerPath       
+            this.getBackwardCompatibilityCommands();
+            commandList = getMandatoryCommandList(commandList, env);
+            commandList = getOptionalCommandList(commandList);
+            return commandList.toArray(new String[0]);       
     }
 
     @Symbol("eggplantRunner")
@@ -479,9 +484,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         }
     }
 
-    public static class TestConfigDescriptor extends Descriptor<TestConfig> {
-    } 
-
     public static class TestConfigId extends TestConfig {
         private final String id;
 
@@ -495,11 +497,11 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         }
 
         @Extension
-        public static final class DescriptorImpl extends TestConfigDescriptor {
+        public static final class DescriptorImpl extends Descriptor<TestConfig> {
 
             @Override
             public String getDisplayName() {
-                return "By Id";
+                return "By Test Config Id";
             }
 
             public FormValidation doCheckId(@QueryParameter String value) throws IOException {
@@ -541,7 +543,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         }
 
         @Extension
-        public static final class DescriptorImpl extends TestConfigDescriptor {
+        public static final class DescriptorImpl extends Descriptor<TestConfig> {
 
             @Override
             public String getDisplayName() {
@@ -583,7 +585,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         }
     
         @Extension
-        public static final class DescriptorImpl extends TestConfigDescriptor {
+        public static final class DescriptorImpl extends Descriptor<TestConfig> {
 
             @Override
             public String getDisplayName() {
