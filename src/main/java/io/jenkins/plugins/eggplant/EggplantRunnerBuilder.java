@@ -274,6 +274,11 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         return OperatingSystem.LINUX;
       }
 
+    /**
+    * Translate pipeline syntax value for testConfigId, testConfigName, modelName and suiteName 
+    * into testConfig instance.
+    * @param  none
+    */
     public void getBackwardCompatibilityCommands() throws BuilderException{
 
         if(this.testConfig == null)
@@ -296,56 +301,57 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         }
     }
 
-    public List<String> getMandatoryCommandList(List<String> commandList, EnvVars env){
+    public List<String> getMandatoryCommandList(EnvVars env){
+        List<String> args = new ArrayList<String>();
         if(this.testConfig instanceof TestConfigId){
             TestConfigId testconfigid = (TestConfigId) this.testConfig;
-            commandList.add(this.serverURL); // serverURLArg
-            commandList.add(testconfigid.getId()); // testConfigIdArgs
+            args.add(this.serverURL); // serverURLArg
+            args.add(testconfigid.getId()); // testConfigIdArgs
         }
         if(this.testConfig instanceof ModelBased){
             ModelBased modelbased = (ModelBased) this.testConfig;
-            commandList.add("modelbased");
-            commandList.add(this.serverURL); // serverURLArg
-            commandList.add(String.format("--test-config-name=%s", modelbased.getName())); 
-            commandList.add(String.format("--model-name=%s", modelbased.getModel()));
+            args.add("modelbased");
+            args.add(this.serverURL); // serverURLArg
+            args.add(String.format("--test-config-name=%s", modelbased.getName())); 
+            args.add(String.format("--model-name=%s", modelbased.getModel()));
         }
         if(this.testConfig instanceof ScriptBased){
             ScriptBased scriptbased = (ScriptBased) this.testConfig;
-            commandList.add("scriptbased");
-            commandList.add(this.serverURL); // serverURLArg
-            commandList.add(String.format("--test-config-name=%s", scriptbased.getName())); 
-            commandList.add(String.format("--suite-name=%s", scriptbased.getSuite()));
+            args.add("scriptbased");
+            args.add(this.serverURL); // serverURLArg
+            args.add(String.format("--test-config-name=%s", scriptbased.getName())); 
+            args.add(String.format("--suite-name=%s", scriptbased.getSuite()));
         }
         if (this.clientId != null && !this.clientId.equals("")) // clientIdArg
-        commandList.add(String.format("--client-id=%s", this.clientId)); 
-        // clientSecretArg
-        if (this.clientSecret != null && !this.clientSecret.getPlainText().isEmpty()) 
-            commandList.add(String.format("--client-secret=%s", this.clientSecret));
+            args.add(String.format("--client-id=%s", this.clientId)); 
+        if (this.clientSecret != null && !this.clientSecret.getPlainText().isEmpty())  // clientSecretArg
+            args.add(String.format("--client-secret=%s", this.clientSecret));
         else if (env.get("DAI_CLIENT_SECRET") != null && !env.get("DAI_CLIENT_SECRET").equals("")) 
-            commandList.add(String.format("--client-secret=%s", env.get("DAI_CLIENT_SECRET")));
-        return commandList;
+            args.add(String.format("--client-secret=%s", env.get("DAI_CLIENT_SECRET")));
+        return args;
     }
 
-    public List<String> getOptionalCommandList(List<String> commandList){
+    public List<String> getOptionalCommandList(){
+        List<String> args = new ArrayList<String>();
         if (this.logLevel != null) // logLevelArg
-            commandList.add(String.format("--log-level=%s", this.logLevel)); 
+            args.add(String.format("--log-level=%s", this.logLevel)); 
         if (this.CACertPath != null && !this.CACertPath.equals("")) // CACertPathArg
-            commandList.add(String.format("--ca-cert-path=%s", this.CACertPath));
+            args.add(String.format("--ca-cert-path=%s", this.CACertPath));
         if (this.testResultPath != null && !this.testResultPath.equals("")) // testResultPathArg
-            commandList.add(String.format("--test-result-path=%s", this.testResultPath)); 
+            args.add(String.format("--test-result-path=%s", this.testResultPath)); 
         if (this.pollInterval != null && !this.pollInterval.equals("")) // pollIntervalArg
-            commandList.add(String.format("--poll-interval=%s", this.pollInterval)); 
+            args.add(String.format("--poll-interval=%s", this.pollInterval)); 
         if (this.requestTimeout != null && !this.requestTimeout.equals("")) // requestTimeoutArg
-            commandList.add(String.format("--request-timeout=%s", this.requestTimeout)); 
+            args.add(String.format("--request-timeout=%s", this.requestTimeout)); 
         if (this.requestRetries != null && !this.requestRetries.equals("")) // requestRetriesArg
-            commandList.add(String.format("--request-retries=%s", this.requestRetries)); 
+            args.add(String.format("--request-retries=%s", this.requestRetries)); 
         if (this.testEnvironmentTimeout != null && !this.testEnvironmentTimeout.equals("")) // testEnvironmentTimeoutArg
-            commandList.add(String.format("--test-environment-timeout=%s", this.testEnvironmentTimeout)); 
+            args.add(String.format("--test-environment-timeout=%s", this.testEnvironmentTimeout)); 
         if (this.dryRun != null && this.dryRun) // dryRunArg
-            commandList.add("--dry-run");
+            args.add("--dry-run");
         if (this.backoffFactor != null && !this.backoffFactor.equals("")) // backoffFactorArg
-            commandList.add(String.format("--backoff-factor=%s", this.backoffFactor)); 
-        return commandList;
+            args.add(String.format("--backoff-factor=%s", this.backoffFactor)); 
+        return args;
     }
 
     private String[] getCommand(FilePath cliFile, EnvVars env) throws BuilderException {
@@ -353,8 +359,8 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             //commandList.add("./" + cliFile.getName()); // cliRunnerPath
             commandList.add(cliFile.getRemote()); // cliRunnerPath       
             this.getBackwardCompatibilityCommands();
-            commandList = getMandatoryCommandList(commandList, env);
-            commandList = getOptionalCommandList(commandList);
+            commandList.addAll(getMandatoryCommandList(env));
+            commandList.addAll(getOptionalCommandList());
             return commandList.toArray(new String[0]);       
     }
 
