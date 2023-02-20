@@ -42,61 +42,69 @@ Go to your Jenkins home page and login into your Jenkins account
 ## Inputs
 
 ### `serverURL`
-**Required** The URL of the Eggplant DAI server, `http(s)://dai_server_hostname:portnumber`.
+**[Required]** The URL of the Eggplant DAI server, `http(s)://dai_server_hostname:portnumber`.
 
 ### `testConfigID`
-**Required** The ID of the Eggplant DAI test configuration that you want to run, e.g. `09c48b7d-fc5b-481d-af80-fcffad5d9587`.
-Test configuration ID can be obtain by go to test config > look for a particular test config > test config id can be obtain from url.
+**[Required if testConfigName is not given]**  The ID of the Eggplant DAI test configuration that you want to run, e.g. `389fee3e-9d6b-43e6-b31e-f1d379f27cdf`. 
+<br />Test configuration ID can be obtained by go to `Test Config > Look for a particular test config > Test config id can be obtain from url`.
 ![image](https://user-images.githubusercontent.com/103989779/199636740-57d4bfd2-3c94-449c-b2d5-597d69d2f03e.png)
+Alternatively, use [testConfigName](#testconfigname) and remove this input.
 
+### `testConfigName`
+**[Required if testConfigID is not given]** The name of the Eggplant DAI test configuration that you want to run. 
+<br />Must provide ***one*** of the following supporting arguments:
+
+- ### `modelName`
+DAI model name for the specified test configuration. (Use this argument if only testConfigName is provided)
+
+- ### `suiteName`
+DAI suite name for the specified test configuration. (Use this argument if only testConfigName is provided)
+
+### `clientID`
+**[Required]** The client ID to use to authenticate with the Eggplant DAI server.
 
 ### `clientSecret`
-**Required** The client secret to use to authenticate with the Eggplant DAI server.<br />
+**[Required]** The client secret to use to authenticate with the Eggplant DAI server.<br />
              Alternatively, you could set a repo secret in `Repo Settings > Secrets > Actions` and refer to it like below:<br />
              `clientSecret: "${{ secrets.DAI_CLIENT_SECRET }}"`.
 
-The **DAI Client Secret** can be obtain by go to http(s):/dai_server_hostname:portnumber/ > System > API Access > "Add New" (for new API access creation)
+The **DAI Client Secret** can be obtain by go to  `http(s):/dai_server_hostname:portnumber/ > System > API Access > Add New` (for new API access creation)
 
 ![image](https://user-images.githubusercontent.com/101400930/206938890-07a45761-3c49-40a7-bf48-1a1b6f3b3659.png)
 
-             
-### `clientID`
-**Required** The client ID to use to authenticate with the Eggplant DAI server.<br />
-**Default:** `client:dai:agent:integration`
-
 ### `requestTimeout`
-**Optional** The timeout in seconds for each HTTP request to the Eggplant DAI server<br />
+**[Optional]** The timeout in seconds for each HTTP request to the Eggplant DAI server<br />
 **Default:** `30`
 
 ### `requestRetries`
-**Optional** The number of times to attempt each HTTP request to the Eggplant DAI server<br />
+**[Optional]** The number of times to attempt each HTTP request to the Eggplant DAI server<br />
 **Default:** `5`
 
 ### `backoffFactor`
-**Optional** The exponential backoff factor between each HTTP request<br />
+**[Optional]** The exponential backoff factor between each HTTP request<br />
 **Default:** `0.5`
 
 ### `pollInterval`
-**Optional** The number of seconds to wait between each call to the Eggplant DAI server<br />
+**[Optional]** The number of seconds to wait between each call to the Eggplant DAI server<br />
 **Default:** `5`
 
 ### `testEnvironmentTimeout`
-**Optional** The timeout in seconds for checking test environment readiness<br />
+**[Optional]** The timeout in seconds for checking test environment readiness<br />
 **Default:** `15`
 
 ### `logLevel`
-**Optional** The logging level<br />
+**[Optional]** The logging level<br />
 **Default:** `INFO`
 
 ### `CACertPath`
-**Optional** The path to an alternative Certificate Authority pem file<br />
+**[Optional]** The path to an alternative Certificate Authority pem file<br />
 
 ### `testResultPath`
-**Optional** Path to a file where the test results will be stored in junit xml format<br />
+**[Optional]** Path to a file where the test results will be stored in junit xml format<br />
 **Example** `C:\results\result.xml`
 
 ### `eggplantRunnerPath`
-**Optional** The path to eggplant runner CLI executable<br />
+**[Optional]** The path to eggplant runner CLI executable<br />
 
 ## Output
 
@@ -113,7 +121,7 @@ Execution details are shown in **Console Output**
 
 **Step 1**: Create **Pipeline** project
 
-**Step 2**: Copy and paste below scrips into **Pipiline script** section
+**Step 2**: Copy and paste below scripts into **Pipiline script** section
 ```yaml
 pipeline {
     agent any
@@ -126,6 +134,8 @@ pipeline {
         stage('Eggplant Runner') {
             steps {
                 eggplantRunner serverURL: 'Your DAI server URL', testConfigId: 'Your test configuration that want to execute'
+                // OR eggplantRunner serverURL: 'Your DAI server URL', testConfigName: 'Your model-based test configuration name', modelName: 'Your model name'
+                // OR eggplantRunner serverURL: 'Your DAI server URL', testConfigName: 'Your script-based test configuration name', suiteName: 'Your suite name'
             }
         }
     }
