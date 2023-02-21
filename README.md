@@ -131,9 +131,14 @@ pipeline {
     stages {
         stage('Eggplant Runner') {
             steps {
-                eggplantRunner serverURL: 'Your DAI server URL', testConfigId: 'Your test configuration that want to execute'
-                // OR eggplantRunner serverURL: 'Your DAI server URL', testConfigName: 'Your model-based test configuration name', modelName: 'Your model name'
-                // OR eggplantRunner serverURL: 'Your DAI server URL', testConfigName: 'Your script-based test configuration name', suiteName: 'Your suite name'
+                // To run DAI test configuration by test config Id, use the following command
+                eggplantRunner serverURL: 'Your DAI server URL', testConfigId: 'Your test configuration that want to execute', clientId: 'Your DAI client ID'
+                //  To run DAI Test Configuration by Test Config Name with model name, use the following command
+                // eggplantRunner serverURL: 'Your DAI server URL', testConfigName: 'Your model-based test configuration name', modelName: 'Your model name', clientId: 'Your DAI client ID'
+                //  To run DAI Test Configuration by Test Config Name with suite name, use the following command
+                // eggplantRunner serverURL: 'Your DAI server URL', testConfigName: 'Your script-based test configuration name', suiteName: 'Your suite name', clientId: 'Your DAI client ID'
+                
+                //Note: Only execute one of the command per each build step
             }
         }
     }

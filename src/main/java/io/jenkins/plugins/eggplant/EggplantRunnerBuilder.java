@@ -275,10 +275,10 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
       }
 
     /**
-    * Translate pipeline syntax value for testConfigId, testConfigName, modelName and suiteName 
-    * into testConfig instance.
-    * @param  none
-    */
+     * Translate pipeline syntax value for testConfigId, testConfigName, modelName and suiteName 
+     * into testConfig instance.
+     * @throws BuilderException
+     */
     public void getBackwardCompatibilityCommands() throws BuilderException{
 
         if(this.testConfig == null)

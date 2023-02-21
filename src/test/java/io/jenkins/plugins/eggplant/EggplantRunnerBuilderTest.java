@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
@@ -39,6 +40,51 @@ public class EggplantRunnerBuilderTest {
 
         FreeStyleBuild build = jenkins.buildAndAssertSuccess(project);
         jenkins.assertLogContains(String.format("Dry run of test configuration test-Config-Id against server http://localhost:8080"), build);
+    }
+
+    //TODO: Will need to enabled it when FY23 Q1 release testing for CI plugin
+    @Ignore
+    @Test
+    public void testBuildWithTestConfigId() throws Exception {
+        FreeStyleProject project = jenkins.createFreeStyleProject();
+        EggplantRunnerBuilder builder = new EggplantRunnerBuilder();
+        builder.setServerURL("http://localhost:8080");
+        builder.setTestConfig(new TestConfigId("test-Config-Id"));
+        builder.setClientSecret(hudson.util.Secret.fromString("c38ce33d-5644-4198-b28f-9cf3d9ac05e4"));
+        builder.setDryRun(true);
+        project.getBuildersList().add(builder);
+        FreeStyleBuild build = jenkins.buildAndAssertSuccess(project);
+        jenkins.assertLogContains(String.format("Dry run of test configuration test-Config-Name against server http://localhost:8080"), build);
+    }
+
+    //TODO: Will need to enabled it when FY23 Q1 release testing for CI plugin
+    @Ignore
+    @Test
+    public void testBuildWithModelBasedTestConfigName() throws Exception {
+        FreeStyleProject project = jenkins.createFreeStyleProject();
+        EggplantRunnerBuilder builder = new EggplantRunnerBuilder();
+        builder.setServerURL("http://localhost:8080");
+        builder.setTestConfig(new ModelBased("test-Config-Name","model-Name"));
+        builder.setClientSecret(hudson.util.Secret.fromString("c38ce33d-5644-4198-b28f-9cf3d9ac05e4"));
+        builder.setDryRun(true);
+        project.getBuildersList().add(builder);
+        FreeStyleBuild build = jenkins.buildAndAssertSuccess(project);
+        jenkins.assertLogContains(String.format("Dry run of test configuration test-Config-Name against server http://localhost:8080"), build);
+    }
+
+    //TODO: Will need to enabled it when FY23 Q1 release testing for CI plugin
+    @Ignore
+    @Test
+    public void testBuildWithScriptBasedTestConfigName() throws Exception {
+        FreeStyleProject project = jenkins.createFreeStyleProject();
+        EggplantRunnerBuilder builder = new EggplantRunnerBuilder();
+        builder.setServerURL("http://localhost:8080");
+        builder.setTestConfig(new ScriptBased("test-Config-Name","suite-Name"));
+        builder.setClientSecret(hudson.util.Secret.fromString("c38ce33d-5644-4198-b28f-9cf3d9ac05e4"));
+        builder.setDryRun(true);
+        project.getBuildersList().add(builder);
+        FreeStyleBuild build = jenkins.buildAndAssertSuccess(project);
+        jenkins.assertLogContains(String.format("Dry run of test configuration test-Config-Name against server http://localhost:8080"), build);
     }
 
     @Test
