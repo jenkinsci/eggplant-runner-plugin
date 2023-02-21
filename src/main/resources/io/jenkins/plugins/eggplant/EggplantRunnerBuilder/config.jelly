@@ -5,12 +5,10 @@
         <br>The URL of the <strong>Eggplant DAI</strong>,  http(s)://dai_server_hostname:portnumber</br>    
 
     </f:entry>
-    <f:entry title="Test Config Id *" field="testConfigId">
-        <f:textbox default="aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"/>
-        Test configuration id that you want to execute test.
-        <br> Test configuration id can be obtain from test config page URL in Eggplant DAI.</br>
-        <br><strong>E.g. </strong>URL : http(s)://dai_server_hostname:portnumber/controller/test-config/<strong><em>307fee3e-9d6b-43e6-b31e-f1d379f27fff</em></strong> </br>
-    </f:entry>
+
+    <f:dropdownDescriptorSelector field="testConfig" title="DAI Test Config: *" descriptors="${it.testConfigDescriptors}">
+    </f:dropdownDescriptorSelector>
+   
     <f:entry title="Client Id *" field="clientId">
         <f:textbox default="DAI-Client-Id"/>
         The <strong>DAI Client Id</strong> that used to authenticate with the DAI server.
