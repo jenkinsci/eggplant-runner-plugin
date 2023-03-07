@@ -110,7 +110,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     public String getEggplantRunnerPath() {
         return eggplantRunnerPath;
     }  
-
     public TestConfig getTestConfig() {
         if(this.testConfigId != null)
         {
@@ -120,8 +119,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         }
         return testConfig;
     }
-
-    public boolean getDryRun() {
+    public Boolean getDryRun() {
         return dryRun;
     }
 
