@@ -121,6 +121,9 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         return testConfig;
     }
 
+    public boolean getDryRun() {
+        return dryRun;
+    }
 
     @DataBoundSetter
     public void setServerURL(String serverURL) {
