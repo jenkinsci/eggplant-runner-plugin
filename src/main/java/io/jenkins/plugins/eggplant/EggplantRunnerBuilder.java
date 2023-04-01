@@ -30,13 +30,17 @@ import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
+
 
 public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     private String serverURL;
@@ -220,18 +224,26 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         String localeString = "";
         OperatingSystem os = this.getOperatingSystem(workspace, launcher);
         FilePath uniqueWorkspace = workspace.child(buildId);
-        uniqueWorkspace.mkdirs(); 
-        
+        uniqueWorkspace.mkdirs();
+
+       
+        EnvVars envVars = new EnvVars();
         // Use legacy locale for Linux
+        // Customer reported with use case: Check for en_US.UTF-8, if not exists only check for C.UTF-8. If both not exists, return Runtime Error.
         if (os == OperatingSystem.LINUX){
-            localeString = String.format("%s.UTF-8", "C"); 
+            String locale = getLocale(logger);
+            if(locale.equals("C")){
+                localeString = String.format("%s.UTF-8", locale);
+            }
+            else{
+                localeString = String.format("%s.utf-8", locale);
+            }
         }
         else{
             localeString = String.format("%s.utf-8", "en_US");
-        }            
+        }  
     
         logger.println("Exported locale: " +  localeString);
-        EnvVars envVars = new EnvVars();
         envVars.put("LC_ALL", localeString);
         envVars.put("LANG",  localeString);
         
@@ -249,9 +261,31 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         logger.println(">> Executing " + cliRunnerPath);
         
         ProcStarter procStarter = launcher.launch();
-        Proc process = procStarter.pwd(uniqueWorkspace).cmds(command).envs(envVars).quiet(false).stderr(logger).stdout(logger).start();
+        Proc process = procStarter.cmds(command).envs(envVars).quiet(false).stderr(logger).stdout(logger).start();
+        //Proc process = procStarter.pwd(uniqueWorkspace).cmds(command).quiet(false).stderr(logger).stdout(logger).start();
         int exitCode = process.join();
         if (exitCode != 0) throw new CLIExitException(exitCode);
+    }
+
+    private String getLocale(PrintStream logger) throws IOException, InterruptedException {
+        Process proc = Runtime.getRuntime().exec("locale -a"); 
+        int exitStatus = proc.waitFor();
+        String line;
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(proc.getInputStream(), StandardCharsets.UTF_8));
+        while((line = bufferedReader.readLine()) !=null){
+            if(!line.isEmpty())
+            {
+                logger.println("locale:" + line);
+                bufferedReader.close();
+                return line;
+            }
+        }
+        if(exitStatus != 0){
+            bufferedReader.close();
+        }
+        bufferedReader.close();
+
+        return "";
     }
 
     private OperatingSystem getOperatingSystem(FilePath workspace, Launcher launcher) throws IOException, InterruptedException {
