@@ -236,7 +236,12 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
                 localeString = String.format("%s.UTF-8", locale);
             }
             else{
-                localeString = String.format("%s.utf-8", locale);
+                if(locale.toLowerCase().endsWith(".utf-8")){
+                    localeString = locale;
+                }
+                else{
+                    localeString = String.format("%s.utf-8", locale);
+                }                
             }
         }
         else{
