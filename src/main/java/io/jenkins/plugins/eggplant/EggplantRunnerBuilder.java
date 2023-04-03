@@ -229,7 +229,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
        
         EnvVars envVars = new EnvVars();
         // Use legacy locale for Linux
-        // Customer reported with use case: Check for en_US.UTF-8, if not exists only check for C.UTF-8. If both not exists, return Runtime Error.
+        // Customer reported with use case: Check for 1st found available locale, if not exists return Runtime Error.
         if (os == OperatingSystem.LINUX){
             localeString = getLocale(logger);
         }
@@ -281,6 +281,18 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         bufferedReader.close();
 
         return "";
+
+        /*ProcessBuilder pb = new ProcessBuilder("echo", "$LANG");
+        Process process = pb.start();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            logger.println("locale:" + line);
+            reader.close();
+            return line;
+        }
+        reader.close();
+        return "";*/
     }
 
     private OperatingSystem getOperatingSystem(FilePath workspace, Launcher launcher) throws IOException, InterruptedException {
