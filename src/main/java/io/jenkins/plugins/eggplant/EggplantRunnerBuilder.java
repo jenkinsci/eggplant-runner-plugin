@@ -231,18 +231,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         // Use legacy locale for Linux
         // Customer reported with use case: Check for en_US.UTF-8, if not exists only check for C.UTF-8. If both not exists, return Runtime Error.
         if (os == OperatingSystem.LINUX){
-            String locale = getLocale(logger);
-            if(locale.equals("C")){
-                localeString = String.format("%s.UTF-8", locale);
-            }
-            else{
-                if(locale.toLowerCase().endsWith(".utf-8")){
-                    localeString = locale;
-                }
-                else{
-                    localeString = String.format("%s.utf-8", locale);
-                }                
-            }
+            localeString = getLocale(logger);
         }
         else{
             localeString = String.format("%s.utf-8", "en_US");
@@ -267,7 +256,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         
         ProcStarter procStarter = launcher.launch();
         Proc process = procStarter.cmds(command).envs(envVars).quiet(false).stderr(logger).stdout(logger).start();
-        //Proc process = procStarter.pwd(uniqueWorkspace).cmds(command).quiet(false).stderr(logger).stdout(logger).start();
         int exitCode = process.join();
         if (exitCode != 0) throw new CLIExitException(exitCode);
     }
@@ -280,9 +268,11 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         while((line = bufferedReader.readLine()) !=null){
             if(!line.isEmpty())
             {
-                logger.println("locale:" + line);
-                bufferedReader.close();
-                return line;
+                if(line.toLowerCase().endsWith(".utf-8") || line.toLowerCase().endsWith(".utf8")){
+                    logger.println("locale:" + line);
+                    bufferedReader.close();
+                    return line;
+                }
             }
         }
         if(exitStatus != 0){
