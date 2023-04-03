@@ -229,7 +229,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
        
         EnvVars envVars = new EnvVars();
         // Use legacy locale for Linux
-        // Customer reported with use case: Check for 1st found available locale, if not exists return Runtime Error.
+        // Customer reported with use case: Check for default locale , if no check available locale, if not exists return Runtime Error.
         if (os == OperatingSystem.LINUX){
             localeString = getLocale(logger);
         }
@@ -260,39 +260,44 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         if (exitCode != 0) throw new CLIExitException(exitCode);
     }
 
-    private String getLocale(PrintStream logger) throws IOException, InterruptedException {
-        Process proc = Runtime.getRuntime().exec("locale -a"); 
-        int exitStatus = proc.waitFor();
-        String line;
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(proc.getInputStream(), StandardCharsets.UTF_8));
-        while((line = bufferedReader.readLine()) !=null){
-            if(!line.isEmpty())
-            {
-                if(line.toLowerCase().endsWith(".utf-8") || line.toLowerCase().endsWith(".utf8")){
-                    logger.println("locale:" + line);
-                    bufferedReader.close();
-                    return line;
-                }
-            }
-        }
-        if(exitStatus != 0){
-            bufferedReader.close();
-        }
-        bufferedReader.close();
-
-        return "";
-
-        /*ProcessBuilder pb = new ProcessBuilder("echo", "$LANG");
+    private String getdefaultLocale(PrintStream logger) throws IOException, InterruptedException {
+        ProcessBuilder pb = new ProcessBuilder("sh", "-c", "echo $LANG");
         Process process = pb.start();
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
         String line;
         while ((line = reader.readLine()) != null) {
-            logger.println("locale:" + line);
+            logger.println("Default locale:" + line);
             reader.close();
             return line;
         }
         reader.close();
-        return "";*/
+        return "";
+    }
+
+    private String getLocale(PrintStream logger) throws IOException, InterruptedException {
+
+        String defaultLocale = getdefaultLocale(logger);
+        if (defaultLocale.isEmpty()){
+            Process proc = Runtime.getRuntime().exec("locale -a"); 
+            int exitStatus = proc.waitFor();
+            String line;
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(proc.getInputStream(), StandardCharsets.UTF_8));
+            while((line = bufferedReader.readLine()) !=null){
+                if(!line.isEmpty())
+                {
+                    if(line.toLowerCase().endsWith(".utf-8") || line.toLowerCase().endsWith(".utf8")){
+                        logger.println("Available locale:" + line);
+                        bufferedReader.close();
+                        return line;
+                    }
+                }
+            }
+            if(exitStatus != 0){
+                bufferedReader.close();
+            }
+            bufferedReader.close();
+        }
+        return defaultLocale;
     }
 
     private OperatingSystem getOperatingSystem(FilePath workspace, Launcher launcher) throws IOException, InterruptedException {
