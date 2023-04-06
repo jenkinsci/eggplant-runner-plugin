@@ -41,7 +41,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-
 public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     private String serverURL;
     private String testConfigId;
@@ -224,10 +223,8 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         String localeString = "";
         OperatingSystem os = this.getOperatingSystem(workspace, launcher);
         FilePath uniqueWorkspace = workspace.child(buildId);
-        uniqueWorkspace.mkdirs();
-
-       
-        EnvVars envVars = new EnvVars();
+        uniqueWorkspace.mkdirs(); 
+        
         // Use legacy locale for Linux
         // Customer reported with use case: Check for default locale , if no check available locale, if not exists return Runtime Error.
         if (os == OperatingSystem.LINUX){
@@ -235,9 +232,10 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         }
         else{
             localeString = String.format("%s.utf-8", "en_US");
-        }  
+        }            
     
         logger.println("Exported locale: " +  localeString);
+        EnvVars envVars = new EnvVars();
         envVars.put("LC_ALL", localeString);
         envVars.put("LANG",  localeString);
         
@@ -255,7 +253,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         logger.println(">> Executing " + cliRunnerPath);
         
         ProcStarter procStarter = launcher.launch();
-        Proc process = procStarter.cmds(command).envs(envVars).quiet(false).stderr(logger).stdout(logger).start();
+        Proc process = procStarter.pwd(uniqueWorkspace).cmds(command).envs(envVars).quiet(false).stderr(logger).stdout(logger).start();
         int exitCode = process.join();
         if (exitCode != 0) throw new CLIExitException(exitCode);
     }
