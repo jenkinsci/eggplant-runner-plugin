@@ -25,7 +25,7 @@ import jenkins.model.Jenkins;
 
 public class CLIRunnerHelper{
 
-  private final static String CLI_VERSION = "6.4.0-5";  
+  private final static String CLI_VERSION = "6.5.0-3";  
   private final static Map<OperatingSystem, String> CLI_FILENAME = Stream.of(
       new AbstractMap.SimpleEntry<>(OperatingSystem.LINUX, "eggplant-runner-Linux-${cliVersion}"),
       new AbstractMap.SimpleEntry<>(OperatingSystem.MACOS, "eggplant-runner-MacOS-${cliVersion}"), 

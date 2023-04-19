@@ -30,9 +30,12 @@ import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -223,8 +226,9 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         uniqueWorkspace.mkdirs(); 
         
         // Use legacy locale for Linux
+        // Customer reported with use case: Check for default locale , if no check available locale, if not exists return Runtime Error.
         if (os == OperatingSystem.LINUX){
-            localeString = String.format("%s.UTF-8", "C"); 
+            localeString = getLocale(logger);
         }
         else{
             localeString = String.format("%s.utf-8", "en_US");
@@ -252,6 +256,46 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         Proc process = procStarter.pwd(uniqueWorkspace).cmds(command).envs(envVars).quiet(false).stderr(logger).stdout(logger).start();
         int exitCode = process.join();
         if (exitCode != 0) throw new CLIExitException(exitCode);
+    }
+
+    private String getdefaultLocale(PrintStream logger) throws IOException, InterruptedException {
+        ProcessBuilder pb = new ProcessBuilder("sh", "-c", "echo $LANG");
+        Process process = pb.start();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            logger.println("Default locale:" + line);
+            reader.close();
+            return line;
+        }
+        reader.close();
+        return "";
+    }
+
+    private String getLocale(PrintStream logger) throws IOException, InterruptedException {
+
+        String defaultLocale = getdefaultLocale(logger);
+        if (defaultLocale.isEmpty()){
+            Process proc = Runtime.getRuntime().exec("locale -a"); 
+            int exitStatus = proc.waitFor();
+            String line;
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(proc.getInputStream(), StandardCharsets.UTF_8));
+            while((line = bufferedReader.readLine()) !=null){
+                if(!line.isEmpty())
+                {
+                    if(line.toLowerCase().endsWith(".utf-8") || line.toLowerCase().endsWith(".utf8")){
+                        logger.println("Available locale:" + line);
+                        bufferedReader.close();
+                        return line;
+                    }
+                }
+            }
+            if(exitStatus != 0){
+                bufferedReader.close();
+            }
+            bufferedReader.close();
+        }
+        return defaultLocale;
     }
 
     private OperatingSystem getOperatingSystem(FilePath workspace, Launcher launcher) throws IOException, InterruptedException {
