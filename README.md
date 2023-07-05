@@ -166,8 +166,12 @@ Output are shown in **Console Output**
   </thead>
   <tbody>
   <tr>
-      <td>6.5.0-3</td>
+      <td>7.0.0-3</td>
       <td><a href="https://plugins.jenkins.io/eggplant-runner/">latest</a></td>
+  </tr>
+  <tr>
+      <td>6.5.0-3</td>
+      <td><a href="https://plugins.jenkins.io/eggplant-runner/"><a href="https://updates.jenkins.io/download/plugins/eggplant-runner/0.0.1.247.va_7031a_586298/eggplant-runner.hpi"> 0.0.1.247.va_7031a_586298 </a></td>      
   </tr>
    <tr>
       <td>6.4.0-5</td>
