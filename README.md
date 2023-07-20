@@ -200,7 +200,7 @@ This plug-in is licensed under the terms of the [MIT license](LICENSE.md)
 
 30th May 2022
 
-- Fix Jenkins Plugins "Eggplant Runner" Client Secret textbox behaviour
+- Fix Jenkins Plugins "Eggplant Runner" Client Secret textbox behaviour.
 
 ## Contributing
 
