@@ -170,7 +170,6 @@ Output are shown in **Console Output**
       <td><a href="https://plugins.jenkins.io/eggplant-runner/">latest</a></td>
   </tr>
   <tr>
-    <tr>
       <td>7.0.1-1</td>
       <td><a href="https://plugins.jenkins.io/eggplant-runner/"><a href="https://updates.jenkins.io/download/plugins/eggplant-runner/0.0.1.255.vd38258d75ca_6/eggplant-runner.hpi"> 0.0.1.255.vd38258d75ca_6 </a></td>
   </tr>
