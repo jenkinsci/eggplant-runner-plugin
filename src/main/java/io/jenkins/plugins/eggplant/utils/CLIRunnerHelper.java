@@ -13,6 +13,8 @@ import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -25,7 +27,7 @@ import jenkins.model.Jenkins;
 
 public class CLIRunnerHelper{
 
-  private final static String CLI_VERSION = "7.2.0-4";  
+  private final static String CLI_VERSION = "7.3.0-3";  
   private final static Map<OperatingSystem, String> CLI_FILENAME = Stream.of(
       new AbstractMap.SimpleEntry<>(OperatingSystem.LINUX, "eggplant-runner-Linux-${cliVersion}"),
       new AbstractMap.SimpleEntry<>(OperatingSystem.MACOS, "eggplant-runner-MacOS-${cliVersion}"), 
@@ -84,7 +86,22 @@ public class CLIRunnerHelper{
 
     FilePath filePath = new FilePath(file);
 
-    if(!filePath.getName().equals(cliFilename))
+    String regex = "\\d+\\.\\d+";
+    Pattern pattern = Pattern.compile(regex);
+    Matcher matcherFilePath = pattern.matcher(filePath.getName());
+    Matcher matcherCliFilename = pattern.matcher(cliFilename);
+    String filePathMinor = "";
+    String cliFilenameMinor = "";
+
+    if (matcherFilePath.find()) {
+      filePathMinor = matcherFilePath.group();
+    }
+
+    if (matcherCliFilename.find()) {
+      cliFilenameMinor = matcherCliFilename.group();
+    }
+
+    if(!filePathMinor.equals(cliFilenameMinor))
     {
       throw new InvalidRunnerException("File found is invalid. Required: " + cliFilename + ". Please download from " +  getPublicDownloadLink());
     }
