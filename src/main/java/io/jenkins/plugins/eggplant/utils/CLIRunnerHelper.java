@@ -88,10 +88,10 @@ public class CLIRunnerHelper{
     String cliFilenameMinor = "";
     String fileName = filePath.getName();
 
-    if (cliFilename.length() == 20) {
+    if (cliFilename.length() == 29) {
       cliFilenameMinor = cliFilename.substring(0, cliFilename.length() - 4);
       filePathMinor = fileName.substring(0, fileName.length() - 4);
-    } else if (cliFilename.length() == 28) {
+    } else if (cliFilename.length() == 35) {
       cliFilenameMinor = cliFilename.substring(0, cliFilename.length() - 8);
       filePathMinor = fileName.substring(0, fileName.length() - 8);
     } else {
