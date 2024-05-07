@@ -13,8 +13,6 @@ import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -86,19 +84,19 @@ public class CLIRunnerHelper{
 
     FilePath filePath = new FilePath(file);
 
-    String regex = "\\d+\\.\\d+";
-    Pattern pattern = Pattern.compile(regex);
-    Matcher matcherFilePath = pattern.matcher(filePath.getName());
-    Matcher matcherCliFilename = pattern.matcher(cliFilename);
     String filePathMinor = "";
     String cliFilenameMinor = "";
+    String fileName = filePath.getName();
 
-    if (matcherFilePath.find()) {
-      filePathMinor = matcherFilePath.group();
-    }
-
-    if (matcherCliFilename.find()) {
-      cliFilenameMinor = matcherCliFilename.group();
+    if (cliFilename.length() == 20) {
+      cliFilenameMinor = cliFilename.substring(0, cliFilename.length() - 4);
+      filePathMinor = fileName.substring(0, fileName.length() - 4);
+    } else if (cliFilename.length() == 28) {
+      cliFilenameMinor = cliFilename.substring(0, cliFilename.length() - 8);
+      filePathMinor = fileName.substring(0, fileName.length() - 8);
+    } else {
+      cliFilenameMinor = "not correct file format";
+      filePathMinor = "not match";
     }
 
     if(!filePathMinor.equals(cliFilenameMinor))
