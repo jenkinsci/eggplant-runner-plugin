@@ -25,7 +25,7 @@ import jenkins.model.Jenkins;
 
 public class CLIRunnerHelper{
 
-  private final static String CLI_VERSION = "7.2.0-4";  
+  private final static String CLI_VERSION = "7.3.0-3";  
   private final static Map<OperatingSystem, String> CLI_FILENAME = Stream.of(
       new AbstractMap.SimpleEntry<>(OperatingSystem.LINUX, "eggplant-runner-Linux-${cliVersion}"),
       new AbstractMap.SimpleEntry<>(OperatingSystem.MACOS, "eggplant-runner-MacOS-${cliVersion}"), 
@@ -84,7 +84,22 @@ public class CLIRunnerHelper{
 
     FilePath filePath = new FilePath(file);
 
-    if(!filePath.getName().equals(cliFilename))
+    String filePathMinor = "";
+    String cliFilenameMinor = "";
+    String fileName = filePath.getName();
+
+    if (cliFilename.length() == 29) {
+      cliFilenameMinor = cliFilename.substring(0, cliFilename.length() - 4);
+      filePathMinor = fileName.substring(0, fileName.length() - 4);
+    } else if (cliFilename.length() == 35) {
+      cliFilenameMinor = cliFilename.substring(0, cliFilename.length() - 8);
+      filePathMinor = fileName.substring(0, fileName.length() - 8);
+    } else {
+      cliFilenameMinor = "not correct file format";
+      filePathMinor = "not match";
+    }
+
+    if(!filePathMinor.equals(cliFilenameMinor))
     {
       throw new InvalidRunnerException("File found is invalid. Required: " + cliFilename + ". Please download from " +  getPublicDownloadLink());
     }
