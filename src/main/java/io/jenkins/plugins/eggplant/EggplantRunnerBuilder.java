@@ -52,10 +52,8 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     private LogLevel logLevel;
     private String CACertPath;
     private String testResultPath;
-    private String pollInterval;
     private String requestTimeout;
     private String requestRetries;
-    private String testEnvironmentTimeout;
     private String backoffFactor;
     private Boolean dryRun;
     private String eggplantRunnerPath;
@@ -95,17 +93,11 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     public String getTestResultPath() {
         return testResultPath;
     }
-    public String getPollInterval() {
-        return pollInterval;
-    }
     public String getRequestTimeout() {
         return requestTimeout;
     }
     public String getRequestRetries() {
         return requestRetries;
-    }
-    public String getTestEnvironmentTimeout() {
-        return testEnvironmentTimeout;
     }
     public String getBackoffFactor() {
         return backoffFactor;
@@ -176,11 +168,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     }
 
     @DataBoundSetter
-    public void setPollInterval(String pollInterval) {
-        this.pollInterval = pollInterval;
-    }
-
-    @DataBoundSetter
     public void setRequestTimeout(String requestTimeout) {
         this.requestTimeout = requestTimeout;
     }
@@ -188,11 +175,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     @DataBoundSetter
     public void setRequestRetries(String requestRetries) {
         this.requestRetries = requestRetries;
-    }
-
-    @DataBoundSetter
-    public void setTestEnvironmentTimeout(String testEnvironmentTimeout) {
-        this.testEnvironmentTimeout = testEnvironmentTimeout;
     }
 
     @DataBoundSetter
@@ -383,14 +365,10 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             args.add(String.format("--ca-cert-path=%s", this.CACertPath));
         if (this.testResultPath != null && !this.testResultPath.equals("")) // testResultPathArg
             args.add(String.format("--test-result-path=%s", this.testResultPath)); 
-        if (this.pollInterval != null && !this.pollInterval.equals("")) // pollIntervalArg
-            args.add(String.format("--poll-interval=%s", this.pollInterval)); 
         if (this.requestTimeout != null && !this.requestTimeout.equals("")) // requestTimeoutArg
             args.add(String.format("--request-timeout=%s", this.requestTimeout)); 
         if (this.requestRetries != null && !this.requestRetries.equals("")) // requestRetriesArg
             args.add(String.format("--request-retries=%s", this.requestRetries)); 
-        if (this.testEnvironmentTimeout != null && !this.testEnvironmentTimeout.equals("")) // testEnvironmentTimeoutArg
-            args.add(String.format("--test-environment-timeout=%s", this.testEnvironmentTimeout)); 
         if (this.dryRun != null && this.dryRun) // dryRunArg
             args.add("--dry-run");
         if (this.backoffFactor != null && !this.backoffFactor.equals("")) // backoffFactorArg
@@ -454,13 +432,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
                 return FormValidation.ok();
         }
 
-        public FormValidation doCheckPollInterval(@QueryParameter String value) throws IOException {
-            if(!value.isEmpty()&&!isValidNumeric(value)){
-                return FormValidation.error("Invalid Poll Interval.");
-            }
-            return FormValidation.ok();
-        }
-
         public FormValidation doCheckRequestTimeout(@QueryParameter String value) throws IOException {
             if(!value.isEmpty()&&!isValidNumeric(value)){
                 return FormValidation.error("Invalid Request Timeout.");
@@ -471,13 +442,6 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         public FormValidation doCheckRequestRetries(@QueryParameter String value) throws IOException {
             if(!value.isEmpty()&&!isValidNumeric(value)){
                 return FormValidation.error("Invalid Request Retries.");
-            }
-            return FormValidation.ok();
-        }
-
-        public FormValidation doCheckTestEnvironmentTimeout(@QueryParameter String value) throws IOException {
-            if(!value.isEmpty()&&!isValidNumeric(value)){
-                return FormValidation.error("Invalid Test Environment Timeout.");
             }
             return FormValidation.ok();
         }
