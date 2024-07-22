@@ -169,19 +169,22 @@ public class CLIRunnerHelper{
       }
       else
       {
-        logger.println("Before"); 
         connection = (HttpURLConnection) new URL(url).openConnection();
-        logger.println("After"); 
       }
 
       for(Entry<String, String> entry: properties.entrySet()){
-        logger.println("Entry Key: " + entry.getKey() + ". Entry Value: " + entry.getValue()); 
         connection.addRequestProperty (entry.getKey(), entry.getValue());
       }
 
+      logger.println("Before setDoOutput");
       connection.setDoOutput(true);
+      logger.println("After setDoOutput");
+      logger.println("Before inputstream");
       InputStream in = connection.getInputStream();
+      logger.println("After inputstream");
+      logger.println("Before copyFrom");
       cliFilePath.copyFrom(in);
+      logger.println("After copyFrom");
       logger.println("Download successfully.");
 
     }catch(Exception e){
