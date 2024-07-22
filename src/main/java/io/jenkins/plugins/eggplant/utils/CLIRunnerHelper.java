@@ -88,12 +88,15 @@ public class CLIRunnerHelper{
     String cliFilenameMinor = "";
     String fileName = filePath.getName();
 
-    if (cliFilename.length() == 29) {
-      cliFilenameMinor = cliFilename.substring(0, cliFilename.length() - 4);
-      filePathMinor = fileName.substring(0, fileName.length() - 4);
-    } else if (cliFilename.length() == 35) {
+    if (cliFilename.length() == 35) {
       cliFilenameMinor = cliFilename.substring(0, cliFilename.length() - 8);
       filePathMinor = fileName.substring(0, fileName.length() - 8);
+    } else if (cliFilename.length() == 37) {
+      cliFilenameMinor = cliFilename.substring(0, cliFilename.length() - 8);
+      filePathMinor = fileName.substring(0, fileName.length() - 8);
+    } else if (cliFilename.length() == 40) {
+      cliFilenameMinor = cliFilename.substring(0, cliFilename.length() - 11);
+      filePathMinor = fileName.substring(0, fileName.length() - 11);
     } else {
       cliFilenameMinor = "not correct file format";
       filePathMinor = "not match";
