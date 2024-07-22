@@ -169,7 +169,9 @@ public class CLIRunnerHelper{
       }
       else
       {
+        logger.println("Before"); 
         connection = (HttpURLConnection) new URL(url).openConnection();
+        logger.println("After"); 
       }
 
       for(Entry<String, String> entry: properties.entrySet()){
