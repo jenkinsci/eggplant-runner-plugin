@@ -176,15 +176,10 @@ public class CLIRunnerHelper{
         connection.addRequestProperty (entry.getKey(), entry.getValue());
       }
 
-      logger.println("Before setDoOutput");
       connection.setDoOutput(true);
-      logger.println("After setDoOutput");
-      logger.println("Before inputstream");
+      connection.addRequestProperty("User-Agent", "Mozilla");
       InputStream in = connection.getInputStream();
-      logger.println("After inputstream");
-      logger.println("Before copyFrom");
       cliFilePath.copyFrom(in);
-      logger.println("After copyFrom");
       logger.println("Download successfully.");
 
     }catch(Exception e){
