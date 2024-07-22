@@ -173,6 +173,7 @@ public class CLIRunnerHelper{
       }
 
       for(Entry<String, String> entry: properties.entrySet()){
+        logger.println("Entry Key: " + entry.getKey() + ". Entry Value: " + entry.getValue()); 
         connection.addRequestProperty (entry.getKey(), entry.getValue());
       }
 
