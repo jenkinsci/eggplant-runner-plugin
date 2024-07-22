@@ -177,7 +177,7 @@ public class CLIRunnerHelper{
       }
 
       connection.setDoOutput(true);
-      connection.addRequestProperty("User-Agent", "Mozilla");
+      connection.addRequestProperty("User-Agent", "Chrome");
       InputStream in = connection.getInputStream();
       cliFilePath.copyFrom(in);
       logger.println("Download successfully.");
