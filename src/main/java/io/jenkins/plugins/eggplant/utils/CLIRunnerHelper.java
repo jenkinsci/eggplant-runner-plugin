@@ -27,8 +27,8 @@ public class CLIRunnerHelper{
 
   private final static String CLI_VERSION = "7.4.0-4";  
   private final static Map<OperatingSystem, String> CLI_FILENAME = Stream.of(
-      new AbstractMap.SimpleEntry<>(OperatingSystem.LINUX, "eggplant-runner-Linux-${cliVersion}"),
-      new AbstractMap.SimpleEntry<>(OperatingSystem.MACOS, "eggplant-runner-MacOS-${cliVersion}"), 
+      new AbstractMap.SimpleEntry<>(OperatingSystem.LINUX, "eggplant-runner-Linux-${cliVersion}.tar.gz"),
+      new AbstractMap.SimpleEntry<>(OperatingSystem.MACOS, "eggplant-runner-MacOS-${cliVersion}.dmg"), 
       new AbstractMap.SimpleEntry<>(OperatingSystem.WINDOWS, "eggplant-runner-Windows-${cliVersion}.exe")
   ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   private final static String CLI_DOWNLOAD_URL = "https://assets.eggplantsoftware.com/EggplantRunner/${cliFilename}";
