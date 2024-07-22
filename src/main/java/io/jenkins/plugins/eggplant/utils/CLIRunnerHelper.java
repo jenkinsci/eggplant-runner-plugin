@@ -27,8 +27,8 @@ public class CLIRunnerHelper{
 
   private final static String CLI_VERSION = "7.4.0-4";  
   private final static Map<OperatingSystem, String> CLI_FILENAME = Stream.of(
-      new AbstractMap.SimpleEntry<>(OperatingSystem.LINUX, "eggplant-runner-Linux-${cliVersion}.tar.gz"),
-      new AbstractMap.SimpleEntry<>(OperatingSystem.MACOS, "eggplant-runner-MacOS-${cliVersion}.dmg"), 
+      new AbstractMap.SimpleEntry<>(OperatingSystem.LINUX, "eggplant-runner-Linux-${cliVersion}"),
+      new AbstractMap.SimpleEntry<>(OperatingSystem.MACOS, "eggplant-runner-MacOS-${cliVersion}"), 
       new AbstractMap.SimpleEntry<>(OperatingSystem.WINDOWS, "eggplant-runner-Windows-${cliVersion}.exe")
   ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   private final static String CLI_DOWNLOAD_URL = "https://assets.eggplantsoftware.com/EggplantRunner/${cliFilename}";
@@ -88,15 +88,12 @@ public class CLIRunnerHelper{
     String cliFilenameMinor = "";
     String fileName = filePath.getName();
 
-    if (cliFilename.length() == 35) {
+    if (cliFilename.length() == 29) {
+      cliFilenameMinor = cliFilename.substring(0, cliFilename.length() - 4);
+      filePathMinor = fileName.substring(0, fileName.length() - 4);
+    } else if (cliFilename.length() == 35) {
       cliFilenameMinor = cliFilename.substring(0, cliFilename.length() - 8);
       filePathMinor = fileName.substring(0, fileName.length() - 8);
-    } else if (cliFilename.length() == 37) {
-      cliFilenameMinor = cliFilename.substring(0, cliFilename.length() - 8);
-      filePathMinor = fileName.substring(0, fileName.length() - 8);
-    } else if (cliFilename.length() == 40) {
-      cliFilenameMinor = cliFilename.substring(0, cliFilename.length() - 11);
-      filePathMinor = fileName.substring(0, fileName.length() - 11);
     } else {
       cliFilenameMinor = "not correct file format";
       filePathMinor = "not match";
