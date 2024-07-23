@@ -137,30 +137,6 @@ public class EggplantRunnerBuilderTest {
         form = descriptorImpl.doCheckTestResultPath("testResultFile|.xml");
         assertEquals(FormValidation.Kind.ERROR, form.kind);
      }
-   
-     @Test
-     public void testIsValidTestEnvironmentTimeout() throws Exception {
-        DescriptorImpl descriptorImpl=new DescriptorImpl();
-
-        FormValidation form = descriptorImpl.doCheckTestEnvironmentTimeout("a");
-        assertEquals(FormValidation.Kind.ERROR, form.kind);
-
-        form = descriptorImpl.doCheckTestEnvironmentTimeout("-5");
-        assertEquals(FormValidation.Kind.ERROR, form.kind);
-
-        form = descriptorImpl.doCheckTestEnvironmentTimeout("0.5");
-        assertEquals(FormValidation.Kind.ERROR, form.kind);
-
-        form = descriptorImpl.doCheckTestEnvironmentTimeout("5a");
-        assertEquals(FormValidation.Kind.ERROR, form.kind);
-
-        form = descriptorImpl.doCheckTestEnvironmentTimeout("");
-        assertEquals(FormValidation.Kind.OK, form.kind);
-
-        form = descriptorImpl.doCheckTestEnvironmentTimeout("20");
-        assertEquals(FormValidation.Kind.OK, form.kind);
-
-    }
 
     @Test
     public void testGetBackwardCompatibilityCommands() throws Exception {
@@ -234,10 +210,6 @@ public class EggplantRunnerBuilderTest {
         command =  builder.getOptionalCommandList();
         assertTrue(command.contains("--test-result-path=result path"));
 
-        builder.setPollInterval("5");
-        command =  builder.getOptionalCommandList();
-        assertTrue(command.contains("--poll-interval=5"));
-
         builder.setRequestTimeout("5");
         command =  builder.getOptionalCommandList();
         assertTrue(command.contains("--request-timeout=5"));
@@ -245,10 +217,6 @@ public class EggplantRunnerBuilderTest {
         builder.setRequestRetries("5");
         command =  builder.getOptionalCommandList();
         assertTrue(command.contains("--request-retries=5"));
-
-        builder.setTestEnvironmentTimeout("5");
-        command =  builder.getOptionalCommandList();
-        assertTrue(command.contains("--test-environment-timeout=5"));
 
         builder.setBackoffFactor("5");
         command =  builder.getOptionalCommandList();
