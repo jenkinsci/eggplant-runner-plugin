@@ -72,10 +72,6 @@
             Path to a file where the test results will be stored in junit xml format
             <br><strong>E.g.</strong> <em> C:\results\result.xml </em></br>
         </f:entry> 
-        <f:entry title="Poll Interval " field="pollInterval">
-            <f:textbox default="5" />
-            The number of seconds to wait between each call to the DAI server  <em>[default: 5]</em>
-        </f:entry>
         <f:entry title="Request Timeout " field="requestTimeout">
             <f:textbox default="30" />
             The timeout in seconds for each HTTP request to the DAI server  <em>[default: 30]</em>
@@ -83,10 +79,6 @@
         <f:entry title="Request Retries " field="requestRetries">
             <f:textbox default="5" />
             The number of times to attempt each HTTP request to the DAI server  <em>[default: 5]</em>
-        </f:entry>
-        <f:entry title="Test Environment Timeout " field="testEnvironmentTimeout">
-            <f:textbox default="15" />
-            The timeout in seconds for checking test environment readiness <em>[default: 15]</em>
         </f:entry>
         <f:entry title="Backoff Factor " field="backoffFactor">
             <f:textbox default="0.5" />
