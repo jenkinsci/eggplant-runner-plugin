@@ -159,7 +159,7 @@ Output are shown in **Console Output**
   <tbody>
   <tr>
       <td>7.4.0-4</td>
-      <td><a href="https://plugins.jenkins.io/eggplant-runner/">latest</a></td>
+      <td><a href="https://plugins.jenkins.io/eggplant-runner/">latest</a> (with cve fix)<br /><a href="https://plugins.jenkins.io/eggplant-runner/"><a href="https://updates.jenkins.io/download/plugins/eggplant-runner/0.0.1.265.v56273b_eece56/eggplant-runner.hpi"> 0.0.1.270.vcb_9192a_2c004 </a>(works with 7.4.0-4)</td>
   </tr>
   <tr>
       <td>7.3.0-3</td>
