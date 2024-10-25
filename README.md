@@ -66,35 +66,41 @@ DAI suite name for the specified test configuration. (Use this argument if only 
              Alternatively, you could set a repo secret in `Repo Settings > Secrets > Actions` and refer to it like below:<br />
              `clientSecret: "${{ secrets.DAI_CLIENT_SECRET }}"`.
 
-The **DAI Client Secret** can be obtain by go to  `http(s):/dai_server_hostname:portnumber/ > System > API Access > Add New` (for new API access creation)
+The **DAI Client Secret** can be obtain by go to  `http(s):/dai_server_hostname:portnumber/ > System > API Access > Add New`. (for new API access creation)
 
 ![image](https://user-images.githubusercontent.com/101400930/206938890-07a45761-3c49-40a7-bf48-1a1b6f3b3659.png)
 
 ### `requestTimeout`
-**[Optional]** The timeout in seconds for each HTTP request to the Eggplant DAI server<br />
+**[Optional]** The timeout in seconds for each HTTP request to the Eggplant DAI server.<br />
 **Default:** `30`
 
 ### `requestRetries`
-**[Optional]** The number of times to attempt each HTTP request to the Eggplant DAI server<br />
+**[Optional]** The number of times to attempt each HTTP request to the Eggplant DAI server.<br />
 **Default:** `5`
 
 ### `backoffFactor`
-**[Optional]** The exponential backoff factor between each HTTP request<br />
+**[Optional]** The exponential backoff factor between each HTTP request.<br />
 **Default:** `0.5`
 
 ### `logLevel`
-**[Optional]** The logging level<br />
+**[Optional]** The logging level.<br />
 **Default:** `INFO`
 
 ### `CACertPath`
-**[Optional]** The path to an alternative Certificate Authority pem file<br />
+**[Optional]** The path to an alternative Certificate Authority pem file.<br />
 
 ### `testResultPath`
-**[Optional]** Path to a file where the test results will be stored in junit xml format<br />
+**[Optional]** The path to a file where the test results will be stored in JUnit XML format.<br />
 **Example** `C:\results\result.xml`
 
 ### `eggplantRunnerPath`
-**[Optional]** The path to eggplant runner CLI executable<br />
+**[Optional]** The path to Eggplant runner CLI executable.<br />
+
+### `parameters`
+**[Optional]** The global parameter(s) to override in the format `parameter_name=parameter_value`.<br />
+**Example** `username=Lily`<br />
+You can override multiple parameters by separating them with a two semi-colon  delimeter (`;;`).<br />
+**Example** `username=Lily;;city=Paris;;hobby=Jogging`
 
 ## Output
 
@@ -148,6 +154,7 @@ pipeline {
 Output are shown in **Console Output**
 ![image](https://user-images.githubusercontent.com/101400930/169546010-1fce3d53-daa2-42e4-8945-0f6f49870d5d.png)
 
+**NEW for DAI 7.5:** for pipeline porject in Mac, if parameters input having quotes `"`, they need to be escaped.
 ## Release for DAI 
 <table>
   <thead>
@@ -157,9 +164,13 @@ Output are shown in **Console Output**
     </tr>
   </thead>
   <tbody>
+    <tr>
+      <td>7.5.0-3</td>
+      <td><a href="https://plugins.jenkins.io/eggplant-runner/">latest</td>
+  </tr>
   <tr>
       <td>7.4.0-4</td>
-      <td><a href="https://plugins.jenkins.io/eggplant-runner/">latest</a> (with cve fix)<br /><a href="https://plugins.jenkins.io/eggplant-runner/"><a href="https://updates.jenkins.io/download/plugins/eggplant-runner/0.0.1.265.v56273b_eece56/eggplant-runner.hpi"> 0.0.1.270.vcb_9192a_2c004 </a>(works with 7.4.0-4)</td>
+      <td><a href="https://plugins.jenkins.io/eggplant-runner/"><a href="https://updates.jenkins.io/download/plugins/eggplant-runner/0.0.1.274.ve12295250d73/eggplant-runner.hpi"> 0.0.1.274.ve12295250d73 </a> (with cve fix)<br /><a href="https://plugins.jenkins.io/eggplant-runner/"><a href="https://updates.jenkins.io/download/plugins/eggplant-runner/0.0.1.270.vcb_9192a_2c004/eggplant-runner.hpi"> 0.0.1.270.vcb_9192a_2c004 </a>(works with 7.4.0-4)</td>
   </tr>
   <tr>
       <td>7.3.0-3</td>

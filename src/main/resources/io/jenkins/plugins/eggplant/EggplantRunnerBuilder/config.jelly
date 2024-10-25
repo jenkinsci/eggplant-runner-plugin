@@ -89,5 +89,12 @@
             The path to eggplant runner CLI executable
             <br><strong>E.g.</strong> <em> C:\eggplant\eggplant-runner-Windows-x.x.x-x.exe </em></br>
         </f:entry>        
+        <f:entry title="Parameters " field="parameters">
+            <f:textbox />
+            The global parameter(s) to override in the format <code>parameter_name=parameter_value</code>
+            <br><strong>E.g.</strong> <code>username=Lily</code> </br>
+            <br>You can override multiple parameters by separating them with a two semi-colon delimeter (<code>;;</code>).</br>
+            <br><strong>E.g.</strong> <code>username=Lily;;city=Paris;;hobby=Jogging</code> </br>
+        </f:entry>
     </f:advanced>
 </j:jelly>
