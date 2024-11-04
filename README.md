@@ -165,7 +165,7 @@ Output are shown in **Console Output**
   </thead>
   <tbody>
     <tr>
-      <td>7.5.0-4</td>
+      <td>7.5.0-7</td>
       <td><a href="https://plugins.jenkins.io/eggplant-runner/">latest</td>
   </tr>
   <tr>
