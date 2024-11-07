@@ -58,6 +58,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     private Boolean dryRun;
     private String eggplantRunnerPath;
     private TestConfig testConfig;
+    private String parameters;
 
     @DataBoundConstructor
     public EggplantRunnerBuilder() {
@@ -105,6 +106,9 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     public String getEggplantRunnerPath() {
         return eggplantRunnerPath;
     }  
+    public String getParameters() {
+        return parameters;
+    }
 
     public TestConfig getTestConfig() {
         if(this.testConfigId != null)
@@ -197,6 +201,10 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         this.testConfig = testConfig;
     }    
 
+    @DataBoundSetter
+    public void setParameters(String parameters) {
+        this.parameters = parameters;
+    }
 
     @Override
     public void perform(Run<?, ?> run, FilePath workspace, EnvVars env, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
@@ -228,7 +236,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             CLIRunnerHelper.downloadRunner(env.get("gitlabAccessToken"));
 
         FilePath cliRunnerPath = CLIRunnerHelper.getFilePath();
-        String[] command = this.getCommand(cliRunnerPath, env);
+        String[] command = this.getCommand(cliRunnerPath, env, os);
         logger.println("command: " + Arrays.toString(command));
 
         cliRunnerPath.chmod(0755);
@@ -357,7 +365,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         return args;
     }
 
-    public List<String> getOptionalCommandList(){
+    public List<String> getOptionalCommandList(OperatingSystem os){
         List<String> args = new ArrayList<String>();
         if (this.logLevel != null) // logLevelArg
             args.add(String.format("--log-level=%s", this.logLevel)); 
@@ -373,16 +381,27 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             args.add("--dry-run");
         if (this.backoffFactor != null && !this.backoffFactor.equals("")) // backoffFactorArg
             args.add(String.format("--backoff-factor=%s", this.backoffFactor)); 
+        if (this.parameters != null && !this.parameters.equals("")) { // parameters
+            String[] values = this.parameters.split(";;");
+            for (String value : values) {
+                args.add("--param");
+                if (os == OperatingSystem.LINUX || os == OperatingSystem.MACOS || !value.contains(" ")) {
+                    args.add(value);
+                } else {
+                    args.add(value.replace("\"", "\\\""));
+                }
+            }
+        }
         return args;
     }
 
-    private String[] getCommand(FilePath cliFile, EnvVars env) throws BuilderException {
+    private String[] getCommand(FilePath cliFile, EnvVars env, OperatingSystem os) throws BuilderException {
         List<String> commandList = new ArrayList<String>();
             //commandList.add("./" + cliFile.getName()); // cliRunnerPath
             commandList.add(cliFile.getRemote()); // cliRunnerPath       
             this.getBackwardCompatibilityCommands();
             commandList.addAll(getMandatoryCommandList(env));
-            commandList.addAll(getOptionalCommandList());
+            commandList.addAll(getOptionalCommandList(os));
             return commandList.toArray(new String[0]);       
     }
 
