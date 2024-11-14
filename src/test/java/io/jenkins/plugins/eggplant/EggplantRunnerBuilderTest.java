@@ -21,6 +21,7 @@ import io.jenkins.plugins.eggplant.EggplantRunnerBuilder.ModelBased;
 import io.jenkins.plugins.eggplant.EggplantRunnerBuilder.ScriptBased;
 import io.jenkins.plugins.eggplant.EggplantRunnerBuilder.TestConfigId;
 import io.jenkins.plugins.eggplant.common.LogLevel;
+import io.jenkins.plugins.eggplant.common.OperatingSystem;
 import io.jenkins.plugins.eggplant.exception.BuilderException;
 
 public class EggplantRunnerBuilderTest {
@@ -199,31 +200,31 @@ public class EggplantRunnerBuilderTest {
         List<String> command = new ArrayList<String>();
 
         builder.setLogLevel(LogLevel.WARNING);
-        command =  builder.getOptionalCommandList();
+        command =  builder.getOptionalCommandList(OperatingSystem.WINDOWS);
         assertTrue(command.contains("--log-level=WARNING"));
 
         builder.setCACertPath("cert path");
-        command =  builder.getOptionalCommandList();
+        command =  builder.getOptionalCommandList(OperatingSystem.WINDOWS);
         assertTrue(command.contains("--ca-cert-path=cert path"));
 
         builder.setTestResultPath("result path");
-        command =  builder.getOptionalCommandList();
+        command =  builder.getOptionalCommandList(OperatingSystem.WINDOWS);
         assertTrue(command.contains("--test-result-path=result path"));
 
         builder.setRequestTimeout("5");
-        command =  builder.getOptionalCommandList();
+        command =  builder.getOptionalCommandList(OperatingSystem.WINDOWS);
         assertTrue(command.contains("--request-timeout=5"));
 
         builder.setRequestRetries("5");
-        command =  builder.getOptionalCommandList();
+        command =  builder.getOptionalCommandList(OperatingSystem.WINDOWS);
         assertTrue(command.contains("--request-retries=5"));
 
         builder.setBackoffFactor("5");
-        command =  builder.getOptionalCommandList();
+        command =  builder.getOptionalCommandList(OperatingSystem.WINDOWS);
         assertTrue(command.contains("--backoff-factor=5"));
 
         builder.setDryRun(true);
-        command =  builder.getOptionalCommandList();
+        command =  builder.getOptionalCommandList(OperatingSystem.WINDOWS);
         assertTrue(command.contains("--dry-run"));
 
     }
