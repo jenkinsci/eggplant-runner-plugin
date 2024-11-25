@@ -25,7 +25,7 @@ import jenkins.model.Jenkins;
 
 public class CLIRunnerHelper{
 
-  private final static String CLI_VERSION = "7.5.0-9";  
+  private final static String CLI_VERSION = "7.5.0-10";  
   private final static Map<OperatingSystem, String> CLI_FILENAME = Stream.of(
       new AbstractMap.SimpleEntry<>(OperatingSystem.LINUX, "eggplant-runner-Linux-${cliVersion}"),
       new AbstractMap.SimpleEntry<>(OperatingSystem.MACOS, "eggplant-runner-MacOS-${cliVersion}"), 
@@ -88,12 +88,12 @@ public class CLIRunnerHelper{
     String cliFilenameMinor = "";
     String fileName = filePath.getName();
 
-    if (cliFilename.length() == 29) {
-      cliFilenameMinor = cliFilename.substring(0, cliFilename.length() - 4);
-      filePathMinor = fileName.substring(0, fileName.length() - 4);
-    } else if (cliFilename.length() == 35) {
-      cliFilenameMinor = cliFilename.substring(0, cliFilename.length() - 8);
-      filePathMinor = fileName.substring(0, fileName.length() - 8);
+    if (cliFilename.length() == 30) {
+      cliFilenameMinor = cliFilename.substring(0, cliFilename.length() - 5);
+      filePathMinor = fileName.substring(0, fileName.length() - 5);
+    } else if (cliFilename.length() == 36) {
+      cliFilenameMinor = cliFilename.substring(0, cliFilename.length() - 9);
+      filePathMinor = fileName.substring(0, fileName.length() - 9);
     } else {
       cliFilenameMinor = "not correct file format";
       filePathMinor = "not match";
