@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import java.net.Proxy;
 import hudson.FilePath;
@@ -25,7 +27,7 @@ import jenkins.model.Jenkins;
 
 public class CLIRunnerHelper{
 
-  private final static String CLI_VERSION = "7.5.0-10";  
+  private final static String CLI_VERSION = "25.1.0+5";  
   private final static Map<OperatingSystem, String> CLI_FILENAME = Stream.of(
       new AbstractMap.SimpleEntry<>(OperatingSystem.LINUX, "eggplant-runner-Linux-${cliVersion}"),
       new AbstractMap.SimpleEntry<>(OperatingSystem.MACOS, "eggplant-runner-MacOS-${cliVersion}"), 
@@ -88,17 +90,25 @@ public class CLIRunnerHelper{
     String cliFilenameMinor = "";
     String fileName = filePath.getName();
 
-    if (cliFilename.length() == 30) {
-      cliFilenameMinor = cliFilename.substring(0, cliFilename.length() - 5);
-      filePathMinor = fileName.substring(0, fileName.length() - 5);
-    } else if (cliFilename.length() == 36) {
-      cliFilenameMinor = cliFilename.substring(0, cliFilename.length() - 9);
-      filePathMinor = fileName.substring(0, fileName.length() - 9);
+    String pattern = "eggplant-runner-(Windows|Linux|MacOS)-(\\d{1,2}\\.\\d)";
+
+    Pattern compiledPattern = Pattern.compile(pattern);
+
+    Matcher matcherCLI = compiledPattern.matcher(cliFilename);
+    Matcher matcherFilePath = compiledPattern.matcher(fileName);
+
+    if (matcherCLI.find()) {
+        cliFilenameMinor = matcherCLI.group(0);
     } else {
-      cliFilenameMinor = "not correct file format";
-      filePathMinor = "not match";
+        cliFilenameMinor = "not correct file format";
     }
 
+    if (matcherFilePath.find()) {
+        filePathMinor = matcherFilePath.group(0);
+    } else {
+        filePathMinor = "not match";
+    }
+  
     if(!filePathMinor.equals(cliFilenameMinor))
     {
       throw new InvalidRunnerException("File found is invalid. Required: " + cliFilename + ". Please download from " +  getPublicDownloadLink());
