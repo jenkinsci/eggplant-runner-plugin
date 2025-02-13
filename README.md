@@ -165,8 +165,12 @@ Output are shown in **Console Output**
   </thead>
   <tbody>
   <tr>
+      <td>25.1.0+3</td>
+      <td><a href="https://plugins.jenkins.io/eggplant-runner/">latest </a></td>
+  </tr>
+  <tr>
       <td>7.5.0-10</td>
-      <td><a href="https://plugins.jenkins.io/eggplant-runner/">latest </a>(with bug fix. Now allows passes after re-run)</td>
+      <td><a href="https://plugins.jenkins.io/eggplant-runner/"><a href="https://updates.jenkins.io/download/plugins/eggplant-runner/0.0.1.284.va_b_a_6107c0515/eggplant-runner.hpi"> 0.0.1.284.va_b_a_6107c0515 </a></td>
   </tr>
   <tr>
       <td>7.5.0-9</td>
