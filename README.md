@@ -102,6 +102,9 @@ The **DAI Client Secret** can be obtain by go to  `http(s):/dai_server_hostname:
 You can override multiple parameters by separating them with a two semi-colon delimeter (`;;`).<br />
 **Example** `username=Lily;;city=Paris;;hobby=Jogging`
 
+### `parametersFilePath`
+**[Optional]** The path to a user-created JSON file that contains the global parameters you want to override.
+
 ### `filterBy`
 **[Optional]** The filter to execute specific step within a test configuration in the form of `filter_name=filter_value`.<br />
 **Example** `step_status_include=Failed,Error`<br />

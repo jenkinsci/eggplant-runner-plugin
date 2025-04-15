@@ -59,6 +59,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     private String eggplantRunnerPath;
     private TestConfig testConfig;
     private String parameters;
+    private String parametersFilePath;
     private String filterBy;
     private String filterByJson;
 
@@ -110,6 +111,9 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     }  
     public String getParameters() {
         return parameters;
+    }
+    public String getParametersFilePath() {
+        return parametersFilePath;
     }
     public String getFilterBy() {
         return filterBy;
@@ -212,6 +216,11 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     @DataBoundSetter
     public void setParameters(String parameters) {
         this.parameters = parameters;
+    }
+
+    @DataBoundSetter
+    public void setParametersFilePath(String parametersFilePath) {
+        this.parametersFilePath = parametersFilePath;
     }
 
     @DataBoundSetter
@@ -410,6 +419,8 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
                 }
             }
         }
+        if (this.parametersFilePath != null && !this.parametersFilePath.equals("")) // parametersFilePathArg
+            args.add(String.format("--param-file=%s", this.parametersFilePath)); 
         if (this.filterBy != null && !this.filterBy.equals("")) { // filterByArg
             String[] values = this.filterBy.split(";;");
             for (String value : values) {
