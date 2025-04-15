@@ -106,7 +106,7 @@ You can override multiple parameters by separating them with a two semi-colon de
 **[Optional]** The path to a user-created JSON file that contains the global parameters you want to override.
 
 ### `filterBy`
-**[Optional]** The filter to execute specific step within a test configuration in the form of `filter_name=filter_value`.<br />
+**[Optional]** The filters to execute specific steps within a test configuration in the form of `filter_name=filter_value`.<br />
 **Example** `step_status_include=Failed,Error`<br />
 You can enter multiple filters by separating them with a two semi-colon delimeter (`;;`).<br />
 **Example** `step_status_include=Failed,Error;;test_case_name_exclude=login_user`

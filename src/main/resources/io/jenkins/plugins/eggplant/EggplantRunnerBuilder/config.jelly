@@ -103,7 +103,7 @@
         </f:entry> 
         <f:entry title="Filter By " field="filterBy">
             <f:textbox />
-            The filter to execute specific step within a test configuration in the form of <code>filter_name=filter_value</code>
+            The filters to execute specific steps within a test configuration in the form of <code>filter_name=filter_value</code>
             <br><strong>E.g.</strong> <code> step_status_include=Failed,Error</code> </br>
             <br>You can enter multiple filters by separating them with a two semi-colon delimeter (<code>;;</code>).</br>
             <br><strong>E.g.</strong> <code> step_status_include=Failed,Error;;test_case_name_exclude=login_user</code> </br>
