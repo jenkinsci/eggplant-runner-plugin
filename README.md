@@ -99,8 +99,17 @@ The **DAI Client Secret** can be obtain by go to  `http(s):/dai_server_hostname:
 ### `parameters`
 **[Optional]** The global parameter(s) to override in the format `parameter_name=parameter_value`.<br />
 **Example** `username=Lily`<br />
-You can override multiple parameters by separating them with a two semi-colon  delimeter (`;;`).<br />
+You can override multiple parameters by separating them with a two semi-colon delimeter (`;;`).<br />
 **Example** `username=Lily;;city=Paris;;hobby=Jogging`
+
+### `filterBy`
+**[Optional]** The filter to execute specific step within a test configuration in the form of `filter_name=filter_value`.<br />
+**Example** `step_status_include=Failed,Error`<br />
+You can enter multiple filters by separating them with a two semi-colon delimeter (`;;`).<br />
+**Example** `step_status_include=Failed,Error;;test_case_name_exclude=login_user`
+
+### `filterByJson`
+**[Optional]** The path to a user-created JSON file that contains all the filters to execute specific steps within a test configuration.
 
 ## Output
 
@@ -154,7 +163,7 @@ pipeline {
 Output are shown in **Console Output**
 ![image](https://user-images.githubusercontent.com/101400930/169546010-1fce3d53-daa2-42e4-8945-0f6f49870d5d.png)
 
-**NEW for DAI 7.5:** for pipeline porject in Mac, if parameters input having quotes `"`, they need to be escaped.
+**NEW for DAI 7.5:** for pipeline project in Mac, if parameters input having quotes `"`, they need to be escaped.
 ## Release for DAI 
 <table>
   <thead>
@@ -165,8 +174,12 @@ Output are shown in **Console Output**
   </thead>
   <tbody>
   <tr>
-      <td>25.1.0+3</td>
+      <td>25.2.0+0</td>
       <td><a href="https://plugins.jenkins.io/eggplant-runner/">latest </a></td>
+  </tr>
+  <tr>
+      <td>25.1.0+3</td>
+      <td><a href="https://plugins.jenkins.io/eggplant-runner/"><a href="https://updates.jenkins.io/download/plugins/eggplant-runner/0.0.1.285.v30ff1ea_cd533/eggplant-runner.hpi"> 0.0.1.285.v30ff1ea_cd533 </a></td>
   </tr>
   <tr>
       <td>7.5.0-10</td>
