@@ -112,6 +112,10 @@
             <f:textbox />
             The path to a user-created JSON file that contains all the filters to execute specific steps within a test configuration
             <br><strong>E.g.</strong> <em> C:\EggplantCLI\TestConfigFilters.json </em></br>
+        </f:entry>
+        <f:entry title="Previous Task Instance ID " field="previousTaskInstanceID">
+            <f:textbox />
+            The UUID of a previously executed test configuration definition to be used in the current test configuration run.
         </f:entry> 
     </f:advanced>
 </j:jelly>

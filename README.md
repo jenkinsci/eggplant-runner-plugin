@@ -103,16 +103,46 @@ You can override multiple parameters by separating them with a two semi-colon de
 **Example** `username=Lily;;city=Paris;;hobby=Jogging`
 
 ### `parametersFilePath`
-**[Optional]** The path to a user-created JSON file that contains the global parameters you want to override.
+**[Optional]** The path to a user-created JSON file that contains the global parameters you want to override. <br />
+Example of a parameter JSON file:
+```json
+{
+  "MyEnvironment": "Production",
+  "username": "Eggy@eggplant.com"
+}
+```
 
 ### `filterBy`
 **[Optional]** The filters to execute specific steps within a test configuration in the form of `filter_name=filter_value`.<br />
 **Example** `step_status_include=Failed,Error`<br />
 You can enter multiple filters by separating them with a two semi-colon delimeter (`;;`).<br />
-**Example** `step_status_include=Failed,Error;;test_case_name_exclude=login_user`
+**Example** `step_status_include=Failed,Error;;test_case_name_exclude=login_user`<br />
+
+Filter available: `step_status_include`, `step_status_exclude`, `test_case_tag_include`, `test_case_tag_exclude`, `test_case_name_include`, `test_case_name_exclude`, `scenario_tag`
 
 ### `filterByJson`
-**[Optional]** The path to a user-created JSON file that contains all the filters to execute specific steps within a test configuration.
+**[Optional]** The path to a user-created JSON file that contains all the filters to execute specific steps within a test configuration.<br />
+Example of a test configuration's step execution filter JSON file:
+```json
+{
+  "step_status": {
+    "include": "Passed,Failed",
+    "exclude": "Error,Cancelled,Untested"
+  },
+  "test_case_tag": {
+    "include": "admin, tc_tag1",
+    "exclude": "logic module, critical"
+  },
+  "test_case_name": {
+    "include": "tc_001",
+    "exclude": "login_user"
+  },
+  "scenario_tag": "@scea,@input_tag ~@order_page"
+}
+```
+
+### `previousTaskInstanceID`
+**[Optional]** The UUID of a previously executed test configuration definition to be used in the current test configuration run. Defaults to the last ran execution of the given test configuration.
 
 ## Output
 

@@ -62,6 +62,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     private String parametersFilePath;
     private String filterBy;
     private String filterByJson;
+    private String previousTaskInstanceID;
 
     @DataBoundConstructor
     public EggplantRunnerBuilder() {
@@ -120,6 +121,9 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     }
     public String getFilterByJson() {
         return filterByJson;
+    }
+    public String getPreviousTaskInstanceID() {
+        return previousTaskInstanceID;
     }
 
     public TestConfig getTestConfig() {
@@ -231,6 +235,11 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     @DataBoundSetter
     public void setFilterByJson(String filterByJson) {
         this.filterByJson = filterByJson;
+    }
+
+    @DataBoundSetter
+    public void setPreviousTaskInstanceID(String previousTaskInstanceID) {
+        this.previousTaskInstanceID = previousTaskInstanceID;
     }
 
     @Override
@@ -433,7 +442,9 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             }
         }
         if (this.filterByJson != null && !this.filterByJson.equals("")) // filterByJsonArg
-            args.add(String.format("--filter-by-json=%s", this.filterByJson)); 
+            args.add(String.format("--filter-by-json=%s", this.filterByJson));
+        if (this.previousTaskInstanceID != null && !this.previousTaskInstanceID.equals("")) // previousTaskInstanceIDArg
+            args.add(String.format("--previous-task-instance-id=%s", this.previousTaskInstanceID));
         return args;
     }
 
