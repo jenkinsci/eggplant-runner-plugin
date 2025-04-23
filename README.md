@@ -196,7 +196,7 @@ pipeline {
 Output are shown in **Console Output**
 ![image](https://user-images.githubusercontent.com/101400930/169546010-1fce3d53-daa2-42e4-8945-0f6f49870d5d.png)
 
-**NEW for DAI 7.5:** for pipeline project in Mac, if parameters input having quotes `"`, they need to be escaped.
+**NEW for DAI 7.5:** for pipeline project in Mac, if parameters/filterBy input having quotes `"`, they need to be escaped.
 ## Release for DAI 
 <table>
   <thead>
