@@ -274,9 +274,8 @@ This plug-in is licensed under the terms of the [MIT license](LICENSE.md)
 
 ## Notes
 
-1. Starting from v1.0.12 (DAI 7.4.0-4) onwards, Inputs `pollInterval` and `testEnvironmentTimeout` were removed. Warnings are expected if inputs are still in the workflow file.
-2. Release v1.0.15 (DAI 7.5.0-10) now allows passes after re-run.
-3. For pipeline project in Mac, if `parameters`/`filterBy` input having quotes `"`, they need to be escaped.
+1. Release DAI 7.5.0-10 now allows passes after re-run.
+2. For pipeline project in Mac, if `parameters`/`filterBy` input having quotes `"`, they need to be escaped.
 
 ## Contributing
 
