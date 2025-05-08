@@ -196,7 +196,6 @@ pipeline {
 Output are shown in **Console Output**
 ![image](https://user-images.githubusercontent.com/101400930/169546010-1fce3d53-daa2-42e4-8945-0f6f49870d5d.png)
 
-**NEW for DAI 7.5:** for pipeline project in Mac, if parameters/filterBy input having quotes `"`, they need to be escaped.
 ## Release for DAI 
 <table>
   <thead>
@@ -273,11 +272,11 @@ Output are shown in **Console Output**
 
 This plug-in is licensed under the terms of the [MIT license](LICENSE.md)
 
-## Releases Note
+## Notes
 
-30th May 2022
-
-- Fix Jenkins Plugins "Eggplant Runner" Client Secret textbox behaviour.
+1. Starting from v1.0.12 (DAI 7.4.0-4) onwards, Inputs `pollInterval` and `testEnvironmentTimeout` were removed. Warnings are expected if inputs are still in the workflow file.
+2. Release v1.0.15 (DAI 7.5.0-10) now allows passes after re-run.
+3. For pipeline project in Mac, if `parameters`/`filterBy` input having quotes `"`, they need to be escaped.
 
 ## Contributing
 
