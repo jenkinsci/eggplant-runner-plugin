@@ -59,6 +59,10 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     private String eggplantRunnerPath;
     private TestConfig testConfig;
     private String parameters;
+    private String parametersFilePath;
+    private String filterBy;
+    private String filterByJson;
+    private String previousTaskInstanceID;
 
     @DataBoundConstructor
     public EggplantRunnerBuilder() {
@@ -108,6 +112,18 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     }  
     public String getParameters() {
         return parameters;
+    }
+    public String getParametersFilePath() {
+        return parametersFilePath;
+    }
+    public String getFilterBy() {
+        return filterBy;
+    }
+    public String getFilterByJson() {
+        return filterByJson;
+    }
+    public String getPreviousTaskInstanceID() {
+        return previousTaskInstanceID;
     }
 
     public TestConfig getTestConfig() {
@@ -204,6 +220,26 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     @DataBoundSetter
     public void setParameters(String parameters) {
         this.parameters = parameters;
+    }
+
+    @DataBoundSetter
+    public void setParametersFilePath(String parametersFilePath) {
+        this.parametersFilePath = parametersFilePath;
+    }
+
+    @DataBoundSetter
+    public void setFilterBy(String filterBy) {
+        this.filterBy = filterBy;
+    }
+
+    @DataBoundSetter
+    public void setFilterByJson(String filterByJson) {
+        this.filterByJson = filterByJson;
+    }
+
+    @DataBoundSetter
+    public void setPreviousTaskInstanceID(String previousTaskInstanceID) {
+        this.previousTaskInstanceID = previousTaskInstanceID;
     }
 
     @Override
@@ -381,7 +417,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             args.add("--dry-run");
         if (this.backoffFactor != null && !this.backoffFactor.equals("")) // backoffFactorArg
             args.add(String.format("--backoff-factor=%s", this.backoffFactor)); 
-        if (this.parameters != null && !this.parameters.equals("")) { // parameters
+        if (this.parameters != null && !this.parameters.equals("")) { // parametersArg
             String[] values = this.parameters.split(";;");
             for (String value : values) {
                 args.add("--param");
@@ -392,6 +428,23 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
                 }
             }
         }
+        if (this.parametersFilePath != null && !this.parametersFilePath.equals("")) // parametersFilePathArg
+            args.add(String.format("--param-file=%s", this.parametersFilePath)); 
+        if (this.filterBy != null && !this.filterBy.equals("")) { // filterByArg
+            String[] values = this.filterBy.split(";;");
+            for (String value : values) {
+                args.add("--filter-by");
+                if (os == OperatingSystem.LINUX || os == OperatingSystem.MACOS || !value.contains(" ")) {
+                    args.add(value);
+                } else {
+                    args.add(value.replace("\"", "\\\""));
+                }
+            }
+        }
+        if (this.filterByJson != null && !this.filterByJson.equals("")) // filterByJsonArg
+            args.add(String.format("--filter-by-json=%s", this.filterByJson));
+        if (this.previousTaskInstanceID != null && !this.previousTaskInstanceID.equals("")) // previousTaskInstanceIDArg
+            args.add(String.format("--previous-task-instance-id=%s", this.previousTaskInstanceID));
         return args;
     }
 

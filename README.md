@@ -99,8 +99,50 @@ The **DAI Client Secret** can be obtain by go to  `http(s):/dai_server_hostname:
 ### `parameters`
 **[Optional]** The global parameter(s) to override in the format `parameter_name=parameter_value`.<br />
 **Example** `username=Lily`<br />
-You can override multiple parameters by separating them with a two semi-colon  delimeter (`;;`).<br />
+You can override multiple parameters by separating them with a two semi-colon delimeter (`;;`).<br />
 **Example** `username=Lily;;city=Paris;;hobby=Jogging`
+
+### `parametersFilePath`
+**[Optional]** The path to a user-created JSON file that contains the global parameters you want to override. <br />
+Example of a parameter JSON file:
+```json
+{
+  "MyEnvironment": "Production",
+  "username": "Eggy@eggplant.com"
+}
+```
+
+### `filterBy`
+**[Optional]** The filters to execute specific steps within a test configuration in the form of `filter_name=filter_value`.<br />
+**Example** `step_status_include=Failed,Error`<br />
+You can enter multiple filters by separating them with a two semi-colon delimeter (`;;`).<br />
+**Example** `step_status_include=Failed,Error;;test_case_name_exclude=login_user`<br />
+
+Filter available: `step_status_include`, `step_status_exclude`, `test_case_tag_include`, `test_case_tag_exclude`, `test_case_name_include`, `test_case_name_exclude`, `scenario_tag`
+
+### `filterByJson`
+**[Optional]** The path to a user-created JSON file that contains all the filters to execute specific steps within a test configuration.<br />
+Example of a test configuration's step execution filter JSON file:
+```json
+{
+  "step_status": {
+    "include": "Passed,Failed",
+    "exclude": "Error,Cancelled,Untested"
+  },
+  "test_case_tag": {
+    "include": "admin, tc_tag1",
+    "exclude": "logic module, critical"
+  },
+  "test_case_name": {
+    "include": "tc_001",
+    "exclude": "login_user"
+  },
+  "scenario_tag": "@scea,@input_tag ~@order_page"
+}
+```
+
+### `previousTaskInstanceID`
+**[Optional]** The UUID of a previously executed test configuration definition to be used in the current test configuration run. Defaults to the last ran execution of the given test configuration.
 
 ## Output
 
@@ -154,7 +196,6 @@ pipeline {
 Output are shown in **Console Output**
 ![image](https://user-images.githubusercontent.com/101400930/169546010-1fce3d53-daa2-42e4-8945-0f6f49870d5d.png)
 
-**NEW for DAI 7.5:** for pipeline porject in Mac, if parameters input having quotes `"`, they need to be escaped.
 ## Release for DAI 
 <table>
   <thead>
@@ -165,8 +206,12 @@ Output are shown in **Console Output**
   </thead>
   <tbody>
   <tr>
-      <td>25.1.0+3</td>
+      <td>25.2.0+5</td>
       <td><a href="https://plugins.jenkins.io/eggplant-runner/">latest </a></td>
+  </tr>
+  <tr>
+      <td>25.1.0+3</td>
+      <td><a href="https://plugins.jenkins.io/eggplant-runner/"><a href="https://updates.jenkins.io/download/plugins/eggplant-runner/0.0.1.285.v30ff1ea_cd533/eggplant-runner.hpi"> 0.0.1.285.v30ff1ea_cd533 </a></td>
   </tr>
   <tr>
       <td>7.5.0-10</td>
@@ -227,11 +272,10 @@ Output are shown in **Console Output**
 
 This plug-in is licensed under the terms of the [MIT license](LICENSE.md)
 
-## Releases Note
+## Notes
 
-30th May 2022
-
-- Fix Jenkins Plugins "Eggplant Runner" Client Secret textbox behaviour.
+1. Release DAI 7.5.0-10 now allows passes after re-run.
+2. For pipeline project in Mac, if `parameters`/`filterBy` input having quotes `"`, they need to be escaped.
 
 ## Contributing
 
