@@ -289,7 +289,7 @@ This plug-in is licensed under the terms of the [MIT license](LICENSE.md)
 
 You need to install the following dependencies if you want to contribute to the Eggplant DAI Runner for Jenkins:
 
-1. You can download and install Java 17 from the [Eclipse Temurin website](https://adoptium.net/). **(*IMPORTANT* Java is not needed to run this plugin, this section is for contributing to plugin development)**
+1. You can download and install Java 17 from the [Eclipse Temurin website](https://adoptium.net/). **(*IMPORTANT* Java is not necessary to run this plugin; you only need to install it if you want to contribute to the plugin project.)**
 2. Download Maven from the [Apache Maven website](https://maven.apache.org/). Make sure to download one of the binary archives (with bin in their name).
 3. To verify that Maven is installed, run the following command: `mvn -version`
 4. You can use `launch.json` to run 'Debug (Attach)' to launch an local Jenkins instance for development. 
