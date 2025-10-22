@@ -40,21 +40,15 @@ Go to your Jenkins home page and log in to your Jenkins account.
 
 - The project **Configuration** page opens showing the **General** options. You will leave the General options blank and configure the Build Steps.
 
-**Step 2**: Configure **Eggplant Runner** Trigger and Build Steps
+**Step 2**: Configure **Eggplant Runner** Build Steps
 
-- Click **Triggers** in the Configure menu on the project Configuration page. The Triggers page opens.
+- Click **Build Steps** in the Configure menu on the project Configuration page. The Build Steps page opens for you to enter information about your DAI server, test config, and client information.
 
-![Project Triggers page](./assets/dai-plugin-jenkins-project-trigger-page.png)
-
-- Select **Eggplant Runner** from the **Build Steps** drop down on the Triggers panel. The Build Steps for Eggplant Runner panel opens. for you to enter information about your DAI server, test config, and client information.
-
-![Triggers Add Eggplant Runner Build Step](./assets/dai-plugin-jenkins-trigger-build-steps.png)
+![Project Build Steps](./assets/dai-plugin-jenkins-project-build-steps.png)
 
 **Step 3**: Fill in information about your DAI server, test config, and client information for the **Eggplant Runner** parameter values and then click **Save**. For information about where to find this information, see [Inputs](#inputs) below.
 
-![Project build steps](./assets/dai-plugin-jenkins-project-build-steps.png)
-
-- Scroll down to see the **Advanced** button, where you can add more test config parameters.
+- Scroll down to see and click the **Advanced** button, where you can add more test config parameters.
 
 ## Inputs
 
@@ -190,12 +184,12 @@ Example of a test configuration's step execution filter JSON file:
 
 - On the Jenkins home page, click play to run/build the project.
 
-![image](./assets/dai-plugin-jenkins-run-build-now.png)
+![Run build](./assets/dai-plugin-jenkins-run-build-now.png)
 
 - You can view the Builder information by clicking **Build History** in the left sidebar menu.
 
 Execution details are shown in **Console Output**
-![image](./assets/dai-jenkins-plugin-console-output.png)
+![Console output](./assets/dai-jenkins-plugin-console-output.png)
 
 ## Advanced Usage
 
