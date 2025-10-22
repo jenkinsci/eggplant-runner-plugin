@@ -30,7 +30,7 @@ Go to your Jenkins home page and log in to your Jenkins account.
 
 **Step 1** : Create **Freestyle project**
 
-![+ New Item]./assets/dai-plugin-jenkins-new-item.png)
+![+ New Item](./assets/dai-plugin-jenkins-new-item.png)
 
 - Click **Jenkins** in the upper left corner and then click **+ New Item**.
 
