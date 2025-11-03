@@ -152,11 +152,6 @@ public class CLIRunnerHelper{
           return null;
       }  
     });
-    System.setProperty("http.proxyHost", ip);
-    System.setProperty("http.proxyPort", String.valueOf(port));
-    System.setProperty("http.proxyUser", username);
-    System.setProperty("http.proxyPassword", password);
-    System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "");
     return new Proxy(Proxy.Type.HTTP, new InetSocketAddress(ip, port));
   }
   
