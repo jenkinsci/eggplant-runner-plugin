@@ -68,7 +68,7 @@ Alternatively, use [testConfigName](#testconfigname) and remove this input.
 ### `testConfigName`
 
 **[Required if testConfigID is not given]** The name of the Eggplant DAI test configuration that you want to run.
-<br />You must provide ***one*** of the following supporting arguments:
+<br />You must provide either `modelName` or `suiteName` as a supporting argument:
 
 - ### `spaceName`
 
