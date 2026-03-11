@@ -70,6 +70,11 @@ Alternatively, use [testConfigName](#testconfigname) and remove this input.
 **[Required if testConfigID is not given]** The name of the Eggplant DAI test configuration that you want to run.
 <br />You must provide ***one*** of the following supporting arguments:
 
+- ### `spaceName`
+
+**[Optional]** DAI space name where the specified test configuration resides.<br />
+**Default:** `Shared space`
+
 - ### `modelName`
 
 DAI model name for the specified test config. (Use this argument if only testConfigName is provided.)
@@ -213,9 +218,9 @@ pipeline {
                 // To run DAI test configuration by test config Id, use the following command
                 eggplantRunner serverURL: 'Your DAI server URL', testConfigId: 'Your test configuration that want to execute', clientId: 'Your DAI client ID'
                 //  To run DAI Test Configuration by Test Config Name with model name, use the following command
-                // eggplantRunner serverURL: 'Your DAI server URL', testConfigName: 'Your model-based test configuration name', modelName: 'Your model name', clientId: 'Your DAI client ID'
+                // eggplantRunner serverURL: 'Your DAI server URL', testConfigName: 'Your model-based test configuration name', spaceName: 'Your space name', modelName: 'Your model name', clientId: 'Your DAI client ID'
                 //  To run DAI Test Configuration by Test Config Name with suite name, use the following command
-                // eggplantRunner serverURL: 'Your DAI server URL', testConfigName: 'Your script-based test configuration name', suiteName: 'Your suite name', clientId: 'Your DAI client ID'
+                // eggplantRunner serverURL: 'Your DAI server URL', testConfigName: 'Your script-based test configuration name', spaceName: 'Your space name', suiteName: 'Your suite name', clientId: 'Your DAI client ID'
                 
                 //Note: Only execute one of the command per each build step
             }
@@ -246,8 +251,12 @@ Output are shown in **Console Output**
   </thead>
   <tbody>
   <tr>
-      <td>26.1.0+4</td>
+      <td>26.2.0+0</td>
       <td><a href="https://plugins.jenkins.io/eggplant-runner/">latest </a></td>
+  </tr>
+  <tr>
+      <td>26.1.0+4</td>
+      <td><a href="https://plugins.jenkins.io/eggplant-runner/"><a href="https://updates.jenkins.io/download/plugins/eggplant-runner/0.0.1.305.v7a_fa_c8d8c93e_/eggplant-runner.hpi"> 0.0.1.305.v7a_fa_c8d8c93e </a></td>
   </tr>
   <tr>
       <td>25.4.0+3</td>

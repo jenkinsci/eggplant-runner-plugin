@@ -66,7 +66,7 @@ class EggplantRunnerBuilderTest {
         FreeStyleProject project = jenkins.createFreeStyleProject();
         EggplantRunnerBuilder builder = new EggplantRunnerBuilder();
         builder.setServerURL("http://localhost:8080");
-        builder.setTestConfig(new ModelBased("test-Config-Name", "model-Name"));
+        builder.setTestConfig(new ModelBased("test-Config-Name", "space-Name", "model-Name"));
         builder.setClientId("client-Id");
         builder.setClientSecret(hudson.util.Secret.fromString("c38ce33d-5644-4198-b28f-9cf3d9ac05e4"));
         builder.setDryRun(true);
@@ -80,7 +80,7 @@ class EggplantRunnerBuilderTest {
         FreeStyleProject project = jenkins.createFreeStyleProject();
         EggplantRunnerBuilder builder = new EggplantRunnerBuilder();
         builder.setServerURL("http://localhost:8080");
-        builder.setTestConfig(new ScriptBased("test-Config-Name", "suite-Name"));
+        builder.setTestConfig(new ScriptBased("test-Config-Name", "space-Name", "suite-Name"));
         builder.setClientId("client-Id");
         builder.setClientSecret(hudson.util.Secret.fromString("c38ce33d-5644-4198-b28f-9cf3d9ac05e4"));
         builder.setDryRun(true);
@@ -165,6 +165,27 @@ class EggplantRunnerBuilderTest {
     }
 
     @Test
+    void testDefaultSpaceNameWhenNotProvided() throws BuilderException {
+        EggplantRunnerBuilder builder = new EggplantRunnerBuilder();
+        builder.setTestConfigName("test-Config-Name");
+        builder.setModelName("model-Name");
+        builder.getBackwardCompatibilityCommands();
+        
+        ModelBased testConfig = (ModelBased) builder.getTestConfig();
+        assertEquals("Shared space", testConfig.getSpaceName());
+
+        // Test with empty spaceName
+        builder = new EggplantRunnerBuilder();
+        builder.setTestConfigName("test-Config-Name");
+        builder.setSpaceName("");
+        builder.setSuiteName("suite-Name");
+        builder.getBackwardCompatibilityCommands();
+        
+        ScriptBased scriptConfig = (ScriptBased) builder.getTestConfig();
+        assertEquals("Shared space", scriptConfig.getSpaceName());
+    }
+
+    @Test
     void testGetMandatoryCommandList() {
         EggplantRunnerBuilder builder = new EggplantRunnerBuilder();
         List<String> command;
@@ -179,16 +200,18 @@ class EggplantRunnerBuilderTest {
         assertTrue(command.contains("--client-secret=c38ce33d-5644-4198-b28f-9cf3d9ac05e4"));
         assertTrue(command.contains("test-Config-Id"));
 
-        builder.setTestConfig(new ModelBased("test-Config-Name", "model-Name"));
+        builder.setTestConfig(new ModelBased("test-Config-Name", "space-Name", "model-Name"));
         command = builder.getMandatoryCommandList(new EnvVars());
         assertTrue(command.contains("modelbased"));
         assertTrue(command.contains("--test-config-name=test-Config-Name"));
+        assertTrue(command.contains("--space-name=space-Name"));
         assertTrue(command.contains("--model-name=model-Name"));
 
-        builder.setTestConfig(new ScriptBased("test-Config-Name", "suite-Name"));
+        builder.setTestConfig(new ScriptBased("test-Config-Name", "space-Name", "suite-Name"));
         command = builder.getMandatoryCommandList(new EnvVars());
         assertTrue(command.contains("scriptbased"));
         assertTrue(command.contains("--test-config-name=test-Config-Name"));
+        assertTrue(command.contains("--space-name=space-Name"));
         assertTrue(command.contains("--suite-name=suite-Name"));
     }
 
