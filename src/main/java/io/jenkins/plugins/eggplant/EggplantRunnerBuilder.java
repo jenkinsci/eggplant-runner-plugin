@@ -45,6 +45,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     private String serverURL;
     private String testConfigId;
     private String testConfigName;
+    private String spaceName;
     private String modelName;
     private String suiteName;    
     private String clientId;
@@ -76,6 +77,9 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     }
     public String getTestConfigName() {
         return testConfigName;
+    }
+    public String getSpaceName() {
+        return spaceName;
     }
     public String getModelName() {
         return modelName;
@@ -150,6 +154,11 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
     @DataBoundSetter
     public void setTestConfigName(String testConfigName) {
         this.testConfigName = testConfigName;
+    }
+
+    @DataBoundSetter
+    public void setSpaceName(String spaceName) {
+        this.spaceName = spaceName;
     }
 
     @DataBoundSetter
@@ -357,12 +366,13 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
                 this.testConfig = new TestConfigId(this.testConfigId);
             else if(this.testConfigName != null)
             {
+                String effectiveSpaceName = (this.spaceName == null || this.spaceName.isEmpty()) ? "Shared space" : this.spaceName;
                 if(this.modelName != null && this.suiteName != null)
                     throw new BuilderException("modelName and suiteName found,  Use testConfigName with only suiteName or modelName to continue.");
                 else if(this.modelName != null)
-                    this.testConfig = new ModelBased(this.testConfigName,this.modelName);
+                    this.testConfig = new ModelBased(this.testConfigName, effectiveSpaceName, this.modelName);
                 else if(this.suiteName != null)
-                    this.testConfig = new ScriptBased(this.testConfigName,this.suiteName);
+                    this.testConfig = new ScriptBased(this.testConfigName, effectiveSpaceName, this.suiteName);
                 else
                     throw new BuilderException("testConfigName found, suiteName or modelName is required.");
             }
@@ -383,6 +393,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             args.add("modelbased");
             args.add(this.serverURL); // serverURLArg
             args.add(String.format("--test-config-name=%s", modelbased.getName())); 
+            args.add(String.format("--space-name=%s", modelbased.getSpaceName()));
             args.add(String.format("--model-name=%s", modelbased.getModel()));
         }
         if(this.testConfig instanceof ScriptBased){
@@ -390,6 +401,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             args.add("scriptbased");
             args.add(this.serverURL); // serverURLArg
             args.add(String.format("--test-config-name=%s", scriptbased.getName())); 
+            args.add(String.format("--space-name=%s", scriptbased.getSpaceName()));
             args.add(String.format("--suite-name=%s", scriptbased.getSuite()));
         }
         if (this.clientId != null && !this.clientId.equals("")) // clientIdArg
@@ -615,13 +627,19 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
 
     public static class ScriptBased extends TestConfig {
         private final String name;
+        private final String spaceName;
         private final String suite;
-        @DataBoundConstructor public ScriptBased(String name, String suite) {
+        @DataBoundConstructor public ScriptBased(String name, String spaceName, String suite) {
             this.name=name;
+            this.spaceName=spaceName;
             this.suite=suite;
         }
         public String getName() {
             return name;
+        }
+
+        public String getSpaceName() {
+            return spaceName;
         }
 
         public String getSuite() {
@@ -654,16 +672,22 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
 
     public static class ModelBased extends TestConfig {
         private final String name;
+        private final String spaceName;
         private final String model;
 
         @DataBoundConstructor 
-        public ModelBased(String name, String model) {
+        public ModelBased(String name, String spaceName, String model) {
             this.name = name;
+            this.spaceName = spaceName;
             this.model = model;
         }
 
         public String getName() {
             return name;
+        }
+
+        public String getSpaceName() {
+            return spaceName;
         }
 
         public String getModel() {

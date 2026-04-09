@@ -4,6 +4,10 @@
       <f:textbox default="DAI-Test-Config-Name"/>
       The name of the Eggplant DAI test configuration that you want to run.
   </f:entry>
+  <f:entry title="Space Name" name="spaceName" field="spaceName" value="${testConfig.spaceName}">
+      <f:textbox default="Shared space"/>
+      DAI space name where the specified test configuration resides.
+  </f:entry>
   <f:entry title="Model Name *" name="model" field="model" value="${testConfig.model}">
       <f:textbox default="DAI-Test-Config-Model-Name"/>
       DAI model name for the specified test configuration.
