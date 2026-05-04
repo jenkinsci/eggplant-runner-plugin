@@ -251,7 +251,7 @@ Output are shown in **Console Output**
   </thead>
   <tbody>
   <tr>
-      <td>26.2.1+0</td>
+      <td>26.2.1+1</td>
       <td><a href="https://plugins.jenkins.io/eggplant-runner/">latest </a></td>
   </tr>
   <tr>
