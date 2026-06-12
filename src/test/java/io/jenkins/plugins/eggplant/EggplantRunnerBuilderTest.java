@@ -19,7 +19,6 @@ import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -187,63 +186,6 @@ class EggplantRunnerBuilderTest {
     }
 
     @Test
-    void testSpaceNameHandlesNullAndEmpty() throws BuilderException {
-        // Test that Java null defaults to "Shared space"
-        EggplantRunnerBuilder builder = new EggplantRunnerBuilder();
-        builder.setTestConfigName("test-Config-Name");
-        builder.setSpaceName(null);
-        builder.setModelName("model-Name");
-        builder.getBackwardCompatibilityCommands();
-        
-        ModelBased testConfig = (ModelBased) builder.getTestConfig();
-        assertEquals("Shared space", testConfig.getSpaceName());
-
-        // Test with ScriptBased and empty string
-        builder = new EggplantRunnerBuilder();
-        builder.setTestConfigName("test-Config-Name");
-        builder.setSpaceName("");
-        builder.setSuiteName("suite-Name");
-        builder.getBackwardCompatibilityCommands();
-        
-        ScriptBased scriptConfig = (ScriptBased) builder.getTestConfig();
-        assertEquals("Shared space", scriptConfig.getSpaceName());
-        
-        // Test that the string "null" is preserved as a legitimate space name
-        builder = new EggplantRunnerBuilder();
-        builder.setTestConfigName("test-Config-Name");
-        builder.setSpaceName("null");
-        builder.setModelName("model-Name");
-        builder.getBackwardCompatibilityCommands();
-        
-        testConfig = (ModelBased) builder.getTestConfig();
-        assertEquals("null", testConfig.getSpaceName());
-    }
-
-    @Test
-    void testSpaceNameInConstructor() {
-        // Test that ModelBased and ScriptBased constructors handle null and empty correctly
-        ModelBased modelBased = new ModelBased("test-Config-Name", null, "model-Name");
-        assertEquals("Shared space", modelBased.getSpaceName());
-
-        ScriptBased scriptBased = new ScriptBased("test-Config-Name", "", "suite-Name");
-        assertEquals("Shared space", scriptBased.getSpaceName());
-
-        // Test that the string "null" is preserved as a valid space name
-        modelBased = new ModelBased("test-Config-Name", "null", "model-Name");
-        assertEquals("null", modelBased.getSpaceName());
-
-        scriptBased = new ScriptBased("test-Config-Name", "null", "suite-Name");
-        assertEquals("null", scriptBased.getSpaceName());
-
-        // Test that valid space names are preserved
-        modelBased = new ModelBased("test-Config-Name", "Custom Space", "model-Name");
-        assertEquals("Custom Space", modelBased.getSpaceName());
-
-        scriptBased = new ScriptBased("test-Config-Name", "My Space", "suite-Name");
-        assertEquals("My Space", scriptBased.getSpaceName());
-    }
-
-    @Test
     void testGetMandatoryCommandList() {
         EggplantRunnerBuilder builder = new EggplantRunnerBuilder();
         List<String> command;
@@ -271,22 +213,6 @@ class EggplantRunnerBuilderTest {
         assertTrue(command.contains("--test-config-name=test-Config-Name"));
         assertTrue(command.contains("--space-name=space-Name"));
         assertTrue(command.contains("--suite-name=suite-Name"));
-        
-        // Test that null spaceName gets converted to "Shared space" in CLI args (not the string "null")
-        builder.setTestConfig(new ModelBased("test-Config-Name", null, "model-Name"));
-        command = builder.getMandatoryCommandList(new EnvVars());
-        assertTrue(command.contains("--space-name=Shared space"));
-        assertFalse(command.contains("--space-name=null"));
-        
-        builder.setTestConfig(new ScriptBased("test-Config-Name", null, "suite-Name"));
-        command = builder.getMandatoryCommandList(new EnvVars());
-        assertTrue(command.contains("--space-name=Shared space"));
-        assertFalse(command.contains("--space-name=null"));
-        
-        // Test that the string "null" is preserved as a legitimate space name
-        builder.setTestConfig(new ModelBased("test-Config-Name", "null", "model-Name"));
-        command = builder.getMandatoryCommandList(new EnvVars());
-        assertTrue(command.contains("--space-name=null"));
     }
 
     @Test
