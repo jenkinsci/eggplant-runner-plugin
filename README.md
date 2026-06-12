@@ -252,7 +252,7 @@ Output are shown in **Console Output**
   <tbody>
   <tr>
       <td>26.2.1+5</td>
-      <td><a href="https://plugins.jenkins.io/eggplant-runner/">latest </a></td>
+      <td><a href="https://plugins.jenkins.io/eggplant-runner/">latest </a>  (with <code>spaceName</code> backward compatibility - <a href="#notes">see note 3</a>)</td>
   </tr>
   <tr>
       <td>26.2.0+4</td>
@@ -341,6 +341,7 @@ This plug-in is licensed under the terms of the [MIT license](LICENSE.md)
 
 1. Release DAI 7.5.0-10 now allows passes after re-run.
 2. For pipeline project in Mac, if `parameters`/`filterBy` input having quotes `"`, they need to be escaped.
+3. **Backward Compatibility (DAI 26.2.1+):** The plugin automatically handles job configurations created before the `spaceName` field was introduced. Old configurations will default to "Shared space" without requiring manual intervention. This fixes the "Space with name 'null' not found" error that occurred after upgrading to DAI 26.2.1.
 
 ## Contributing
 
