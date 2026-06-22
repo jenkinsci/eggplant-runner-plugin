@@ -393,7 +393,8 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             args.add("modelbased");
             args.add(this.serverURL); // serverURLArg
             args.add(String.format("--test-config-name=%s", modelbased.getName())); 
-            args.add(String.format("--space-name=%s", modelbased.getSpaceName()));
+            String spaceName = modelbased.getSpaceName();
+            args.add(String.format("--space-name=%s", (spaceName == null || spaceName.isEmpty()) ? "Shared space" : spaceName));
             args.add(String.format("--model-name=%s", modelbased.getModel()));
         }
         if(this.testConfig instanceof ScriptBased){
@@ -401,7 +402,8 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
             args.add("scriptbased");
             args.add(this.serverURL); // serverURLArg
             args.add(String.format("--test-config-name=%s", scriptbased.getName())); 
-            args.add(String.format("--space-name=%s", scriptbased.getSpaceName()));
+            String spaceName = scriptbased.getSpaceName();
+            args.add(String.format("--space-name=%s", (spaceName == null || spaceName.isEmpty()) ? "Shared space" : spaceName));
             args.add(String.format("--suite-name=%s", scriptbased.getSuite()));
         }
         if (this.clientId != null && !this.clientId.equals("")) // clientIdArg
@@ -631,7 +633,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         private final String suite;
         @DataBoundConstructor public ScriptBased(String name, String spaceName, String suite) {
             this.name=name;
-            this.spaceName=spaceName;
+            this.spaceName=(spaceName == null || spaceName.isEmpty()) ? "Shared space" : spaceName;
             this.suite=suite;
         }
         public String getName() {
@@ -678,7 +680,7 @@ public class EggplantRunnerBuilder extends Builder implements SimpleBuildStep {
         @DataBoundConstructor 
         public ModelBased(String name, String spaceName, String model) {
             this.name = name;
-            this.spaceName = spaceName;
+            this.spaceName = (spaceName == null || spaceName.isEmpty()) ? "Shared space" : spaceName;
             this.model = model;
         }
 
