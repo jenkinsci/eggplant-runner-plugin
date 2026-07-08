@@ -251,8 +251,12 @@ Output are shown in **Console Output**
   </thead>
   <tbody>
   <tr>
+      <td>26.2.2+8</td>
+      <td><a href="https://plugins.jenkins.io/eggplant-runner/">latest </a></td>
+  </tr>
+  <tr>
       <td>26.2.1+5</td>
-      <td><a href="https://plugins.jenkins.io/eggplant-runner/">latest </a>  (requires resave for <code>spaceName</code> - <a href="#notes">see note 3</a>)</td>
+      <td><a href="https://plugins.jenkins.io/eggplant-runner/"><a href="https://updates.jenkins.io/download/plugins/eggplant-runner/0.0.1.309.vce7f1033c05d/eggplant-runner.hpi"> 0.0.1.309.vce7f1033c05d </a></td>
   </tr>
   <tr>
       <td>26.2.0+4</td>
@@ -341,12 +345,13 @@ This plug-in is licensed under the terms of the [MIT license](LICENSE.md)
 
 1. Release DAI 7.5.0-10 now allows passes after re-run.
 2. For pipeline project in Mac, if `parameters`/`filterBy` input having quotes `"`, they need to be escaped.
-3. **Action Required for DAI 26.2.1 Upgrades:** If you are upgrading from a plugin version before DAI 26.2.1 support, you must resave all existing job configurations that use Model-Based or Script-Based test configurations. This is required to set the `spaceName` field which was introduced in DAI 26.2.1. Without resaving, jobs will fail with the error "Space with name 'null' not found". To resave:
+3. **Action Required for DAI 26.2.0 upgrades to 26.2.1:** If you are upgrading from a plugin version from 26.2.0 to 26.2.1, you must resave all existing job configurations that use Model-Based or Script-Based test configurations. This is required to set the `spaceName` field which was introduced in DAI 26.2.1. Without resaving, jobs will fail with the error "Space with name 'null' not found". To resave:
    - Open each job's configuration page in Jenkins
    - Select the appropriate space name or leave as it is (will default to "Shared space")
    - Click **Save**
    
-   For pipeline jobs defined in code, update your pipeline scripts to include the `spaceName` parameter (defaults to "Shared space" if not specified).
+   For pipeline jobs defined in code, update your pipeline scripts to include the `spaceName` parameter (defaults to "Shared space" if not specified). <br/>
+   **No Action Required for DAI 26.2.0 upgrades to 26.2.2 and onwards:**
 
 ## Contributing
 
