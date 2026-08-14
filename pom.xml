@@ -12,7 +12,7 @@
     <version>${revision}.${changelist}</version>
     <packaging>hpi</packaging>
     <properties>
-        <revision>0.0.1</revision>
+        <revision>26.3.0_2</revision>
         <changelist>-SNAPSHOT</changelist>
         <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
         <jenkins.baseline>2.479</jenkins.baseline>

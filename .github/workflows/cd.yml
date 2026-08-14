@@ -21,7 +21,7 @@ jobs:
           output_result: true
 
       - name: Release Drafter
-        uses: release-drafter/release-drafter@v5
+        uses: release-drafter/release-drafter@v7
         if: steps.verify-ci-status.outputs.result == 'success'
         with:
           name: next
@@ -29,6 +29,10 @@ jobs:
           version: next
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Wait for draft to propagate
+        if: steps.verify-ci-status.outputs.result == 'success'
+        run: sleep 10
 
       - name: Check interesting categories
         uses: jenkins-infra/interesting-category-action@v1.2.1

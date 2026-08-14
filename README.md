@@ -251,8 +251,12 @@ Output are shown in **Console Output**
   </thead>
   <tbody>
   <tr>
-      <td>26.2.2+8</td>
+      <td>26.3.0+2</td>
       <td><a href="https://plugins.jenkins.io/eggplant-runner/">latest </a></td>
+  </tr>
+  <tr>
+      <td>26.2.2+8</td>
+      <td><a href="https://plugins.jenkins.io/eggplant-runner/"><a href="https://updates.jenkins.io/download/plugins/eggplant-runner/0.0.1.310.v8dc01b_fa_548a_/eggplant-runner.hpi"> 0.0.1.310.v8dc01b_fa_548a_ </a></td>
   </tr>
   <tr>
       <td>26.2.1+5</td>
@@ -352,6 +356,7 @@ This plug-in is licensed under the terms of the [MIT license](LICENSE.md)
    
    For pipeline jobs defined in code, update your pipeline scripts to include the `spaceName` parameter (defaults to "Shared space" if not specified). <br/>
    **No Action Required for DAI 26.2.0 upgrades to 26.2.2 and onwards:**
+4. **Plugin versioning starting from 26.3.0:** The plugin's version number now leads with the DAI version it supports, e.g. `26.3.0_2.NN.v<hash>`. Read just the leading `26.3.0` (and, if present, the `_N` DAI build number, e.g. `_2`) to know the supported DAI version at a glance; the trailing `.NN.v<hash>` is a Jenkins-generated build/commit identifier and can be ignored for compatibility purposes. Earlier releases (`0.0.1.NN.v<hash>` in the table above) don't follow this scheme.
 
 ## Contributing
 
