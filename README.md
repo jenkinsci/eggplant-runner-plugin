@@ -251,8 +251,12 @@ Output are shown in **Console Output**
   </thead>
   <tbody>
   <tr>
-      <td>26.3.0+2</td>
+      <td>26.3.1+2</td>
       <td><a href="https://plugins.jenkins.io/eggplant-runner/">latest </a></td>
+  </tr>
+  <tr>
+      <td>26.3.0+2</td>
+      <td><a href="https://plugins.jenkins.io/eggplant-runner/"><a href="https://updates.jenkins.io/download/plugins/eggplant-runner/26.3.0_2.311.v47b_f35c60935/eggplant-runner.hpi"> 26.3.0_2.311.v47b_f35c60935 </a></td>
   </tr>
   <tr>
       <td>26.2.2+8</td>
